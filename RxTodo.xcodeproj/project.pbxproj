@@ -21,6 +21,10 @@
 		03D0C0EF1D26AEC700EE93D5 /* ModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0EE1D26AEC700EE93D5 /* ModelType.swift */; };
 		03D0C0F21D26C4D900EE93D5 /* String+BoundingRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0F11D26C4D900EE93D5 /* String+BoundingRect.swift */; };
 		03D0C0F41D26C50100EE93D5 /* Snap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0F31D26C50100EE93D5 /* Snap.swift */; };
+		03D0C0F61D26C8AB00EE93D5 /* TaskEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0F51D26C8AB00EE93D5 /* TaskEditViewController.swift */; };
+		03D0C0F81D26C8B100EE93D5 /* TaskEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0F71D26C8B100EE93D5 /* TaskEditViewModel.swift */; };
+		03D0C0FB1D26DE2C00EE93D5 /* ObservableConvertibleType+Void.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0FA1D26DE2C00EE93D5 /* ObservableConvertibleType+Void.swift */; };
+		03D0C0FE1D26E55B00EE93D5 /* RxOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0FD1D26E55B00EE93D5 /* RxOperators.swift */; };
 		CA6F353212995D79BCDA15F1 /* Pods_RxTodo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66729F8998AAC640ED07D74B /* Pods_RxTodo.framework */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +45,10 @@
 		03D0C0EE1D26AEC700EE93D5 /* ModelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelType.swift; sourceTree = "<group>"; };
 		03D0C0F11D26C4D900EE93D5 /* String+BoundingRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+BoundingRect.swift"; sourceTree = "<group>"; };
 		03D0C0F31D26C50100EE93D5 /* Snap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snap.swift; sourceTree = "<group>"; };
+		03D0C0F51D26C8AB00EE93D5 /* TaskEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskEditViewController.swift; sourceTree = "<group>"; };
+		03D0C0F71D26C8B100EE93D5 /* TaskEditViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskEditViewModel.swift; sourceTree = "<group>"; };
+		03D0C0FA1D26DE2C00EE93D5 /* ObservableConvertibleType+Void.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ObservableConvertibleType+Void.swift"; sourceTree = "<group>"; };
+		03D0C0FD1D26E55B00EE93D5 /* RxOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RxOperators.swift; sourceTree = "<group>"; };
 		2C8D148321B73000A720563F /* Pods-RxTodo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxTodo.release.xcconfig"; path = "Pods/Target Support Files/Pods-RxTodo/Pods-RxTodo.release.xcconfig"; sourceTree = "<group>"; };
 		66729F8998AAC640ED07D74B /* Pods_RxTodo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxTodo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		92FD2F879471E3FA186E82B7 /* Pods-RxTodo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxTodo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RxTodo/Pods-RxTodo.debug.xcconfig"; sourceTree = "<group>"; };
@@ -94,6 +102,7 @@
 				03D0C0C61D26A13E00EE93D5 /* Models */,
 				03D0C0C71D26A13E00EE93D5 /* ViewControllers */,
 				03D0C0C91D26A13E00EE93D5 /* Views */,
+				03D0C0F91D26DE1100EE93D5 /* Rx */,
 				03D0C0F01D26C4D900EE93D5 /* Utils */,
 			);
 			path = Sources;
@@ -114,6 +123,8 @@
 				03D0C0E31D26AC0100EE93D5 /* BaseViewController.swift */,
 				03D0C0C81D26A13E00EE93D5 /* TaskListViewController.swift */,
 				03D0C0E51D26AC4500EE93D5 /* TaskListViewModel.swift */,
+				03D0C0F51D26C8AB00EE93D5 /* TaskEditViewController.swift */,
+				03D0C0F71D26C8B100EE93D5 /* TaskEditViewModel.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -160,6 +171,15 @@
 				03D0C0F11D26C4D900EE93D5 /* String+BoundingRect.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		03D0C0F91D26DE1100EE93D5 /* Rx */ = {
+			isa = PBXGroup;
+			children = (
+				03D0C0FA1D26DE2C00EE93D5 /* ObservableConvertibleType+Void.swift */,
+				03D0C0FD1D26E55B00EE93D5 /* RxOperators.swift */,
+			);
+			path = Rx;
 			sourceTree = "<group>";
 		};
 		6F6FD19C9F52229B712AC402 /* Frameworks */ = {
@@ -305,11 +325,15 @@
 				03D0C0E21D26ABDC00EE93D5 /* BaseTableViewCell.swift in Sources */,
 				03D0C0F21D26C4D900EE93D5 /* String+BoundingRect.swift in Sources */,
 				03D0C0F41D26C50100EE93D5 /* Snap.swift in Sources */,
+				03D0C0FE1D26E55B00EE93D5 /* RxOperators.swift in Sources */,
 				03D0C0EA1D26AD2800EE93D5 /* TaskCellModel.swift in Sources */,
+				03D0C0FB1D26DE2C00EE93D5 /* ObservableConvertibleType+Void.swift in Sources */,
 				03D0C0CD1D26A13E00EE93D5 /* TaskListViewController.swift in Sources */,
+				03D0C0F81D26C8B100EE93D5 /* TaskEditViewModel.swift in Sources */,
 				03D0C0ED1D26AE7800EE93D5 /* ModelService.swift in Sources */,
 				03D0C0E01D26ABD600EE93D5 /* TaskCell.swift in Sources */,
 				03D0C0CC1D26A13E00EE93D5 /* AppDelegate.swift in Sources */,
+				03D0C0F61D26C8AB00EE93D5 /* TaskEditViewController.swift in Sources */,
 				03D0C0E81D26AC7600EE93D5 /* Task.swift in Sources */,
 				03D0C0E61D26AC4500EE93D5 /* TaskListViewModel.swift in Sources */,
 			);

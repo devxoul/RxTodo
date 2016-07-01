@@ -25,6 +25,8 @@ final class TaskListViewController: BaseViewController {
     // MARK: Properties
 
     let dataSource = RxTableViewSectionedReloadDataSource<TaskListSection>()
+
+    let addBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: nil, action: Selector())
     let tableView = UITableView().then {
         $0.registerCell(Reusable.taskCell)
     }
@@ -34,6 +36,7 @@ final class TaskListViewController: BaseViewController {
 
     init(viewModel: TaskListViewModelType) {
         super.init()
+        self.navigationItem.rightBarButtonItem = self.addBarButtonItem
         self.configure(viewModel)
     }
     
@@ -46,6 +49,7 @@ final class TaskListViewController: BaseViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = .whiteColor()
         self.tableView.rx_setDelegate(self)
         self.view.addSubview(self.tableView)
     }
@@ -67,12 +71,30 @@ final class TaskListViewController: BaseViewController {
             return cell
         }
 
-        viewModel.title
+        // Input
+        self.addBarButtonItem.rx_tap
+            .bindTo(viewModel.addButtonDidTap)
+            .addDisposableTo(self.disposeBag)
+
+        self.tableView.rx_itemSelected
+            .bindTo(viewModel.itemDidSelect)
+            .addDisposableTo(self.disposeBag)
+
+        // Ouput
+        viewModel.navigationBarTitle
             .drive(self.navigationItem.rx_title)
             .addDisposableTo(self.disposeBag)
 
         viewModel.sections
             .drive(self.tableView.rx_itemsWithDataSource(self.dataSource))
+            .addDisposableTo(self.disposeBag)
+
+        viewModel.presentTaskEditViewModel
+            .driveNext { viewModel in
+                let viewController = TaskEditViewController(viewModel: viewModel)
+                let navigationController = UINavigationController(rootViewController: viewController)
+                self.presentViewController(navigationController, animated: true, completion: nil)
+            }
             .addDisposableTo(self.disposeBag)
     }
 
