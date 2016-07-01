@@ -14,7 +14,6 @@ final class TaskEditViewController: BaseViewController {
 
     struct Metric {
         static let padding = 15.f
-        static let titleInputHeight = 34.f
         static let titleInputCornerRadius = 5.f
         static let titleInputBorderWidth = 1 / UIScreen.mainScreen().scale
     }
@@ -69,7 +68,6 @@ final class TaskEditViewController: BaseViewController {
             make.top.equalTo(20 + 44 + Metric.padding)
             make.left.equalTo(Metric.padding)
             make.right.equalTo(-Metric.padding)
-            make.height.equalTo(Metric.titleInputHeight)
         }
     }
 
