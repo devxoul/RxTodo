@@ -46,7 +46,12 @@ struct TaskListViewModel: TaskListViewModelType {
     private var tasks: Variable<[Task]>
 
     init() {
-        let tasks = Variable<[Task]>([])
+        let defaultTasks = [
+            Task(title: "Go to https://github.com/devxoul"),
+            Task(title: "Star repositories I am intersted in"),
+            Task(title: "Make a pull request"),
+        ]
+        let tasks = Variable<[Task]>(defaultTasks)
         self.tasks = tasks
         self.navigationBarTitle = .just("Tasks")
         self.sections = tasks.asObservable()
