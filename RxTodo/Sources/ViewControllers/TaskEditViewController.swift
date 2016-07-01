@@ -61,6 +61,7 @@ final class TaskEditViewController: BaseViewController {
         super.viewDidLoad()
         self.view.backgroundColor = .whiteColor()
         self.view.addSubview(self.titleInput)
+        self.titleInput.becomeFirstResponder()
     }
 
     override func setupConstraints() {
@@ -106,10 +107,12 @@ final class TaskEditViewController: BaseViewController {
                         viewModel.alertLeaveButtonDidTap.onNext()
                     },
                     UIAlertAction(title: stayTitle, style: .Default) { _ in
+                        self.titleInput.becomeFirstResponder()
                         viewModel.alertStayButtonDidTap.onNext()
                     }
                 ]
                 actions.forEach(alertController.addAction)
+                self.view.endEditing(true)
                 self.presentViewController(alertController, animated: true, completion: nil)
             }
             .addDisposableTo(self.disposeBag)
