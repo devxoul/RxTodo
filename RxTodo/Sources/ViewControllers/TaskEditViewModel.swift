@@ -76,8 +76,18 @@ struct TaskEditViewModel: TaskEditViewModelType {
             .asDriver(onErrorJustReturn: false)
             .startWith(false)
 
-        self.presentCancelAlert = self.cancelButtonDidTap.asDriver()
-            .map {
+        let needsPresentCancelAlert = self.cancelButtonDidTap.asDriver()
+            .withLatestFrom(self.title.asDriver())
+            .map { title -> Bool in
+                switch mode {
+                case .New: return !title.isEmpty
+                case .Edit(let task): return title != task.title
+                }
+            }
+
+        self.presentCancelAlert = needsPresentCancelAlert
+            .filter { $0 }
+            .map { _ in
                 let title = "Really?"
                 let message = "Changes will be lost."
                 return (title, message, "Leave", "Stay")
@@ -99,7 +109,9 @@ struct TaskEditViewModel: TaskEditViewModelType {
                     Task.didUpdate.onNext(newTask)
                 }
             }
-        self.dismissViewController = Driver.of(self.alertLeaveButtonDidTap.asDriver(), didDone).merge()
+
+        self.dismissViewController = Driver.of(self.alertLeaveButtonDidTap.asDriver(), didDone,
+                                               needsPresentCancelAlert.filter { !$0 }.map { _ in Void() }).merge()
     }
 
 }
