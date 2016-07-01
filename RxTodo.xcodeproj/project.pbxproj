@@ -11,6 +11,7 @@
 		03D0C0CD1D26A13E00EE93D5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0C81D26A13E00EE93D5 /* ViewController.swift */; };
 		03D0C0D51D26A18900EE93D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03D0C0D21D26A18900EE93D5 /* Assets.xcassets */; };
 		03D0C0D61D26A18900EE93D5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03D0C0D31D26A18900EE93D5 /* LaunchScreen.storyboard */; };
+		CA6F353212995D79BCDA15F1 /* Pods_RxTodo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66729F8998AAC640ED07D74B /* Pods_RxTodo.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +21,9 @@
 		03D0C0CB1D26A13E00EE93D5 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		03D0C0D21D26A18900EE93D5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		03D0C0D41D26A18900EE93D5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		2C8D148321B73000A720563F /* Pods-RxTodo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxTodo.release.xcconfig"; path = "Pods/Target Support Files/Pods-RxTodo/Pods-RxTodo.release.xcconfig"; sourceTree = "<group>"; };
+		66729F8998AAC640ED07D74B /* Pods_RxTodo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxTodo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		92FD2F879471E3FA186E82B7 /* Pods-RxTodo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxTodo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RxTodo/Pods-RxTodo.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -27,6 +31,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA6F353212995D79BCDA15F1 /* Pods_RxTodo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -38,6 +43,8 @@
 			children = (
 				03D0C0B11D269F7900EE93D5 /* RxTodo */,
 				03D0C0B01D269F7900EE93D5 /* Products */,
+				D77F592D681888F88BACC3EE /* Pods */,
+				6F6FD19C9F52229B712AC402 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -109,6 +116,23 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		6F6FD19C9F52229B712AC402 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				66729F8998AAC640ED07D74B /* Pods_RxTodo.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D77F592D681888F88BACC3EE /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				92FD2F879471E3FA186E82B7 /* Pods-RxTodo.debug.xcconfig */,
+				2C8D148321B73000A720563F /* Pods-RxTodo.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -116,9 +140,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 03D0C0C11D269F7900EE93D5 /* Build configuration list for PBXNativeTarget "RxTodo" */;
 			buildPhases = (
+				482896FB1C66C24E38671597 /* [CP] Check Pods Manifest.lock */,
 				03D0C0AB1D269F7900EE93D5 /* Sources */,
 				03D0C0AC1D269F7900EE93D5 /* Frameworks */,
 				03D0C0AD1D269F7900EE93D5 /* Resources */,
+				16A49912920A8AFC0349795A /* [CP] Embed Pods Frameworks */,
+				31A209DD0824AABD60D3B10C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -173,6 +200,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		16A49912920A8AFC0349795A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RxTodo/Pods-RxTodo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		31A209DD0824AABD60D3B10C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RxTodo/Pods-RxTodo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		482896FB1C66C24E38671597 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		03D0C0AB1D269F7900EE93D5 /* Sources */ = {
@@ -283,6 +358,7 @@
 		};
 		03D0C0C21D269F7900EE93D5 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 92FD2F879471E3FA186E82B7 /* Pods-RxTodo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = "$(SRCROOT)/RxTodo/Support/Info.plist";
@@ -294,6 +370,7 @@
 		};
 		03D0C0C31D269F7900EE93D5 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2C8D148321B73000A720563F /* Pods-RxTodo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = "$(SRCROOT)/RxTodo/Support/Info.plist";
@@ -322,6 +399,7 @@
 				03D0C0C31D269F7900EE93D5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
