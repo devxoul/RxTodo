@@ -17,6 +17,7 @@ protocol TaskListViewModelType {
     // Input
     var addButtonDidTap: PublishSubject<Void> { get }
     var itemDidSelect: PublishSubject<NSIndexPath> { get }
+    var itemDeleted: PublishSubject<NSIndexPath> { get }
 
     // Output
     var navigationBarTitle: Driver<String?> { get }
@@ -31,6 +32,7 @@ struct TaskListViewModel: TaskListViewModelType {
 
     let addButtonDidTap = PublishSubject<Void>()
     let itemDidSelect = PublishSubject<NSIndexPath>()
+    var itemDeleted = PublishSubject<NSIndexPath>()
 
 
     // MARK: Output
@@ -61,6 +63,13 @@ struct TaskListViewModel: TaskListViewModelType {
                 return [section]
             }
             .asDriver(onErrorJustReturn: [])
+
+        self.itemDeleted
+            .subscribeNext { indexPath in
+                let task = tasks.value[indexPath.row]
+                Task.didDelete.onNext(task)
+            }
+            .addDisposableTo(self.disposeBag)
 
         //
         // View Controller Navigations

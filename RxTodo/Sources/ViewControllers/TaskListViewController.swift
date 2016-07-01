@@ -80,6 +80,10 @@ final class TaskListViewController: BaseViewController {
             .bindTo(viewModel.itemDidSelect)
             .addDisposableTo(self.disposeBag)
 
+        self.tableView.rx_itemDeleted
+            .bindTo(viewModel.itemDeleted)
+            .addDisposableTo(self.disposeBag)
+
         // Ouput
         viewModel.navigationBarTitle
             .drive(self.navigationItem.rx_title)
