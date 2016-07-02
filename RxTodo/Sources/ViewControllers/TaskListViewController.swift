@@ -94,7 +94,8 @@ final class TaskListViewController: BaseViewController {
             .addDisposableTo(self.disposeBag)
 
         viewModel.presentTaskEditViewModel
-            .driveNext { viewModel in
+            .driveNext { [weak self] viewModel in
+                guard let `self` = self else { return }
                 let viewController = TaskEditViewController(viewModel: viewModel)
                 let navigationController = UINavigationController(rootViewController: viewController)
                 self.presentViewController(navigationController, animated: true, completion: nil)

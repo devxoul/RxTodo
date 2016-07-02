@@ -98,7 +98,8 @@ final class TaskEditViewController: BaseViewController {
             .addDisposableTo(self.disposeBag)
 
         viewModel.presentCancelAlert
-            .driveNext { title, message, leaveTitle, stayTitle in
+            .driveNext { [weak self] title, message, leaveTitle, stayTitle in
+                guard let `self` = self else { return }
                 let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
                 let actions = [
                     UIAlertAction(title: leaveTitle, style: .Destructive) { _ in
@@ -116,9 +117,9 @@ final class TaskEditViewController: BaseViewController {
             .addDisposableTo(self.disposeBag)
 
         viewModel.dismissViewController
-            .driveNext {
-                self.view.endEditing(true)
-                self.dismissViewControllerAnimated(true, completion: nil)
+            .driveNext { [weak self] in
+                self?.view.endEditing(true)
+                self?.dismissViewControllerAnimated(true, completion: nil)
             }
             .addDisposableTo(self.disposeBag)
     }
