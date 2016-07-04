@@ -14,12 +14,6 @@ Features
 * Immutable models and view models
 
 
-Screenshots
------------
-
-![rxtodo](https://cloud.githubusercontent.com/assets/931655/16531082/eae3ead2-4005-11e6-8537-a6856d704d74.png)
-
-
 Philisophy
 ----------
 
@@ -88,6 +82,12 @@ Requirements
 * iOS 8+
 * Swift 2.2
 * CocoaPods (I used 1.0.0)
+
+
+Screenshots
+-----------
+
+![rxtodo](https://cloud.githubusercontent.com/assets/931655/16531082/eae3ead2-4005-11e6-8537-a6856d704d74.png)
 
 
 Contribution
