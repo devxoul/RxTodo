@@ -93,7 +93,7 @@ Screenshots
 Contribution
 ------------
 
-Discussion and pull requests are welcomed 💖
+Discussion and pull requests are welcomed 💖 Correcting English grammar is welcomed, too.
 
 
 License
