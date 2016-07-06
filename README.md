@@ -46,7 +46,7 @@ Philisophy
     
     ```swift
     self.loginButton.rx_tap
-        .bindTo(viewModel.loginButton)
+        .bindTo(viewModel.loginButtonDidTap)
         // "Hey I clicked the login button"
 
     self.usernameInput.rx_controlEvent(.EditingDidEndOnExit)
