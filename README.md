@@ -46,12 +46,10 @@ Philisophy
     
     ```swift
     self.loginButton.rx_tap
-        .bindTo(viewModel.loginButtonDidTap)
-        // "Hey I clicked the login button"
+        .bindTo(viewModel.loginButtonDidTap) // "Hey I clicked the login button"
 
     self.usernameInput.rx_controlEvent(.EditingDidEndOnExit)
-        .bindTo(viewModel.usernameInputDidReturn)
-        // "Hey I tapped the return on username input"
+        .bindTo(viewModel.usernameInputDidReturn) // "Hey I tapped the return on username input"
     ```
 
 * Model is hidden by ViewModel. ViewModel only exposes the minimum data so that View can render.
