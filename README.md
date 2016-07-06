@@ -59,7 +59,7 @@ Philisophy
     **Bad**
     
     ```swift
-    class ProductViewModel {
+    struct ProductViewModel {
         let product: Driver<Product> // Bad: ViewModel should hide Model
     }
     ```
@@ -67,7 +67,7 @@ Philisophy
     **Good**
     
     ```swift
-    class ProductViewModel {
+    struct ProductViewModel {
         let productName: Driver<String>
         let formattedPrice: Driver<String>
         let formattedOriginalPrice: Driver<String>
