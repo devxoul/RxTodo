@@ -60,6 +60,10 @@ final class TaskEditViewController: BaseViewController {
         super.viewDidLoad()
         self.view.backgroundColor = .whiteColor()
         self.view.addSubview(self.titleInput)
+    }
+
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
         self.titleInput.becomeFirstResponder()
     }
 
