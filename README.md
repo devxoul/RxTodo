@@ -14,7 +14,7 @@ Features
 * Immutable models and view models
 
 
-Philisophy
+Philosophy
 ----------
 
 * View doesn't have control flow. View cannot modify the data. View only knows how to map the data.
