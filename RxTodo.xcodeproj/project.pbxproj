@@ -25,6 +25,7 @@
 		03D0C0F81D26C8B100EE93D5 /* TaskEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0F71D26C8B100EE93D5 /* TaskEditViewModel.swift */; };
 		03D0C0FB1D26DE2C00EE93D5 /* ObservableConvertibleType+Void.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0FA1D26DE2C00EE93D5 /* ObservableConvertibleType+Void.swift */; };
 		03D0C0FE1D26E55B00EE93D5 /* RxOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0FD1D26E55B00EE93D5 /* RxOperators.swift */; };
+		03FB82FB1D591556004EF4FB /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FB82FA1D591556004EF4FB /* main.swift */; };
 		CA6F353212995D79BCDA15F1 /* Pods_RxTodo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66729F8998AAC640ED07D74B /* Pods_RxTodo.framework */; };
 /* End PBXBuildFile section */
 
@@ -49,6 +50,7 @@
 		03D0C0F71D26C8B100EE93D5 /* TaskEditViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskEditViewModel.swift; sourceTree = "<group>"; };
 		03D0C0FA1D26DE2C00EE93D5 /* ObservableConvertibleType+Void.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ObservableConvertibleType+Void.swift"; sourceTree = "<group>"; };
 		03D0C0FD1D26E55B00EE93D5 /* RxOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RxOperators.swift; sourceTree = "<group>"; };
+		03FB82FA1D591556004EF4FB /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		2C8D148321B73000A720563F /* Pods-RxTodo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxTodo.release.xcconfig"; path = "Pods/Target Support Files/Pods-RxTodo/Pods-RxTodo.release.xcconfig"; sourceTree = "<group>"; };
 		66729F8998AAC640ED07D74B /* Pods_RxTodo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxTodo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		92FD2F879471E3FA186E82B7 /* Pods-RxTodo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxTodo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RxTodo/Pods-RxTodo.debug.xcconfig"; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 		03D0C0C41D26A13E00EE93D5 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				03FB82FA1D591556004EF4FB /* main.swift */,
 				03D0C0C51D26A13E00EE93D5 /* AppDelegate.swift */,
 				03D0C0EB1D26AE7300EE93D5 /* Services */,
 				03D0C0C61D26A13E00EE93D5 /* Models */,
@@ -322,6 +325,7 @@
 			files = (
 				03D0C0E41D26AC0100EE93D5 /* BaseViewController.swift in Sources */,
 				03D0C0EF1D26AEC700EE93D5 /* ModelType.swift in Sources */,
+				03FB82FB1D591556004EF4FB /* main.swift in Sources */,
 				03D0C0E21D26ABDC00EE93D5 /* BaseTableViewCell.swift in Sources */,
 				03D0C0F21D26C4D900EE93D5 /* String+BoundingRect.swift in Sources */,
 				03D0C0F41D26C50100EE93D5 /* Snap.swift in Sources */,

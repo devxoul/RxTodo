@@ -13,7 +13,6 @@ import ManualLayout
 import SnapKit
 import Then
 
-@UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
