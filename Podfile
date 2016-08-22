@@ -17,4 +17,10 @@ target 'RxTodo' do
   pod 'ReusableKit', '0.3.0'
   pod 'CGFloatLiteral', '0.1.0'
 
+  # Testing
+  target 'RxTodoTests' do
+    pod 'RxTests', '~> 2.6'
+    pod 'RxExpect', '~> 0.1'
+  end
+
 end
