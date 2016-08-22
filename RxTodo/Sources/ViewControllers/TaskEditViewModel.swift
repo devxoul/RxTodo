@@ -75,6 +75,7 @@ struct TaskEditViewModel: TaskEditViewModelType {
             .map { !$0.isEmpty }
             .asDriver(onErrorJustReturn: false)
             .startWith(false)
+            .distinctUntilChanged()
 
         let needsPresentCancelAlert = self.cancelButtonDidTap.asDriver()
             .withLatestFrom(self.title.asDriver())
