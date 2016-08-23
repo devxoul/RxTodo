@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		030BC4881D6B5EC700744138 /* TaskEditViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030BC4871D6B5EC700744138 /* TaskEditViewModelTests.swift */; };
 		03D0C0CC1D26A13E00EE93D5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0C51D26A13E00EE93D5 /* AppDelegate.swift */; };
 		03D0C0CD1D26A13E00EE93D5 /* TaskListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0C81D26A13E00EE93D5 /* TaskListViewController.swift */; };
 		03D0C0D51D26A18900EE93D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03D0C0D21D26A18900EE93D5 /* Assets.xcassets */; };
@@ -25,10 +26,25 @@
 		03D0C0F81D26C8B100EE93D5 /* TaskEditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0F71D26C8B100EE93D5 /* TaskEditViewModel.swift */; };
 		03D0C0FB1D26DE2C00EE93D5 /* ObservableConvertibleType+Void.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0FA1D26DE2C00EE93D5 /* ObservableConvertibleType+Void.swift */; };
 		03D0C0FE1D26E55B00EE93D5 /* RxOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0FD1D26E55B00EE93D5 /* RxOperators.swift */; };
+		03FB82F61D58BC02004EF4FB /* TaskListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FB82F11D58BC02004EF4FB /* TaskListViewModelTests.swift */; };
+		03FB82F91D58BC0F004EF4FB /* MockError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FB82F81D58BC0F004EF4FB /* MockError.swift */; };
+		03FB82FB1D591556004EF4FB /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FB82FA1D591556004EF4FB /* main.swift */; };
+		207EFC0DD9CC1605A4CC2258 /* Pods_RxTodo_RxTodoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AAAC24BDE4392CCE41C0E98 /* Pods_RxTodo_RxTodoTests.framework */; };
 		CA6F353212995D79BCDA15F1 /* Pods_RxTodo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66729F8998AAC640ED07D74B /* Pods_RxTodo.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		03FB82E61D58BBDD004EF4FB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 03D0C0A71D269F7900EE93D5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 03D0C0AE1D269F7900EE93D5;
+			remoteInfo = RxTodo;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		030BC4871D6B5EC700744138 /* TaskEditViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskEditViewModelTests.swift; sourceTree = "<group>"; };
 		03D0C0AF1D269F7900EE93D5 /* RxTodo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RxTodo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		03D0C0C51D26A13E00EE93D5 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		03D0C0C81D26A13E00EE93D5 /* TaskListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskListViewController.swift; sourceTree = "<group>"; };
@@ -49,9 +65,17 @@
 		03D0C0F71D26C8B100EE93D5 /* TaskEditViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskEditViewModel.swift; sourceTree = "<group>"; };
 		03D0C0FA1D26DE2C00EE93D5 /* ObservableConvertibleType+Void.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ObservableConvertibleType+Void.swift"; sourceTree = "<group>"; };
 		03D0C0FD1D26E55B00EE93D5 /* RxOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RxOperators.swift; sourceTree = "<group>"; };
+		03FB82E11D58BBDD004EF4FB /* RxTodoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RxTodoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		03FB82F11D58BC02004EF4FB /* TaskListViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskListViewModelTests.swift; sourceTree = "<group>"; };
+		03FB82F31D58BC02004EF4FB /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		03FB82F81D58BC0F004EF4FB /* MockError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockError.swift; sourceTree = "<group>"; };
+		03FB82FA1D591556004EF4FB /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		12E785A8D7E0ED1561D9DC02 /* Pods-RxTodo-RxTodoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxTodo-RxTodoTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RxTodo-RxTodoTests/Pods-RxTodo-RxTodoTests.debug.xcconfig"; sourceTree = "<group>"; };
+		2AAAC24BDE4392CCE41C0E98 /* Pods_RxTodo_RxTodoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxTodo_RxTodoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C8D148321B73000A720563F /* Pods-RxTodo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxTodo.release.xcconfig"; path = "Pods/Target Support Files/Pods-RxTodo/Pods-RxTodo.release.xcconfig"; sourceTree = "<group>"; };
 		66729F8998AAC640ED07D74B /* Pods_RxTodo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxTodo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		92FD2F879471E3FA186E82B7 /* Pods-RxTodo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxTodo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RxTodo/Pods-RxTodo.debug.xcconfig"; sourceTree = "<group>"; };
+		BE683C3CD2B746E76613523E /* Pods-RxTodo-RxTodoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxTodo-RxTodoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-RxTodo-RxTodoTests/Pods-RxTodo-RxTodoTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +87,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		03FB82DE1D58BBDD004EF4FB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				207EFC0DD9CC1605A4CC2258 /* Pods_RxTodo_RxTodoTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -70,6 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				03D0C0B11D269F7900EE93D5 /* RxTodo */,
+				03FB82E21D58BBDD004EF4FB /* RxTodoTests */,
 				03D0C0B01D269F7900EE93D5 /* Products */,
 				D77F592D681888F88BACC3EE /* Pods */,
 				6F6FD19C9F52229B712AC402 /* Frameworks */,
@@ -80,6 +113,7 @@
 			isa = PBXGroup;
 			children = (
 				03D0C0AF1D269F7900EE93D5 /* RxTodo.app */,
+				03FB82E11D58BBDD004EF4FB /* RxTodoTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -97,6 +131,7 @@
 		03D0C0C41D26A13E00EE93D5 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				03FB82FA1D591556004EF4FB /* main.swift */,
 				03D0C0C51D26A13E00EE93D5 /* AppDelegate.swift */,
 				03D0C0EB1D26AE7300EE93D5 /* Services */,
 				03D0C0C61D26A13E00EE93D5 /* Models */,
@@ -182,10 +217,54 @@
 			path = Rx;
 			sourceTree = "<group>";
 		};
+		03FB82E21D58BBDD004EF4FB /* RxTodoTests */ = {
+			isa = PBXGroup;
+			children = (
+				03FB82EB1D58BC02004EF4FB /* Sources */,
+				03FB82F21D58BC02004EF4FB /* Supporting Files */,
+			);
+			path = RxTodoTests;
+			sourceTree = "<group>";
+		};
+		03FB82EB1D58BC02004EF4FB /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				03FB82EC1D58BC02004EF4FB /* Mock */,
+				03FB82F01D58BC02004EF4FB /* Tests */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		03FB82EC1D58BC02004EF4FB /* Mock */ = {
+			isa = PBXGroup;
+			children = (
+				03FB82F81D58BC0F004EF4FB /* MockError.swift */,
+			);
+			path = Mock;
+			sourceTree = "<group>";
+		};
+		03FB82F01D58BC02004EF4FB /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				03FB82F11D58BC02004EF4FB /* TaskListViewModelTests.swift */,
+				030BC4871D6B5EC700744138 /* TaskEditViewModelTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		03FB82F21D58BC02004EF4FB /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				03FB82F31D58BC02004EF4FB /* Info.plist */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		6F6FD19C9F52229B712AC402 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				66729F8998AAC640ED07D74B /* Pods_RxTodo.framework */,
+				2AAAC24BDE4392CCE41C0E98 /* Pods_RxTodo_RxTodoTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -195,6 +274,8 @@
 			children = (
 				92FD2F879471E3FA186E82B7 /* Pods-RxTodo.debug.xcconfig */,
 				2C8D148321B73000A720563F /* Pods-RxTodo.release.xcconfig */,
+				12E785A8D7E0ED1561D9DC02 /* Pods-RxTodo-RxTodoTests.debug.xcconfig */,
+				BE683C3CD2B746E76613523E /* Pods-RxTodo-RxTodoTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -222,6 +303,27 @@
 			productReference = 03D0C0AF1D269F7900EE93D5 /* RxTodo.app */;
 			productType = "com.apple.product-type.application";
 		};
+		03FB82E01D58BBDD004EF4FB /* RxTodoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 03FB82EA1D58BBDE004EF4FB /* Build configuration list for PBXNativeTarget "RxTodoTests" */;
+			buildPhases = (
+				34D1A8A1ED3555C9D205203B /* [CP] Check Pods Manifest.lock */,
+				03FB82DD1D58BBDD004EF4FB /* Sources */,
+				03FB82DE1D58BBDD004EF4FB /* Frameworks */,
+				03FB82DF1D58BBDD004EF4FB /* Resources */,
+				4DACC454D017FDCD0B5A4882 /* [CP] Embed Pods Frameworks */,
+				D85565DCBF0D2C184B77E512 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				03FB82E71D58BBDD004EF4FB /* PBXTargetDependency */,
+			);
+			name = RxTodoTests;
+			productName = RxTodoTests;
+			productReference = 03FB82E11D58BBDD004EF4FB /* RxTodoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -234,6 +336,10 @@
 				TargetAttributes = {
 					03D0C0AE1D269F7900EE93D5 = {
 						CreatedOnToolsVersion = 7.3.1;
+					};
+					03FB82E01D58BBDD004EF4FB = {
+						CreatedOnToolsVersion = 7.3.1;
+						TestTargetID = 03D0C0AE1D269F7900EE93D5;
 					};
 				};
 			};
@@ -251,6 +357,7 @@
 			projectRoot = "";
 			targets = (
 				03D0C0AE1D269F7900EE93D5 /* RxTodo */,
+				03FB82E01D58BBDD004EF4FB /* RxTodoTests */,
 			);
 		};
 /* End PBXProject section */
@@ -262,6 +369,13 @@
 			files = (
 				03D0C0D61D26A18900EE93D5 /* LaunchScreen.storyboard in Resources */,
 				03D0C0D51D26A18900EE93D5 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		03FB82DF1D58BBDD004EF4FB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,6 +412,21 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RxTodo/Pods-RxTodo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		34D1A8A1ED3555C9D205203B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		482896FB1C66C24E38671597 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -313,6 +442,36 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		4DACC454D017FDCD0B5A4882 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RxTodo-RxTodoTests/Pods-RxTodo-RxTodoTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D85565DCBF0D2C184B77E512 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RxTodo-RxTodoTests/Pods-RxTodo-RxTodoTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -322,6 +481,7 @@
 			files = (
 				03D0C0E41D26AC0100EE93D5 /* BaseViewController.swift in Sources */,
 				03D0C0EF1D26AEC700EE93D5 /* ModelType.swift in Sources */,
+				03FB82FB1D591556004EF4FB /* main.swift in Sources */,
 				03D0C0E21D26ABDC00EE93D5 /* BaseTableViewCell.swift in Sources */,
 				03D0C0F21D26C4D900EE93D5 /* String+BoundingRect.swift in Sources */,
 				03D0C0F41D26C50100EE93D5 /* Snap.swift in Sources */,
@@ -339,7 +499,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		03FB82DD1D58BBDD004EF4FB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				03FB82F61D58BC02004EF4FB /* TaskListViewModelTests.swift in Sources */,
+				030BC4881D6B5EC700744138 /* TaskEditViewModelTests.swift in Sources */,
+				03FB82F91D58BC0F004EF4FB /* MockError.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		03FB82E71D58BBDD004EF4FB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 03D0C0AE1D269F7900EE93D5 /* RxTodo */;
+			targetProxy = 03FB82E61D58BBDD004EF4FB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		03D0C0D31D26A18900EE93D5 /* LaunchScreen.storyboard */ = {
@@ -460,6 +638,34 @@
 			};
 			name = Release;
 		};
+		03FB82E81D58BBDE004EF4FB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 12E785A8D7E0ED1561D9DC02 /* Pods-RxTodo-RxTodoTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = "RxTodoTests/Supporting Files/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = kr.xoul.RxTodoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RxTodo.app/RxTodo";
+			};
+			name = Debug;
+		};
+		03FB82E91D58BBDE004EF4FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BE683C3CD2B746E76613523E /* Pods-RxTodo-RxTodoTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = "RxTodoTests/Supporting Files/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = kr.xoul.RxTodoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RxTodo.app/RxTodo";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -477,6 +683,15 @@
 			buildConfigurations = (
 				03D0C0C21D269F7900EE93D5 /* Debug */,
 				03D0C0C31D269F7900EE93D5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		03FB82EA1D58BBDE004EF4FB /* Build configuration list for PBXNativeTarget "RxTodoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				03FB82E81D58BBDE004EF4FB /* Debug */,
+				03FB82E91D58BBDE004EF4FB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

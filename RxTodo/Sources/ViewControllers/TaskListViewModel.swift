@@ -22,7 +22,7 @@ protocol TaskListViewModelType {
     // Output
     var navigationBarTitle: Driver<String?> { get }
     var sections: Driver<[TaskListSection]> { get }
-    var presentTaskEditViewModel: Driver<TaskEditViewModel> { get }
+    var presentTaskEditViewModel: Driver<TaskEditViewModelType> { get }
 
 }
 
@@ -39,7 +39,7 @@ struct TaskListViewModel: TaskListViewModelType {
 
     let navigationBarTitle: Driver<String?>
     let sections: Driver<[TaskListSection]>
-    let presentTaskEditViewModel: Driver<TaskEditViewModel>
+    let presentTaskEditViewModel: Driver<TaskEditViewModelType>
 
 
     // MARK: Private
@@ -74,17 +74,17 @@ struct TaskListViewModel: TaskListViewModelType {
         //
         // View Controller Navigations
         //
-        let presentAddViewModel: Driver<TaskEditViewModel> = self.addButtonDidTap.asDriver()
+        let presentAddViewModel: Observable<TaskEditViewModelType> = self.addButtonDidTap
             .map { TaskEditViewModel(mode: .New) }
 
-        let presentEditViewModel: Driver<TaskEditViewModel> = self.itemDidSelect
+        let presentEditViewModel: Observable<TaskEditViewModelType> = self.itemDidSelect
             .map { indexPath in
                 let task = tasks.value[indexPath.row]
                 return TaskEditViewModel(mode: .Edit(task))
             }
-            .asDriver(onErrorDriveWith: .never())
 
-        self.presentTaskEditViewModel = Driver.of(presentAddViewModel, presentEditViewModel).merge()
+        self.presentTaskEditViewModel = Observable.of(presentAddViewModel, presentEditViewModel).merge()
+            .asDriver(onErrorDriveWith: .empty())
 
         //
         // Model Service

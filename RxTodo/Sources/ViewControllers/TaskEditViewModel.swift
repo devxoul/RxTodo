@@ -58,6 +58,11 @@ struct TaskEditViewModel: TaskEditViewModelType {
     let dismissViewController: Driver<Void>
 
 
+    // MARK: Private
+
+    let disposeBag = DisposeBag()
+
+
     // MARK: Initializing
 
     init(mode: TaskEditViewMode) {
@@ -75,6 +80,7 @@ struct TaskEditViewModel: TaskEditViewModelType {
             .map { !$0.isEmpty }
             .asDriver(onErrorJustReturn: false)
             .startWith(false)
+            .distinctUntilChanged()
 
         let needsPresentCancelAlert = self.cancelButtonDidTap.asDriver()
             .withLatestFrom(self.title.asDriver())
@@ -95,20 +101,29 @@ struct TaskEditViewModel: TaskEditViewModelType {
 
         let didDone = self.doneButtonDidTap.asDriver()
             .withLatestFrom(self.doneButtonEnabled).filter { $0 }
-            .withLatestFrom(self.title.asDriver())
-            .map { title in
-                switch mode {
-                case .New:
-                    let newTask = Task(title: title)
-                    Task.didCreate.onNext(newTask)
+            .map { _ in Void() }
 
-                case .Edit(let task):
-                    let newTask = task.then {
+        switch mode {
+        case .New:
+            didDone
+                .withLatestFrom(self.title.asDriver())
+                .map { title in
+                    Task(title: title)
+                }
+                .drive(Task.didCreate)
+                .addDisposableTo(self.disposeBag)
+
+        case .Edit(let task):
+            didDone
+                .withLatestFrom(self.title.asDriver())
+                .map { title in
+                    task.then {
                         $0.title = title
                     }
-                    Task.didUpdate.onNext(newTask)
                 }
-            }
+                .drive(Task.didUpdate)
+                .addDisposableTo(self.disposeBag)
+        }
 
         self.dismissViewController = Driver.of(self.alertLeaveButtonDidTap.asDriver(), didDone,
                                                needsPresentCancelAlert.filter { !$0 }.map { _ in Void() }).merge()

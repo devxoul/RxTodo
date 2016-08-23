@@ -4,8 +4,8 @@ target 'RxTodo' do
   use_frameworks!
 
   # Rx
-  pod 'RxSwift', '2.5.0'
-  pod 'RxCocoa', '2.5.0'
+  pod 'RxSwift', '2.6.0'
+  pod 'RxCocoa', '2.6.0'
   pod 'RxDataSources', '0.8.1'
 
   # UI
@@ -16,5 +16,11 @@ target 'RxTodo' do
   pod 'Then', '1.0.3'
   pod 'ReusableKit', '0.3.0'
   pod 'CGFloatLiteral', '0.1.0'
+
+  # Testing
+  target 'RxTodoTests' do
+    pod 'RxTests', '~> 2.6'
+    pod 'RxExpect', '~> 0.1'
+  end
 
 end
