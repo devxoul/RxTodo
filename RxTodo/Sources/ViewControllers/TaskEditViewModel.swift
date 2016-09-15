@@ -117,7 +117,7 @@ struct TaskEditViewModel: TaskEditViewModelType {
             didDone
                 .withLatestFrom(self.title.asDriver())
                 .map { title in
-                    task.then {
+                    task.with {
                         $0.title = title
                     }
                 }

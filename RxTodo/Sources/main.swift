@@ -16,4 +16,12 @@ private func appDelegateClassName() -> String {
     return NSStringFromClass(isTesting ? MockAppDelegate.self : AppDelegate.self)
 }
 
-UIApplicationMain(Process.argc, Process.unsafeArgv, NSStringFromClass(UIApplication), appDelegateClassName())
+UIApplicationMain(
+    CommandLine.argc,
+    UnsafeMutableRawPointer(CommandLine.unsafeArgv).bindMemory(
+        to: UnsafeMutablePointer<Int8>.self,
+        capacity: Int(CommandLine.argc)
+    ),
+    NSStringFromClass(UIApplication.self),
+    appDelegateClassName()
+)

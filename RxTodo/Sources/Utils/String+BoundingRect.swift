@@ -10,12 +10,12 @@ import UIKit
 
 extension String {
 
-    func boundingRectWithSize(size: CGSize, attributes: [String: AnyObject]) -> CGRect {
-        let options: NSStringDrawingOptions = [.UsesLineFragmentOrigin, .UsesFontLeading]
-        return snap(self.boundingRectWithSize(size, options: options, attributes: attributes, context: nil))
+    func boundingRectWithSize(_ size: CGSize, attributes: [String: AnyObject]) -> CGRect {
+        let options: NSStringDrawingOptions = [.usesLineFragmentOrigin, .usesFontLeading]
+        return snap(self.boundingRect(with: size, options: options, attributes: attributes, context: nil))
     }
 
-    func sizeThatFits(size: CGSize, font: UIFont, maximumNumberOfLines: Int = 0) -> CGSize {
+    func sizeThatFits(_ size: CGSize, font: UIFont, maximumNumberOfLines: Int = 0) -> CGSize {
         let attributes = [NSFontAttributeName: font]
         var size = self.boundingRectWithSize(size, attributes: attributes).size
         if maximumNumberOfLines > 0 {
@@ -24,13 +24,13 @@ extension String {
         return snap(size)
     }
 
-    func widthWithFont(font: UIFont, maximumNumberOfLines: Int = 0) -> CGFloat {
-        let size = CGSize(width: CGFloat.max, height: CGFloat.max)
+    func widthWithFont(_ font: UIFont, maximumNumberOfLines: Int = 0) -> CGFloat {
+        let size = CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
         return snap(self.sizeThatFits(size, font: font, maximumNumberOfLines: maximumNumberOfLines).width)
     }
 
-    func heightThatFitsWidth(width: CGFloat, font: UIFont, maximumNumberOfLines: Int = 0) -> CGFloat {
-        let size = CGSize(width: width, height: CGFloat.max)
+    func heightThatFitsWidth(_ width: CGFloat, font: UIFont, maximumNumberOfLines: Int = 0) -> CGFloat {
+        let size = CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)
         return snap(self.sizeThatFits(size, font: font, maximumNumberOfLines: maximumNumberOfLines).height)
     }
 

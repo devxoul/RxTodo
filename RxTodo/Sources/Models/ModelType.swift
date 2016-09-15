@@ -16,10 +16,10 @@ protocol Identifiable {
 protocol ModelType: Then {
 }
 
-extension CollectionType where Generator.Element: Identifiable {
+extension Collection where Self.Iterator.Element: Identifiable {
 
-    func indexOf(element: Self.Generator.Element) -> Self.Index? {
-        return self.indexOf { $0.id == element.id }
+    func indexOf(element: Self.Iterator.Element) -> Self.Index? {
+        return self.index { $0.id == element.id }
     }
 
 }

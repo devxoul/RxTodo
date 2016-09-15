@@ -23,11 +23,11 @@ final class TaskCell: BaseTableViewCell {
     }
 
     struct Font {
-        static let titleLabel = UIFont.systemFontOfSize(14)
+        static let titleLabel = UIFont.systemFont(ofSize: 14)
     }
 
     struct Color {
-        static let titleLabelText = UIColor.blackColor()
+        static let titleLabelText = UIColor.black
     }
 
 
@@ -49,7 +49,7 @@ final class TaskCell: BaseTableViewCell {
 
     // MARK: Configuring
 
-    func configure(viewModel: TaskCellModelType) {
+    func configure(_ viewModel: TaskCellModelType) {
         self.titleLabel.text = viewModel.title
     }
 
@@ -68,7 +68,7 @@ final class TaskCell: BaseTableViewCell {
 
     // MARK: Cell Height
 
-    class func cellHeightThatFitsWidth(width: CGFloat, viewModel: TaskCellModelType) -> CGFloat {
+    class func cellHeightThatFitsWidth(_ width: CGFloat, viewModel: TaskCellModelType) -> CGFloat {
         let height =  viewModel.title.heightThatFitsWidth(width - Metric.cellPadding * 2,
                                                           font: Font.titleLabel,
                                                           maximumNumberOfLines: Constant.titleLabelNumberOfLines)

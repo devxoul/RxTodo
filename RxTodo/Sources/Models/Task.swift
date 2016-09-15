@@ -10,7 +10,7 @@ import Foundation
 
 struct Task: ModelType, Identifiable {
 
-    var id: String = NSUUID().UUIDString
+    var id: String = UUID().uuidString
     var title: String
     var memo: String?
 

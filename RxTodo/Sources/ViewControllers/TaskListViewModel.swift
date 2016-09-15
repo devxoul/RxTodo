@@ -16,8 +16,8 @@ protocol TaskListViewModelType {
 
     // Input
     var addButtonDidTap: PublishSubject<Void> { get }
-    var itemDidSelect: PublishSubject<NSIndexPath> { get }
-    var itemDeleted: PublishSubject<NSIndexPath> { get }
+    var itemDidSelect: PublishSubject<IndexPath> { get }
+    var itemDeleted: PublishSubject<IndexPath> { get }
 
     // Output
     var navigationBarTitle: Driver<String?> { get }
@@ -31,8 +31,8 @@ struct TaskListViewModel: TaskListViewModelType {
     // MARK: Input
 
     let addButtonDidTap = PublishSubject<Void>()
-    let itemDidSelect = PublishSubject<NSIndexPath>()
-    var itemDeleted = PublishSubject<NSIndexPath>()
+    let itemDidSelect = PublishSubject<IndexPath>()
+    var itemDeleted = PublishSubject<IndexPath>()
 
 
     // MARK: Output
@@ -91,22 +91,22 @@ struct TaskListViewModel: TaskListViewModelType {
         //
         Task.didCreate
             .subscribeNext { task in
-                self.tasks.value.insert(task, atIndex: 0)
+                tasks.value.insert(task, at: 0)
             }
             .addDisposableTo(self.disposeBag)
 
         Task.didUpdate
             .subscribeNext { task in
-                if let index = self.tasks.value.indexOf(task) {
-                    self.tasks.value[index] = task
+                if let index = tasks.value.indexOf(element: task) {
+                    tasks.value[index] = task
                 }
             }
             .addDisposableTo(self.disposeBag)
 
         Task.didDelete
             .subscribeNext { task in
-                if let index = self.tasks.value.indexOf(task) {
-                    self.tasks.value.removeAtIndex(index)
+                if let index = tasks.value.indexOf(element: task) {
+                    tasks.value.remove(at: index)
                 }
             }
             .addDisposableTo(self.disposeBag)

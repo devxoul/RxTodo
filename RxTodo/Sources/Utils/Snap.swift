@@ -9,19 +9,19 @@
 import UIKit
 
 /// Ceil to snap pixel
-func snap(x: CGFloat) -> CGFloat {
-    let scale = UIScreen.mainScreen().scale
+func snap(_ x: CGFloat) -> CGFloat {
+    let scale = UIScreen.main.scale
     return ceil(x * scale) / scale
 }
 
-func snap(point: CGPoint) -> CGPoint {
+func snap(_ point: CGPoint) -> CGPoint {
     return CGPoint(x: snap(point.x), y: snap(point.y))
 }
 
-func snap(size: CGSize) -> CGSize {
+func snap(_ size: CGSize) -> CGSize {
     return CGSize(width: snap(size.width), height: snap(size.height))
 }
 
-func snap(rect: CGRect) -> CGRect {
+func snap(_ rect: CGRect) -> CGRect {
     return CGRect(origin: snap(rect.origin), size: snap(rect.size))
 }

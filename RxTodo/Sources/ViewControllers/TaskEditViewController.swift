@@ -15,28 +15,28 @@ final class TaskEditViewController: BaseViewController {
     struct Metric {
         static let padding = 15.f
         static let titleInputCornerRadius = 5.f
-        static let titleInputBorderWidth = 1 / UIScreen.mainScreen().scale
+        static let titleInputBorderWidth = 1 / UIScreen.main.scale
     }
 
     struct Font {
-        static let titleLabel = UIFont.systemFontOfSize(14)
+        static let titleLabel = UIFont.systemFont(ofSize: 14)
     }
 
     struct Color {
-        static let titleInputBorder = UIColor.lightGrayColor()
+        static let titleInputBorder = UIColor.lightGray
     }
 
 
     // MARK: Properties
 
-    let cancelBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: nil, action: Selector())
-    let doneBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: nil, action: Selector())
+    let cancelBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
+    let doneBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
     let titleInput = UITextField().then {
-        $0.autocorrectionType = .No
+        $0.autocorrectionType = .no
         $0.font = Font.titleLabel
         $0.layer.cornerRadius = Metric.titleInputCornerRadius
         $0.layer.borderWidth = Metric.titleInputBorderWidth
-        $0.layer.borderColor = Color.titleInputBorder.CGColor
+        $0.layer.borderColor = Color.titleInputBorder.cgColor
     }
 
 
@@ -58,17 +58,17 @@ final class TaskEditViewController: BaseViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .whiteColor()
+        self.view.backgroundColor = .white
         self.view.addSubview(self.titleInput)
     }
 
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.titleInput.becomeFirstResponder()
     }
 
     override func setupConstraints() {
-        self.titleInput.snp_makeConstraints { make in
+        self.titleInput.snp.makeConstraints { make in
             make.top.equalTo(20 + 44 + Metric.padding)
             make.left.equalTo(Metric.padding)
             make.right.equalTo(-Metric.padding)
@@ -78,52 +78,52 @@ final class TaskEditViewController: BaseViewController {
 
     // MARK: Configuring
 
-    private func configure(viewModel: TaskEditViewModelType) {
+    private func configure(_ viewModel: TaskEditViewModelType) {
         // 2-Way Binding
-        (self.titleInput.rx_text <-> viewModel.title)
+        (self.titleInput.rx.text <-> viewModel.title)
             .addDisposableTo(self.disposeBag)
 
         // Input
-        self.cancelBarButtonItem.rx_tap
+        self.cancelBarButtonItem.rx.tap
             .bindTo(viewModel.cancelButtonDidTap)
             .addDisposableTo(self.disposeBag)
 
-        self.doneBarButtonItem.rx_tap
+        self.doneBarButtonItem.rx.tap
             .bindTo(viewModel.doneButtonDidTap)
             .addDisposableTo(self.disposeBag)
 
         // Output
         viewModel.navigationBarTitle
-            .drive(self.navigationItem.rx_title)
+            .drive(self.navigationItem.rx.title)
             .addDisposableTo(self.disposeBag)
 
         viewModel.doneButtonEnabled
-            .drive(self.doneBarButtonItem.rx_enabled)
+            .drive(self.doneBarButtonItem.rx.enabled)
             .addDisposableTo(self.disposeBag)
 
         viewModel.presentCancelAlert
             .driveNext { [weak self] title, message, leaveTitle, stayTitle in
                 guard let `self` = self else { return }
-                let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+                let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
                 let actions = [
-                    UIAlertAction(title: leaveTitle, style: .Destructive) { _ in
+                    UIAlertAction(title: leaveTitle, style: .destructive) { _ in
                         viewModel.alertLeaveButtonDidTap.onNext()
                     },
-                    UIAlertAction(title: stayTitle, style: .Default) { _ in
+                    UIAlertAction(title: stayTitle, style: .default) { _ in
                         self.titleInput.becomeFirstResponder()
                         viewModel.alertStayButtonDidTap.onNext()
                     }
                 ]
                 actions.forEach(alertController.addAction)
                 self.view.endEditing(true)
-                self.presentViewController(alertController, animated: true, completion: nil)
+                self.present(alertController, animated: true, completion: nil)
             }
             .addDisposableTo(self.disposeBag)
 
         viewModel.dismissViewController
             .driveNext { [weak self] in
                 self?.view.endEditing(true)
-                self?.dismissViewControllerAnimated(true, completion: nil)
+                self?.dismiss(animated: true, completion: nil)
             }
             .addDisposableTo(self.disposeBag)
     }
