@@ -16,7 +16,7 @@ struct ModelService<Model: ModelType> {
   let didUpdate = PublishSubject<Model>()
   let didDelete = PublishSubject<Model>()
 
-  static func instance(_ modelClass: Model.Type) -> ModelService<Model> {
+  static func instance(of modelClass: Model.Type) -> ModelService<Model> {
     let key = String(describing: modelClass)
     if let stream = _instances[key] as? ModelService<Model> {
       return stream
@@ -31,15 +31,15 @@ struct ModelService<Model: ModelType> {
 extension ModelType {
 
   static var didCreate: PublishSubject<Self> {
-    return ModelService.instance(Self.self).didCreate
+    return ModelService.instance(of: Self.self).didCreate
   }
 
   static var didUpdate: PublishSubject<Self> {
-    return ModelService.instance(Self.self).didUpdate
+    return ModelService.instance(of: Self.self).didUpdate
   }
 
   static var didDelete: PublishSubject<Self> {
-    return ModelService.instance(Self.self).didDelete
+    return ModelService.instance(of: Self.self).didDelete
   }
 
 }

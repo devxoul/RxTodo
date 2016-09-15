@@ -18,13 +18,13 @@ class TaskEditViewModelTests: XCTestCase {
 
   func testNavigationBarTitle() {
     RxExpect { test in
-      let viewModel = TaskEditViewModel(mode: .New)
+      let viewModel = TaskEditViewModel(mode: .new)
       let title = viewModel.navigationBarTitle.map { $0! }
       test.assertNextEqual(title, ["New"])
     }
     RxExpect { test in
       let task = Task(title: "")
-      let viewModel = TaskEditViewModel(mode: .Edit(task))
+      let viewModel = TaskEditViewModel(mode: .edit(task))
       let title = viewModel.navigationBarTitle.map { $0! }
       test.assertNextEqual(title, ["Edit"])
     }
@@ -32,19 +32,19 @@ class TaskEditViewModelTests: XCTestCase {
 
   func testTitle() {
     RxExpect { test in
-      let viewModel = TaskEditViewModel(mode: .New)
+      let viewModel = TaskEditViewModel(mode: .new)
       test.assertNextEqual(viewModel.title.asDriver(), [""])
     }
     RxExpect { test in
       let task = Task(title: "Release a new version")
-      let viewModel = TaskEditViewModel(mode: .Edit(task))
+      let viewModel = TaskEditViewModel(mode: .edit(task))
       test.assertNextEqual(viewModel.title.asDriver(), ["Release a new version"])
     }
   }
 
   func testDoneButtonEnabled() {
     RxExpect { test in
-      let viewModel = TaskEditViewModel(mode: .New)
+      let viewModel = TaskEditViewModel(mode: .new)
       test.input(viewModel.title, [
         next(100, "A"),
         next(200, "AB"),
@@ -56,7 +56,7 @@ class TaskEditViewModelTests: XCTestCase {
 
   func testPresentCancelAlert_new() {
     RxExpect("it should not present cancel alert when title is empty") { test in
-      let viewModel = TaskEditViewModel(mode: .New)
+      let viewModel = TaskEditViewModel(mode: .new)
       test.input(viewModel.cancelButtonDidTap, [next(100, Void())])
 
       let presented = viewModel.presentCancelAlert.map { _ in true }
@@ -64,7 +64,7 @@ class TaskEditViewModelTests: XCTestCase {
     }
 
     RxExpect("it should present cancel alert when title is not empty") { test in
-      let viewModel = TaskEditViewModel(mode: .New)
+      let viewModel = TaskEditViewModel(mode: .new)
       test.input(viewModel.title, [next(10, "A")])
       test.input(viewModel.cancelButtonDidTap, [next(100, Void())])
 
@@ -77,7 +77,7 @@ class TaskEditViewModelTests: XCTestCase {
     let task = Task(title: "Clean my room")
 
     RxExpect("it should not present cancel alert when title is not changed") { test in
-      let viewModel = TaskEditViewModel(mode: .Edit(task))
+      let viewModel = TaskEditViewModel(mode: .edit(task))
       test.input(viewModel.cancelButtonDidTap, [next(100, Void())])
 
       let presented = viewModel.presentCancelAlert.map { _ in true }
@@ -85,7 +85,7 @@ class TaskEditViewModelTests: XCTestCase {
     }
 
     RxExpect("it should present cancel alert when title is changed") { test in
-      let viewModel = TaskEditViewModel(mode: .Edit(task))
+      let viewModel = TaskEditViewModel(mode: .edit(task))
       test.input(viewModel.title, [next(10, "A")])
       test.input(viewModel.cancelButtonDidTap, [next(100, Void())])
 
@@ -96,7 +96,7 @@ class TaskEditViewModelTests: XCTestCase {
 
   func testDismissViewController_cancel() {
     RxExpect("it should not dismiss view controller when cancel button tapped while title is changed") { test in
-      let viewModel = TaskEditViewModel(mode: .New)
+      let viewModel = TaskEditViewModel(mode: .new)
       test.input(viewModel.title, [next(100, "A")])
       test.input(viewModel.cancelButtonDidTap, [next(200, Void())])
 
@@ -105,7 +105,7 @@ class TaskEditViewModelTests: XCTestCase {
     }
 
     RxExpect("it should dismiss view controller when cancel button tapped while title is not changed") { test in
-      let viewModel = TaskEditViewModel(mode: .New)
+      let viewModel = TaskEditViewModel(mode: .new)
       test.input(viewModel.cancelButtonDidTap, [next(100, Void())])
 
       let dismissed = viewModel.dismissViewController.map { _ in true }
@@ -115,7 +115,7 @@ class TaskEditViewModelTests: XCTestCase {
 
   func testDismissViewController_leave() {
     RxExpect("it should dismiss view controller when leave button tapped") { test in
-      let viewModel = TaskEditViewModel(mode: .New)
+      let viewModel = TaskEditViewModel(mode: .new)
       test.input(viewModel.alertLeaveButtonDidTap, [next(100, Void())])
 
       let dismissed = viewModel.dismissViewController.map { _ in true }
@@ -125,7 +125,7 @@ class TaskEditViewModelTests: XCTestCase {
 
   func testDismissViewController_done() {
     RxExpect("it should not dismiss view controller when done button tapped while title is empty") { test in
-      let viewModel = TaskEditViewModel(mode: .New)
+      let viewModel = TaskEditViewModel(mode: .new)
       test.input(viewModel.doneButtonDidTap, [next(100, Void())])
 
       let dismissed = viewModel.dismissViewController.map { _ in true }
@@ -133,7 +133,7 @@ class TaskEditViewModelTests: XCTestCase {
     }
 
     RxExpect("it should dismiss view controller when done button tapped while title is not empty") { test in
-      let viewModel = TaskEditViewModel(mode: .New)
+      let viewModel = TaskEditViewModel(mode: .new)
       test.input(viewModel.title, [next(100, "A")])
       test.input(viewModel.doneButtonDidTap, [next(200, Void())])
 
@@ -144,7 +144,7 @@ class TaskEditViewModelTests: XCTestCase {
 
   func testTaskDidCreate() {
     RxExpect { test in
-      let viewModel = TaskEditViewModel(mode: .New)
+      let viewModel = TaskEditViewModel(mode: .new)
       test.input(viewModel.title, [next(100, "Hi")])
       test.input(viewModel.doneButtonDidTap, [next(200, Void())])
 
@@ -156,7 +156,7 @@ class TaskEditViewModelTests: XCTestCase {
   func testTaskDidUpdate() {
     RxExpect { test in
       let task = Task(title: "Clean my room")
-      let viewModel = TaskEditViewModel(mode: .Edit(task))
+      let viewModel = TaskEditViewModel(mode: .edit(task))
       test.input(viewModel.title, [next(100, "Hi")])
       test.input(viewModel.doneButtonDidTap, [next(200, Void())])
 

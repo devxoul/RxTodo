@@ -75,12 +75,12 @@ struct TaskListViewModel: TaskListViewModelType {
     // View Controller Navigations
     //
     let presentAddViewModel: Observable<TaskEditViewModelType> = self.addButtonDidTap
-      .map { TaskEditViewModel(mode: .New) }
+      .map { TaskEditViewModel(mode: .new) }
 
     let presentEditViewModel: Observable<TaskEditViewModelType> = self.itemDidSelect
       .map { indexPath in
         let task = tasks.value[indexPath.row]
-        return TaskEditViewModel(mode: .Edit(task))
+        return TaskEditViewModel(mode: .edit(task))
       }
 
     self.presentTaskEditViewModel = Observable.of(presentAddViewModel, presentEditViewModel).merge()
@@ -97,7 +97,7 @@ struct TaskListViewModel: TaskListViewModelType {
 
     Task.didUpdate
       .subscribeNext { task in
-        if let index = tasks.value.indexOf(element: task) {
+        if let index = tasks.value.index(of: task) {
           tasks.value[index] = task
         }
       }
@@ -105,7 +105,7 @@ struct TaskListViewModel: TaskListViewModelType {
 
     Task.didDelete
       .subscribeNext { task in
-        if let index = tasks.value.indexOf(element: task) {
+        if let index = tasks.value.index(of: task) {
           tasks.value.remove(at: index)
         }
       }

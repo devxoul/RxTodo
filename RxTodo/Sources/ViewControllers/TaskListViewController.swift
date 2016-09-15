@@ -112,7 +112,7 @@ extension TaskListViewController: UITableViewDelegate {
 
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     let viewModel = self.dataSource.sectionAtIndex(indexPath.section).items[indexPath.row]
-    return TaskCell.cellHeightThatFitsWidth(tableView.width, viewModel: viewModel)
+    return TaskCell.height(fits: tableView.width, viewModel: viewModel)
   }
 
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

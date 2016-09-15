@@ -10,28 +10,29 @@ import UIKit
 
 extension String {
 
-  func boundingRectWithSize(_ size: CGSize, attributes: [String: AnyObject]) -> CGRect {
+  func boundingRect(with size: CGSize, attributes: [String: AnyObject]) -> CGRect {
     let options: NSStringDrawingOptions = [.usesLineFragmentOrigin, .usesFontLeading]
-    return snap(self.boundingRect(with: size, options: options, attributes: attributes, context: nil))
+    let rect = self.boundingRect(with: size, options: options, attributes: attributes, context: nil)
+    return snap(rect)
   }
 
-  func sizeThatFits(_ size: CGSize, font: UIFont, maximumNumberOfLines: Int = 0) -> CGSize {
+  func size(fits size: CGSize, font: UIFont, maximumNumberOfLines: Int = 0) -> CGSize {
     let attributes = [NSFontAttributeName: font]
-    var size = self.boundingRectWithSize(size, attributes: attributes).size
+    var size = self.boundingRect(with: size, attributes: attributes).size
     if maximumNumberOfLines > 0 {
       size.height = min(size.height, CGFloat(maximumNumberOfLines) * font.lineHeight)
     }
-    return snap(size)
+    return size
   }
 
-  func widthWithFont(_ font: UIFont, maximumNumberOfLines: Int = 0) -> CGFloat {
+  func width(with font: UIFont, maximumNumberOfLines: Int = 0) -> CGFloat {
     let size = CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
-    return snap(self.sizeThatFits(size, font: font, maximumNumberOfLines: maximumNumberOfLines).width)
+    return self.size(fits: size, font: font, maximumNumberOfLines: maximumNumberOfLines).width
   }
 
-  func heightThatFitsWidth(_ width: CGFloat, font: UIFont, maximumNumberOfLines: Int = 0) -> CGFloat {
+  func height(fits width: CGFloat, font: UIFont, maximumNumberOfLines: Int = 0) -> CGFloat {
     let size = CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)
-    return snap(self.sizeThatFits(size, font: font, maximumNumberOfLines: maximumNumberOfLines).height)
+    return self.size(fits: size, font: font, maximumNumberOfLines: maximumNumberOfLines).height
   }
 
 }

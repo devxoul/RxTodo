@@ -68,10 +68,12 @@ final class TaskCell: BaseTableViewCell {
 
   // MARK: Cell Height
 
-  class func cellHeightThatFitsWidth(_ width: CGFloat, viewModel: TaskCellModelType) -> CGFloat {
-    let height =  viewModel.title.heightThatFitsWidth(width - Metric.cellPadding * 2,
-                                                      font: Font.titleLabel,
-                                                      maximumNumberOfLines: Constant.titleLabelNumberOfLines)
+  class func height(fits width: CGFloat, viewModel: TaskCellModelType) -> CGFloat {
+    let height =  viewModel.title.height(
+      fits: width - Metric.cellPadding * 2,
+      font: Font.titleLabel,
+      maximumNumberOfLines: Constant.titleLabelNumberOfLines
+    )
     return height + Metric.cellPadding * 2
   }
 
