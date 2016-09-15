@@ -6,5 +6,5 @@
 //  Copyright © 2016 Suyeol Jeon. All rights reserved.
 //
 
-struct MockError: ErrorType {
+struct MockError: Error {
 }

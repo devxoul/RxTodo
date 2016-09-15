@@ -9,8 +9,8 @@
 import Then
 
 protocol Identifiable {
-    associatedtype Identifier: Equatable
-    var id: Identifier { get }
+  associatedtype Identifier: Equatable
+  var id: Identifier { get }
 }
 
 protocol ModelType: Then {
@@ -18,8 +18,8 @@ protocol ModelType: Then {
 
 extension Collection where Self.Iterator.Element: Identifiable {
 
-    func indexOf(element: Self.Iterator.Element) -> Self.Index? {
-        return self.index { $0.id == element.id }
-    }
+  func indexOf(element: Self.Iterator.Element) -> Self.Index? {
+    return self.index { $0.id == element.id }
+  }
 
 }
