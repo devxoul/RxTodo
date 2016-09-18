@@ -8,3 +8,4 @@ build
 
 Podfile.lock
 Pods
+vendor
