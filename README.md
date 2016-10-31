@@ -1,7 +1,7 @@
 RxTodo
 ======
 
-![Swift](https://img.shields.io/badge/Swift-2.2-orange.svg)
+![Swift](https://img.shields.io/badge/Swift-3.0-orange.svg)
 [![Build Status](https://travis-ci.org/devxoul/RxTodo.svg?branch=master)](https://travis-ci.org/devxoul/RxTodo)
 
 RxTodo is an iOS application developed using [RxSwift](https://github.com/ReactiveX/RxSwift) and MVVM design pattern. This project is for whom having trouble with learning RxSwift and MVVM due to lack of references. (as I did 😁)
@@ -27,15 +27,15 @@ Philosophy
 
     ```swift
     viewModel.title
-        .map { $0 + "!" } // Bad: View should not modify the data
-        .bindTo(self.titleLabel)
+      .map { $0 + "!" } // Bad: View should not modify the data
+      .bindTo(self.titleLabel)
     ```
 
     **Good**
     
     ```swift
     viewModel.title
-        .bindTo(self.titleLabel)
+      .bindTo(self.titleLabel)
     ```
 
 * View doesn't know what ViewModel does. View can only communicate to ViewModel about what View did.
@@ -49,11 +49,11 @@ Philosophy
     **Good**
     
     ```swift
-    self.loginButton.rx_tap
-        .bindTo(viewModel.loginButtonDidTap) // "Hey I clicked the login button"
+    self.loginButton.rx.tap
+      .bindTo(viewModel.loginButtonDidTap) // "Hey I clicked the login button"
 
-    self.usernameInput.rx_controlEvent(.EditingDidEndOnExit)
-        .bindTo(viewModel.usernameInputDidReturn) // "Hey I tapped the return on username input"
+    self.usernameInput.rx.controlEvent(.editingDidEndOnExit)
+      .bindTo(viewModel.usernameInputDidReturn) // "Hey I tapped the return on username input"
     ```
 
 * Model is hidden by ViewModel. ViewModel only exposes the minimum data so that View can render.
@@ -62,7 +62,7 @@ Philosophy
     
     ```swift
     struct ProductViewModel {
-        let product: Driver<Product> // Bad: ViewModel should hide Model
+      let product: Driver<Product> // Bad: ViewModel should hide Model
     }
     ```
 
@@ -70,10 +70,10 @@ Philosophy
     
     ```swift
     struct ProductViewModel {
-        let productName: Driver<String>
-        let formattedPrice: Driver<String>
-        let formattedOriginalPrice: Driver<String>
-        let originalPriceHidden: Driver<Bool>
+      let productName: Driver<String>
+      let formattedPrice: Driver<String>
+      let formattedOriginalPrice: Driver<String>
+      let originalPriceHidden: Driver<Bool>
     }
     ```
 
@@ -82,8 +82,8 @@ Requirements
 ------------
 
 * iOS 8+
-* Swift 2.2
-* CocoaPods (I used 1.0.0)
+* Swift 3
+* CocoaPods
 
 
 Screenshots
