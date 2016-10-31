@@ -10,123 +10,132 @@ import RxCocoa
 import RxSwift
 
 enum TaskEditViewMode {
-    case New
-    case Edit(Task)
+  case new
+  case edit(Task)
 }
 
 protocol TaskEditViewModelType {
 
-    // 2-Way Binding
-    var title: Variable<String> { get }
+  // 2-Way Binding
+  var title: Variable<String?> { get }
 
-    // Input
-    var cancelButtonDidTap: PublishSubject<Void> { get }
-    var doneButtonDidTap: PublishSubject<Void> { get }
-    var alertLeaveButtonDidTap: PublishSubject<Void> { get }
-    var alertStayButtonDidTap: PublishSubject<Void> { get }
-    var memo: PublishSubject<String> { get }
+  // Input
+  var cancelButtonDidTap: PublishSubject<Void> { get }
+  var doneButtonDidTap: PublishSubject<Void> { get }
+  var alertLeaveButtonDidTap: PublishSubject<Void> { get }
+  var alertStayButtonDidTap: PublishSubject<Void> { get }
+  var memo: PublishSubject<String> { get }
 
-    // Output
-    var navigationBarTitle: Driver<String?> { get }
-    var doneButtonEnabled: Driver<Bool> { get }
-    var presentCancelAlert: Driver<(String, String, String, String)> { get }
-    var dismissViewController: Driver<Void> { get }
+  // Output
+  var navigationBarTitle: Driver<String?> { get }
+  var doneButtonEnabled: Driver<Bool> { get }
+  var presentCancelAlert: Driver<(String, String, String, String)> { get }
+  var dismissViewController: Driver<Void> { get }
 
 }
 
 struct TaskEditViewModel: TaskEditViewModelType {
 
-    // MARK: 2-Way Binding
+  // MARK: 2-Way Binding
 
-    var title: Variable<String>
-
-
-    // MARK: Input
-
-    let cancelButtonDidTap = PublishSubject<Void>()
-    let doneButtonDidTap = PublishSubject<Void>()
-    let alertLeaveButtonDidTap = PublishSubject<Void>()
-    let alertStayButtonDidTap = PublishSubject<Void>()
-    let memo = PublishSubject<String>()
+  var title: Variable<String?>
 
 
-    // MARK: Output
+  // MARK: Input
 
-    let navigationBarTitle: Driver<String?>
-    let doneButtonEnabled: Driver<Bool>
-    let presentCancelAlert: Driver<(String, String, String, String)>
-    let dismissViewController: Driver<Void>
-
-
-    // MARK: Private
-
-    let disposeBag = DisposeBag()
+  let cancelButtonDidTap = PublishSubject<Void>()
+  let doneButtonDidTap = PublishSubject<Void>()
+  let alertLeaveButtonDidTap = PublishSubject<Void>()
+  let alertStayButtonDidTap = PublishSubject<Void>()
+  let memo = PublishSubject<String>()
 
 
-    // MARK: Initializing
+  // MARK: Output
 
-    init(mode: TaskEditViewMode) {
-        switch mode {
-        case .New:
-            self.navigationBarTitle = .just("New")
-            self.title = Variable("")
+  let navigationBarTitle: Driver<String?>
+  let doneButtonEnabled: Driver<Bool>
+  let presentCancelAlert: Driver<(String, String, String, String)>
+  let dismissViewController: Driver<Void>
 
-        case .Edit(let task):
-            self.navigationBarTitle = .just("Edit")
-            self.title = Variable(task.title)
-        }
 
-        self.doneButtonEnabled = self.title.asDriver()
-            .map { !$0.isEmpty }
-            .asDriver(onErrorJustReturn: false)
-            .startWith(false)
-            .distinctUntilChanged()
+  // MARK: Private
 
-        let needsPresentCancelAlert = self.cancelButtonDidTap.asDriver()
-            .withLatestFrom(self.title.asDriver())
-            .map { title -> Bool in
-                switch mode {
-                case .New: return !title.isEmpty
-                case .Edit(let task): return title != task.title
-                }
-            }
+  let disposeBag = DisposeBag()
 
-        self.presentCancelAlert = needsPresentCancelAlert
-            .filter { $0 }
-            .map { _ in
-                let title = "Really?"
-                let message = "Changes will be lost."
-                return (title, message, "Leave", "Stay")
-            }
 
-        let didDone = self.doneButtonDidTap.asDriver()
-            .withLatestFrom(self.doneButtonEnabled).filter { $0 }
-            .map { _ in Void() }
+  // MARK: Initializing
 
-        switch mode {
-        case .New:
-            didDone
-                .withLatestFrom(self.title.asDriver())
-                .map { title in
-                    Task(title: title)
-                }
-                .drive(Task.didCreate)
-                .addDisposableTo(self.disposeBag)
+  init(mode: TaskEditViewMode) {
+    switch mode {
+    case .new:
+      self.navigationBarTitle = .just("New")
+      self.title = Variable("")
 
-        case .Edit(let task):
-            didDone
-                .withLatestFrom(self.title.asDriver())
-                .map { title in
-                    task.then {
-                        $0.title = title
-                    }
-                }
-                .drive(Task.didUpdate)
-                .addDisposableTo(self.disposeBag)
-        }
-
-        self.dismissViewController = Driver.of(self.alertLeaveButtonDidTap.asDriver(), didDone,
-                                               needsPresentCancelAlert.filter { !$0 }.map { _ in Void() }).merge()
+    case .edit(let task):
+      self.navigationBarTitle = .just("Edit")
+      self.title = Variable(task.title)
     }
+
+    self.doneButtonEnabled = self.title.asDriver()
+      .map { $0 ?? "" }
+      .map { !$0.isEmpty }
+      .asDriver(onErrorJustReturn: false)
+      .startWith(false)
+      .distinctUntilChanged()
+
+    let needsPresentCancelAlert = self.cancelButtonDidTap.asDriver()
+      .withLatestFrom(self.title.asDriver())
+      .map { $0 ?? "" }
+      .map { title -> Bool in
+        switch mode {
+        case .new: return !title.isEmpty
+        case .edit(let task): return title != task.title
+        }
+      }
+
+    self.presentCancelAlert = needsPresentCancelAlert
+      .filter { $0 }
+      .map { _ in
+        let title = "Really?"
+        let message = "Changes will be lost."
+        return (title, message, "Leave", "Stay")
+      }
+
+    let didDone = self.doneButtonDidTap.asDriver()
+      .withLatestFrom(self.doneButtonEnabled).filter { $0 }
+      .map { _ in Void() }
+
+    switch mode {
+    case .new:
+      didDone
+        .withLatestFrom(self.title.asDriver())
+        .filterNil()
+        .map { title in
+          Task(title: title)
+        }
+        .drive(Task.didCreate)
+        .addDisposableTo(self.disposeBag)
+
+    case .edit(let task):
+      didDone
+        .withLatestFrom(self.title.asDriver())
+        .filterNil()
+        .map { title in
+          task.with {
+            $0.title = title
+          }
+        }
+        .drive(Task.didUpdate)
+        .addDisposableTo(self.disposeBag)
+    }
+
+    self.dismissViewController = Driver
+      .of(
+        self.alertLeaveButtonDidTap.asDriver(),
+        didDone,
+        needsPresentCancelAlert.filter { !$0 }.map { _ in Void() }
+      )
+      .merge()
+  }
 
 }

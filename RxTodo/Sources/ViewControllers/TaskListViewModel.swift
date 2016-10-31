@@ -14,102 +14,102 @@ typealias TaskListSection = SectionModel<Void, TaskCellModelType>
 
 protocol TaskListViewModelType {
 
-    // Input
-    var addButtonDidTap: PublishSubject<Void> { get }
-    var itemDidSelect: PublishSubject<NSIndexPath> { get }
-    var itemDeleted: PublishSubject<NSIndexPath> { get }
+  // Input
+  var addButtonDidTap: PublishSubject<Void> { get }
+  var itemDidSelect: PublishSubject<IndexPath> { get }
+  var itemDeleted: PublishSubject<IndexPath> { get }
 
-    // Output
-    var navigationBarTitle: Driver<String?> { get }
-    var sections: Driver<[TaskListSection]> { get }
-    var presentTaskEditViewModel: Driver<TaskEditViewModelType> { get }
+  // Output
+  var navigationBarTitle: Driver<String?> { get }
+  var sections: Driver<[TaskListSection]> { get }
+  var presentTaskEditViewModel: Driver<TaskEditViewModelType> { get }
 
 }
 
 struct TaskListViewModel: TaskListViewModelType {
 
-    // MARK: Input
+  // MARK: Input
 
-    let addButtonDidTap = PublishSubject<Void>()
-    let itemDidSelect = PublishSubject<NSIndexPath>()
-    var itemDeleted = PublishSubject<NSIndexPath>()
-
-
-    // MARK: Output
-
-    let navigationBarTitle: Driver<String?>
-    let sections: Driver<[TaskListSection]>
-    let presentTaskEditViewModel: Driver<TaskEditViewModelType>
+  let addButtonDidTap = PublishSubject<Void>()
+  let itemDidSelect = PublishSubject<IndexPath>()
+  var itemDeleted = PublishSubject<IndexPath>()
 
 
-    // MARK: Private
+  // MARK: Output
 
-    private let disposeBag = DisposeBag()
-    private var tasks: Variable<[Task]>
+  let navigationBarTitle: Driver<String?>
+  let sections: Driver<[TaskListSection]>
+  let presentTaskEditViewModel: Driver<TaskEditViewModelType>
 
-    init() {
-        let defaultTasks = [
-            Task(title: "Go to https://github.com/devxoul"),
-            Task(title: "Star repositories I am intersted in"),
-            Task(title: "Make a pull request"),
-        ]
-        let tasks = Variable<[Task]>(defaultTasks)
-        self.tasks = tasks
-        self.navigationBarTitle = .just("Tasks")
-        self.sections = tasks.asObservable()
-            .map { tasks in
-                let cellModels = tasks.map(TaskCellModel.init) as [TaskCellModelType]
-                let section = TaskListSection(model: Void(), items: cellModels)
-                return [section]
-            }
-            .asDriver(onErrorJustReturn: [])
 
-        self.itemDeleted
-            .subscribeNext { indexPath in
-                let task = tasks.value[indexPath.row]
-                Task.didDelete.onNext(task)
-            }
-            .addDisposableTo(self.disposeBag)
+  // MARK: Private
 
-        //
-        // View Controller Navigations
-        //
-        let presentAddViewModel: Observable<TaskEditViewModelType> = self.addButtonDidTap
-            .map { TaskEditViewModel(mode: .New) }
+  private let disposeBag = DisposeBag()
+  private var tasks: Variable<[Task]>
 
-        let presentEditViewModel: Observable<TaskEditViewModelType> = self.itemDidSelect
-            .map { indexPath in
-                let task = tasks.value[indexPath.row]
-                return TaskEditViewModel(mode: .Edit(task))
-            }
+  init() {
+    let defaultTasks = [
+      Task(title: "Go to https://github.com/devxoul"),
+      Task(title: "Star repositories I am intersted in"),
+      Task(title: "Make a pull request"),
+    ]
+    let tasks = Variable<[Task]>(defaultTasks)
+    self.tasks = tasks
+    self.navigationBarTitle = .just("Tasks")
+    self.sections = tasks.asObservable()
+      .map { tasks in
+        let cellModels = tasks.map(TaskCellModel.init) as [TaskCellModelType]
+        let section = TaskListSection(model: Void(), items: cellModels)
+        return [section]
+      }
+      .asDriver(onErrorJustReturn: [])
 
-        self.presentTaskEditViewModel = Observable.of(presentAddViewModel, presentEditViewModel).merge()
-            .asDriver(onErrorDriveWith: .empty())
+    self.itemDeleted
+      .subscribe(onNext: { indexPath in
+        let task = tasks.value[indexPath.row]
+        Task.didDelete.onNext(task)
+      })
+      .addDisposableTo(self.disposeBag)
 
-        //
-        // Model Service
-        //
-        Task.didCreate
-            .subscribeNext { task in
-                self.tasks.value.insert(task, atIndex: 0)
-            }
-            .addDisposableTo(self.disposeBag)
+    //
+    // View Controller Navigations
+    //
+    let presentAddViewModel: Observable<TaskEditViewModelType> = self.addButtonDidTap
+      .map { TaskEditViewModel(mode: .new) }
 
-        Task.didUpdate
-            .subscribeNext { task in
-                if let index = self.tasks.value.indexOf(task) {
-                    self.tasks.value[index] = task
-                }
-            }
-            .addDisposableTo(self.disposeBag)
+    let presentEditViewModel: Observable<TaskEditViewModelType> = self.itemDidSelect
+      .map { indexPath in
+        let task = tasks.value[indexPath.row]
+        return TaskEditViewModel(mode: .edit(task))
+      }
 
-        Task.didDelete
-            .subscribeNext { task in
-                if let index = self.tasks.value.indexOf(task) {
-                    self.tasks.value.removeAtIndex(index)
-                }
-            }
-            .addDisposableTo(self.disposeBag)
-    }
+    self.presentTaskEditViewModel = Observable.of(presentAddViewModel, presentEditViewModel).merge()
+      .asDriver(onErrorDriveWith: .empty())
+
+    //
+    // Model Service
+    //
+    Task.didCreate
+      .subscribe(onNext: { task in
+        tasks.value.insert(task, at: 0)
+      })
+      .addDisposableTo(self.disposeBag)
+
+    Task.didUpdate
+      .subscribe(onNext: { task in
+        if let index = tasks.value.index(of: task) {
+          tasks.value[index] = task
+        }
+      })
+      .addDisposableTo(self.disposeBag)
+
+    Task.didDelete
+      .subscribe(onNext: { task in
+        if let index = tasks.value.index(of: task) {
+          tasks.value.remove(at: index)
+        }
+      })
+      .addDisposableTo(self.disposeBag)
+  }
 
 }

@@ -10,19 +10,19 @@ import UIKit
 
 class BaseTableViewCell: UITableViewCell {
 
-    // MARK: Initializing
+  // MARK: Initializing
 
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.initialize()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+  override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    self.initialize()
+  }
 
-    func initialize() {
-        // Override point
-    }
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+
+  func initialize() {
+    // Override point
+  }
 
 }

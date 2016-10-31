@@ -10,15 +10,15 @@ import RxCocoa
 import RxSwift
 
 protocol TaskCellModelType {
-    var title: String { get }
+  var title: String { get }
 }
 
 struct TaskCellModel: TaskCellModelType {
 
-    let title: String
+  let title: String
 
-    init(task: Task) {
-        self.title = task.title
-    }
+  init(task: Task) {
+    self.title = task.title
+  }
 
 }

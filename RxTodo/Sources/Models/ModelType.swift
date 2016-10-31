@@ -9,17 +9,17 @@
 import Then
 
 protocol Identifiable {
-    associatedtype Identifier: Equatable
-    var id: Identifier { get }
+  associatedtype Identifier: Equatable
+  var id: Identifier { get }
 }
 
 protocol ModelType: Then {
 }
 
-extension CollectionType where Generator.Element: Identifiable {
+extension Collection where Self.Iterator.Element: Identifiable {
 
-    func indexOf(element: Self.Generator.Element) -> Self.Index? {
-        return self.indexOf { $0.id == element.id }
-    }
+  func index(of element: Self.Iterator.Element) -> Self.Index? {
+    return self.index { $0.id == element.id }
+  }
 
 }

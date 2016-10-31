@@ -10,28 +10,29 @@ import UIKit
 
 extension String {
 
-    func boundingRectWithSize(size: CGSize, attributes: [String: AnyObject]) -> CGRect {
-        let options: NSStringDrawingOptions = [.UsesLineFragmentOrigin, .UsesFontLeading]
-        return snap(self.boundingRectWithSize(size, options: options, attributes: attributes, context: nil))
-    }
+  func boundingRect(with size: CGSize, attributes: [String: AnyObject]) -> CGRect {
+    let options: NSStringDrawingOptions = [.usesLineFragmentOrigin, .usesFontLeading]
+    let rect = self.boundingRect(with: size, options: options, attributes: attributes, context: nil)
+    return snap(rect)
+  }
 
-    func sizeThatFits(size: CGSize, font: UIFont, maximumNumberOfLines: Int = 0) -> CGSize {
-        let attributes = [NSFontAttributeName: font]
-        var size = self.boundingRectWithSize(size, attributes: attributes).size
-        if maximumNumberOfLines > 0 {
-            size.height = min(size.height, CGFloat(maximumNumberOfLines) * font.lineHeight)
-        }
-        return snap(size)
+  func size(fits size: CGSize, font: UIFont, maximumNumberOfLines: Int = 0) -> CGSize {
+    let attributes = [NSFontAttributeName: font]
+    var size = self.boundingRect(with: size, attributes: attributes).size
+    if maximumNumberOfLines > 0 {
+      size.height = min(size.height, CGFloat(maximumNumberOfLines) * font.lineHeight)
     }
+    return size
+  }
 
-    func widthWithFont(font: UIFont, maximumNumberOfLines: Int = 0) -> CGFloat {
-        let size = CGSize(width: CGFloat.max, height: CGFloat.max)
-        return snap(self.sizeThatFits(size, font: font, maximumNumberOfLines: maximumNumberOfLines).width)
-    }
+  func width(with font: UIFont, maximumNumberOfLines: Int = 0) -> CGFloat {
+    let size = CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
+    return self.size(fits: size, font: font, maximumNumberOfLines: maximumNumberOfLines).width
+  }
 
-    func heightThatFitsWidth(width: CGFloat, font: UIFont, maximumNumberOfLines: Int = 0) -> CGFloat {
-        let size = CGSize(width: width, height: CGFloat.max)
-        return snap(self.sizeThatFits(size, font: font, maximumNumberOfLines: maximumNumberOfLines).height)
-    }
+  func height(fits width: CGFloat, font: UIFont, maximumNumberOfLines: Int = 0) -> CGFloat {
+    let size = CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)
+    return self.size(fits: size, font: font, maximumNumberOfLines: maximumNumberOfLines).height
+  }
 
 }
