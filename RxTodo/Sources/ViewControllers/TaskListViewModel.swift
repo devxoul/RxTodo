@@ -65,10 +65,10 @@ struct TaskListViewModel: TaskListViewModelType {
       .asDriver(onErrorJustReturn: [])
 
     self.itemDeleted
-      .subscribeNext { indexPath in
+      .subscribe(onNext: { indexPath in
         let task = tasks.value[indexPath.row]
         Task.didDelete.onNext(task)
-      }
+      })
       .addDisposableTo(self.disposeBag)
 
     //
@@ -90,25 +90,25 @@ struct TaskListViewModel: TaskListViewModelType {
     // Model Service
     //
     Task.didCreate
-      .subscribeNext { task in
+      .subscribe(onNext: { task in
         tasks.value.insert(task, at: 0)
-      }
+      })
       .addDisposableTo(self.disposeBag)
 
     Task.didUpdate
-      .subscribeNext { task in
+      .subscribe(onNext: { task in
         if let index = tasks.value.index(of: task) {
           tasks.value[index] = task
         }
-      }
+      })
       .addDisposableTo(self.disposeBag)
 
     Task.didDelete
-      .subscribeNext { task in
+      .subscribe(onNext: { task in
         if let index = tasks.value.index(of: task) {
           tasks.value.remove(at: index)
         }
-      }
+      })
       .addDisposableTo(self.disposeBag)
   }
 

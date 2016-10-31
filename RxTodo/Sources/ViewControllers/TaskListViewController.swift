@@ -94,12 +94,12 @@ final class TaskListViewController: BaseViewController {
       .addDisposableTo(self.disposeBag)
 
     viewModel.presentTaskEditViewModel
-      .driveNext { [weak self] viewModel in
+      .drive(onNext: { [weak self] viewModel in
         guard let `self` = self else { return }
         let viewController = TaskEditViewController(viewModel: viewModel)
         let navigationController = UINavigationController(rootViewController: viewController)
         self.present(navigationController, animated: true, completion: nil)
-      }
+      })
       .addDisposableTo(self.disposeBag)
   }
 
@@ -111,7 +111,7 @@ final class TaskListViewController: BaseViewController {
 extension TaskListViewController: UITableViewDelegate {
 
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    let viewModel = self.dataSource.sectionAtIndex(indexPath.section).items[indexPath.row]
+    let viewModel = self.dataSource[indexPath]
     return TaskCell.height(fits: tableView.width, viewModel: viewModel)
   }
 

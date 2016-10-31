@@ -17,7 +17,7 @@ enum TaskEditViewMode {
 protocol TaskEditViewModelType {
 
   // 2-Way Binding
-  var title: Variable<String> { get }
+  var title: Variable<String?> { get }
 
   // Input
   var cancelButtonDidTap: PublishSubject<Void> { get }
@@ -38,7 +38,7 @@ struct TaskEditViewModel: TaskEditViewModelType {
 
   // MARK: 2-Way Binding
 
-  var title: Variable<String>
+  var title: Variable<String?>
 
 
   // MARK: Input
@@ -77,6 +77,7 @@ struct TaskEditViewModel: TaskEditViewModelType {
     }
 
     self.doneButtonEnabled = self.title.asDriver()
+      .map { $0 ?? "" }
       .map { !$0.isEmpty }
       .asDriver(onErrorJustReturn: false)
       .startWith(false)
@@ -84,6 +85,7 @@ struct TaskEditViewModel: TaskEditViewModelType {
 
     let needsPresentCancelAlert = self.cancelButtonDidTap.asDriver()
       .withLatestFrom(self.title.asDriver())
+      .map { $0 ?? "" }
       .map { title -> Bool in
         switch mode {
         case .new: return !title.isEmpty
@@ -107,6 +109,7 @@ struct TaskEditViewModel: TaskEditViewModelType {
     case .new:
       didDone
         .withLatestFrom(self.title.asDriver())
+        .filterNil()
         .map { title in
           Task(title: title)
         }
@@ -116,6 +119,7 @@ struct TaskEditViewModel: TaskEditViewModelType {
     case .edit(let task):
       didDone
         .withLatestFrom(self.title.asDriver())
+        .filterNil()
         .map { title in
           task.with {
             $0.title = title

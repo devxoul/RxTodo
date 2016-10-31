@@ -98,11 +98,11 @@ final class TaskEditViewController: BaseViewController {
       .addDisposableTo(self.disposeBag)
 
     viewModel.doneButtonEnabled
-      .drive(self.doneBarButtonItem.rx.enabled)
+      .drive(self.doneBarButtonItem.rx.isEnabled)
       .addDisposableTo(self.disposeBag)
 
     viewModel.presentCancelAlert
-      .driveNext { [weak self] title, message, leaveTitle, stayTitle in
+      .drive(onNext: { [weak self] title, message, leaveTitle, stayTitle in
         guard let `self` = self else { return }
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let actions = [
@@ -117,14 +117,14 @@ final class TaskEditViewController: BaseViewController {
         actions.forEach(alertController.addAction)
         self.view.endEditing(true)
         self.present(alertController, animated: true, completion: nil)
-      }
+      })
       .addDisposableTo(self.disposeBag)
 
     viewModel.dismissViewController
-      .driveNext { [weak self] in
+      .drive(onNext: { [weak self] in
         self?.view.endEditing(true)
         self?.dismiss(animated: true, completion: nil)
-      }
+      })
       .addDisposableTo(self.disposeBag)
   }
 
