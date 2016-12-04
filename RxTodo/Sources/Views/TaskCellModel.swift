@@ -20,5 +20,4 @@ struct TaskCellModel: TaskCellModelType {
   init(task: Task) {
     self.title = task.title
   }
-
 }

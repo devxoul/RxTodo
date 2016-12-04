@@ -93,5 +93,3 @@ func <-> <T>(property: ControlProperty<T>, variable: Variable<T>) -> Disposable 
 
     return Disposables.create(bindToUIDisposable, bindToVariable)
 }
-
-// }

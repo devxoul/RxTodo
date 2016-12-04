@@ -16,24 +16,19 @@ import Then
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-  var window: UIWindow?
+    var window: UIWindow?
 
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.backgroundColor = .white
+        window.makeKeyAndVisible()
 
-  func application(
-    _ application: UIApplication,
-    didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?
-  ) -> Bool {
-    let window = UIWindow(frame: UIScreen.main.bounds)
-    window.backgroundColor = .white
-    window.makeKeyAndVisible()
+        let viewModel = TaskListViewModel()
+        let viewController = TaskListViewController(viewModel: viewModel)
+        let navigationController = UINavigationController(rootViewController: viewController)
+        window.rootViewController = navigationController
 
-    let viewModel = TaskListViewModel()
-    let viewController = TaskListViewController(viewModel: viewModel)
-    let navigationController = UINavigationController(rootViewController: viewController)
-    window.rootViewController = navigationController
-
-    self.window = window
-    return true
-  }
-
+        self.window = window
+        return true
+    }
 }

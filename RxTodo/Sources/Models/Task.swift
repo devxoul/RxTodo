@@ -10,13 +10,13 @@ import Foundation
 
 struct Task: ModelType, Identifiable {
 
-  var id: String = UUID().uuidString
-  var title: String
-  var memo: String?
+    let id: String
+    var title: String
+    let memo: String?
 
-  init(title: String, memo: String? = nil) {
-    self.title = title
-    self.memo = memo
-  }
-
+    init(title: String, memo: String? = nil) {
+        self.id = UUID().uuidString
+        self.title = title
+        self.memo = memo
+    }
 }

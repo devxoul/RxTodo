@@ -7,74 +7,69 @@
 //
 
 import UIKit
-
 import RxSwift
 
 final class TaskCell: BaseTableViewCell {
 
-  // MARK: Constants
+    // MARK: Constants
+    
+    struct Constant {
+        static let titleLabelNumberOfLines = 2
+    }
 
-  struct Constant {
-    static let titleLabelNumberOfLines = 2
-  }
+    struct Metric {
+        static let cellPadding = 15.f
+    }
 
-  struct Metric {
-    static let cellPadding = 15.f
-  }
+    struct Font {
+        static let titleLabel = UIFont.systemFont(ofSize: 14)
+    }
 
-  struct Font {
-    static let titleLabel = UIFont.systemFont(ofSize: 14)
-  }
+    struct Color {
+        static let titleLabelText = UIColor.black
+    }
 
-  struct Color {
-    static let titleLabelText = UIColor.black
-  }
-
-
-  // MARK: Properties
-
-  let titleLabel = UILabel().then {
-    $0.font = Font.titleLabel
-    $0.textColor = Color.titleLabelText
-    $0.numberOfLines = Constant.titleLabelNumberOfLines
-  }
-
-
-  // MARK: Initializing
-
-  override func initialize() {
-    self.contentView.addSubview(self.titleLabel)
-  }
+    // MARK: Properties
+    
+    let titleLabel = UILabel().then {
+        $0.font = Font.titleLabel
+        $0.textColor = Color.titleLabelText
+        $0.numberOfLines = Constant.titleLabelNumberOfLines
+    }
 
 
-  // MARK: Configuring
+    // MARK: Initializing
+    
+    override func initialize() {
+        contentView.addSubview(titleLabel)
+    }
 
-  func configure(_ viewModel: TaskCellModelType) {
-    self.titleLabel.text = viewModel.title
-  }
+    // MARK: Configuring
+    
+    func configure(_ viewModel: TaskCellModelType) {
+        titleLabel.text = viewModel.title
+    }
 
+    // MARK: Layout
 
-  // MARK: Layout
+    override func layoutSubviews() {
+        super.layoutSubviews()
 
-  override func layoutSubviews() {
-    super.layoutSubviews()
+        titleLabel.top = Metric.cellPadding
+        titleLabel.left = Metric.cellPadding
+        titleLabel.width = contentView.width - Metric.cellPadding * 2
+        titleLabel.sizeToFit()
+    }
 
-    self.titleLabel.top = Metric.cellPadding
-    self.titleLabel.left = Metric.cellPadding
-    self.titleLabel.width = self.contentView.width - Metric.cellPadding * 2
-    self.titleLabel.sizeToFit()
-  }
+    // MARK: Cell Height
 
-
-  // MARK: Cell Height
-
-  class func height(fits width: CGFloat, viewModel: TaskCellModelType) -> CGFloat {
-    let height =  viewModel.title.height(
-      fits: width - Metric.cellPadding * 2,
-      font: Font.titleLabel,
-      maximumNumberOfLines: Constant.titleLabelNumberOfLines
-    )
-    return height + Metric.cellPadding * 2
-  }
-
+    class func height(fits width: CGFloat, viewModel: TaskCellModelType) -> CGFloat {
+        let height =  viewModel.title.height(
+            fits: width - Metric.cellPadding * 2,
+            font: Font.titleLabel,
+            maximumNumberOfLines: Constant.titleLabelNumberOfLines
+        )
+        
+        return height + Metric.cellPadding * 2
+    }
 }
