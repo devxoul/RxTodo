@@ -24,7 +24,6 @@ target 'RxTodo' do
     pod 'RxExpect', '~> 0.2'
     pod 'RxOptional', '~> 3.1'
   end
-
 end
 
 post_install do |installer|
