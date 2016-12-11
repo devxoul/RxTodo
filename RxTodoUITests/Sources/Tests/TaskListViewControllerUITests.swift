@@ -29,4 +29,19 @@ class TaskListViewControllerUITests: UITestCase {
     
     XCTAssertEqual(app.tables.element.cells.count, expectCount, "it should add a new task")
   }
+  
+  func testTaskEdit() {
+    let thirdCellTitle = "Make a pull request"
+    XCTAssertTrue(app.cells.staticTexts[thirdCellTitle].exists)
+    
+    let typedText = " thank you :)"
+    let expectedText = thirdCellTitle + typedText
+    
+    app.tables.element.cells.element(boundBy: 2).tap()
+    app.textFields.element.tap()
+    app.textFields.element.typeText(typedText)
+    app.navigationBars.buttons["Done"].tap()
+    
+    XCTAssertTrue(app.cells.staticTexts[expectedText].exists)
+  }
 }
