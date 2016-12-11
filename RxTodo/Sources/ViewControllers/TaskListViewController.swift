@@ -34,10 +34,13 @@ final class TaskListViewController: BaseViewController {
 
   // MARK: Initializing
 
+  private(set) var viewModel: TaskListViewModelType!
+  
   init(viewModel: TaskListViewModelType) {
     super.init()
     self.navigationItem.rightBarButtonItem = self.addBarButtonItem
     self.configure(viewModel)
+    self.viewModel = viewModel
   }
 
   required init?(coder aDecoder: NSCoder) {
@@ -46,7 +49,6 @@ final class TaskListViewController: BaseViewController {
 
 
   // MARK: View Life Cycle
-
   override func viewDidLoad() {
     super.viewDidLoad()
     self.view.backgroundColor = .white
