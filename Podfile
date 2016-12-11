@@ -22,6 +22,7 @@ target 'RxTodo' do
   target 'RxTodoTests' do
     pod 'RxTest', '~> 3.0'
     pod 'RxExpect', '~> 0.2'
+    pod 'RxOptional', '~> 3.1'
   end
 
 end
