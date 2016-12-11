@@ -9,10 +9,10 @@
 import XCTest
 @testable import RxTodo
 
-import RxExpect
 import RxCocoa
+import RxExpect
 import RxSwift
-import RxTests
+import RxTest
 
 class TaskListViewModelTests: XCTestCase {
 
