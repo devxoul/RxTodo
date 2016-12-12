@@ -9,10 +9,11 @@
 import XCTest
 @testable import RxTodo
 
-import RxExpect
 import RxCocoa
+import RxExpect
+import RxOptional
 import RxSwift
-import RxTests
+import RxTest
 
 class TaskEditViewModelTests: XCTestCase {
 
@@ -33,12 +34,12 @@ class TaskEditViewModelTests: XCTestCase {
   func testTitle() {
     RxExpect { test in
       let viewModel = TaskEditViewModel(mode: .new)
-      test.assertNextEqual(viewModel.title.asDriver(), [""])
+      test.assertNextEqual(viewModel.title.asDriver().filterNil(), [""])
     }
     RxExpect { test in
       let task = Task(title: "Release a new version")
       let viewModel = TaskEditViewModel(mode: .edit(task))
-      test.assertNextEqual(viewModel.title.asDriver(), ["Release a new version"])
+      test.assertNextEqual(viewModel.title.asDriver().filterNil(), ["Release a new version"])
     }
   }
 
