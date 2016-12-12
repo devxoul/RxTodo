@@ -34,12 +34,12 @@ class TaskEditViewModelTests: XCTestCase {
   func testTitle() {
     RxExpect { test in
       let viewModel = TaskEditViewModel(mode: .new)
-        test.assertNextEqual(viewModel.title.asDriver().filterNil().map {$0}, [""])
+      test.assertNextEqual(viewModel.title.asDriver().filterNil(), [""])
     }
     RxExpect { test in
       let task = Task(title: "Release a new version")
       let viewModel = TaskEditViewModel(mode: .edit(task))
-        test.assertNextEqual(viewModel.title.asDriver().filterNil().map {$0}, ["Release a new version"])
+      test.assertNextEqual(viewModel.title.asDriver().filterNil(), ["Release a new version"])
     }
   }
 
