@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		030BC4881D6B5EC700744138 /* TaskEditViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030BC4871D6B5EC700744138 /* TaskEditViewModelTests.swift */; };
 		035362FE1E26C8D1005B565E /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035362FD1E26C8D1005B565E /* ServiceProvider.swift */; };
+		035363071E26CE45005B565E /* BaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035363061E26CE45005B565E /* BaseService.swift */; };
 		03D0C0CC1D26A13E00EE93D5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0C51D26A13E00EE93D5 /* AppDelegate.swift */; };
 		03D0C0CD1D26A13E00EE93D5 /* TaskListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0C81D26A13E00EE93D5 /* TaskListViewController.swift */; };
 		03D0C0D51D26A18900EE93D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03D0C0D21D26A18900EE93D5 /* Assets.xcassets */; };
@@ -47,6 +48,7 @@
 /* Begin PBXFileReference section */
 		030BC4871D6B5EC700744138 /* TaskEditViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskEditViewModelTests.swift; sourceTree = "<group>"; };
 		035362FD1E26C8D1005B565E /* ServiceProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceProvider.swift; sourceTree = "<group>"; };
+		035363061E26CE45005B565E /* BaseService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseService.swift; sourceTree = "<group>"; };
 		03D0C0AF1D269F7900EE93D5 /* RxTodo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RxTodo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		03D0C0C51D26A13E00EE93D5 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		03D0C0C81D26A13E00EE93D5 /* TaskListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskListViewController.swift; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 			isa = PBXGroup;
 			children = (
 				035362FD1E26C8D1005B565E /* ServiceProvider.swift */,
+				035363061E26CE45005B565E /* BaseService.swift */,
 				03D0C0EC1D26AE7800EE93D5 /* ModelService.swift */,
 			);
 			path = Services;
@@ -500,6 +503,7 @@
 				03D0C0E01D26ABD600EE93D5 /* TaskCell.swift in Sources */,
 				03D0C0CC1D26A13E00EE93D5 /* AppDelegate.swift in Sources */,
 				03D0C0F61D26C8AB00EE93D5 /* TaskEditViewController.swift in Sources */,
+				035363071E26CE45005B565E /* BaseService.swift in Sources */,
 				03D0C0E81D26AC7600EE93D5 /* Task.swift in Sources */,
 				03D0C0E61D26AC4500EE93D5 /* TaskListViewModel.swift in Sources */,
 			);
