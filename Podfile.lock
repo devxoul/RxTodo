@@ -2,8 +2,8 @@ PODS:
   - CGFloatLiteral (0.2.0)
   - ManualLayout (1.3.0)
   - ReusableKit (1.1.0)
-  - RxCocoa (3.0.0):
-    - RxSwift (~> 3.0)
+  - RxCocoa (3.1.0):
+    - RxSwift (~> 3.1)
   - RxDataSources (1.0.0):
     - RxCocoa (~> 3.0)
     - RxSwift (~> 3.0)
@@ -14,8 +14,8 @@ PODS:
   - RxOptional (3.1.3):
     - RxCocoa
     - RxSwift
-  - RxSwift (3.0.0)
-  - RxTest (3.0.0):
+  - RxSwift (3.1.0)
+  - RxTest (3.1.0):
     - RxSwift (~> 3.0)
   - SnapKit (3.0.0)
   - Then (2.1.0)
@@ -24,12 +24,12 @@ DEPENDENCIES:
   - CGFloatLiteral (~> 0.2)
   - ManualLayout (~> 1.3)
   - ReusableKit (~> 1.1)
-  - RxCocoa (~> 3.0)
+  - RxCocoa (~> 3.1)
   - RxDataSources (~> 1.0)
   - RxExpect (~> 0.2)
   - RxOptional (~> 3.1)
-  - RxSwift (~> 3.0)
-  - RxTest (~> 3.0)
+  - RxSwift (~> 3.1)
+  - RxTest (~> 3.1)
   - SnapKit (~> 3.0)
   - Then (~> 2.1)
 
@@ -37,15 +37,15 @@ SPEC CHECKSUMS:
   CGFloatLiteral: 5bdcd81cb54b56cd71c4e5e66a33cb86cd51ecbf
   ManualLayout: 68ac8cfa6b5f656f7a9fadec3730208b95986880
   ReusableKit: 89e743a120bab0d95848bff27e481833c2768905
-  RxCocoa: 0a2f3ae381cf16f4021a4cee7a4420f83058a965
+  RxCocoa: 50d7564866da9299161e86a263ce12a0873904d8
   RxDataSources: 824693e84d00781d0a5e5cedc1ff95ce9250aacd
   RxExpect: e25c7fb54147d2b9181f943d17eb67fbbcfc3e34
   RxOptional: b97b59183af80d1e729ac9e51d09a10be668d6a8
-  RxSwift: a930cd662f5b4a7ca9dc3518585dba91dadf497c
-  RxTest: 770511db5d602b618ee8c8a7c06b4b71f9168f7c
+  RxSwift: 83ff553e7593fdfdcb2562933a64c0284dffdadc
+  RxTest: 661e33b5022682961784da03cf79c175fcc4bd64
   SnapKit: 98af0a4e9369d3c58f758967518081dbdc7eb1d9
   Then: 8496793c8fcac95482b943909b440724c7d8d82c
 
-PODFILE CHECKSUM: 93eb9d139ac3b12fb2585c2fe3fb70cf08723443
+PODFILE CHECKSUM: 46c842fae4693dbd37bff1b6a8e97371e462b4f2
 
 COCOAPODS: 1.1.1

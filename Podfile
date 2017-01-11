@@ -4,8 +4,8 @@ target 'RxTodo' do
   use_frameworks!
 
   # Rx
-  pod 'RxSwift', '~> 3.0'
-  pod 'RxCocoa', '~> 3.0'
+  pod 'RxSwift', '~> 3.1'
+  pod 'RxCocoa', '~> 3.1'
   pod 'RxDataSources', '~> 1.0'
   pod 'RxOptional', '~> 3.1'
 
@@ -20,7 +20,7 @@ target 'RxTodo' do
 
   # Testing
   target 'RxTodoTests' do
-    pod 'RxTest', '~> 3.0'
+    pod 'RxTest', '~> 3.1'
     pod 'RxExpect', '~> 0.2'
     pod 'RxOptional', '~> 3.1'
   end
