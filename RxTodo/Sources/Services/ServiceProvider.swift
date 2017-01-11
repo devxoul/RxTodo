@@ -7,7 +7,9 @@
 //
 
 protocol ServiceProviderType: class {
+  var userDefaultsService: UserDefaultsServiceType { get }
 }
 
 final class ServiceProvider: ServiceProviderType {
+  lazy var userDefaultsService: UserDefaultsServiceType = UserDefaultsService(provider: self)
 }
