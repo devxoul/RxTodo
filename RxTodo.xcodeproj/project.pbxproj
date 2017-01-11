@@ -13,6 +13,7 @@
 		035363021E26C9D4005B565E /* UserDefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035363011E26C9D4005B565E /* UserDefaultsService.swift */; };
 		035363051E26CAD7005B565E /* UserDefaultsKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035363041E26CAD7005B565E /* UserDefaultsKey.swift */; };
 		035363071E26CE45005B565E /* BaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035363061E26CE45005B565E /* BaseService.swift */; };
+		035363091E26D0B8005B565E /* UIViewController+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035363081E26D0B8005B565E /* UIViewController+Rx.swift */; };
 		03D0C0CC1D26A13E00EE93D5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0C51D26A13E00EE93D5 /* AppDelegate.swift */; };
 		03D0C0CD1D26A13E00EE93D5 /* TaskListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0C81D26A13E00EE93D5 /* TaskListViewController.swift */; };
 		03D0C0D51D26A18900EE93D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03D0C0D21D26A18900EE93D5 /* Assets.xcassets */; };
@@ -55,6 +56,7 @@
 		035363011E26C9D4005B565E /* UserDefaultsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultsService.swift; sourceTree = "<group>"; };
 		035363041E26CAD7005B565E /* UserDefaultsKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultsKey.swift; sourceTree = "<group>"; };
 		035363061E26CE45005B565E /* BaseService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseService.swift; sourceTree = "<group>"; };
+		035363081E26D0B8005B565E /* UIViewController+Rx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Rx.swift"; sourceTree = "<group>"; };
 		03D0C0AF1D269F7900EE93D5 /* RxTodo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RxTodo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		03D0C0C51D26A13E00EE93D5 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		03D0C0C81D26A13E00EE93D5 /* TaskListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskListViewController.swift; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 			children = (
 				03D0C0FA1D26DE2C00EE93D5 /* ObservableConvertibleType+Void.swift */,
 				03D0C0FD1D26E55B00EE93D5 /* RxOperators.swift */,
+				035363081E26D0B8005B565E /* UIViewController+Rx.swift */,
 			);
 			path = Rx;
 			sourceTree = "<group>";
@@ -510,6 +513,7 @@
 				035363051E26CAD7005B565E /* UserDefaultsKey.swift in Sources */,
 				035363001E26C8E9005B565E /* TaskService.swift in Sources */,
 				03D0C0E21D26ABDC00EE93D5 /* BaseTableViewCell.swift in Sources */,
+				035363091E26D0B8005B565E /* UIViewController+Rx.swift in Sources */,
 				03D0C0F21D26C4D900EE93D5 /* String+BoundingRect.swift in Sources */,
 				03D0C0F41D26C50100EE93D5 /* Snap.swift in Sources */,
 				03D0C0FE1D26E55B00EE93D5 /* RxOperators.swift in Sources */,
