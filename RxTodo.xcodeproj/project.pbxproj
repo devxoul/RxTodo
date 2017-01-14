@@ -24,7 +24,6 @@
 		03D0C0E61D26AC4500EE93D5 /* TaskListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0E51D26AC4500EE93D5 /* TaskListViewModel.swift */; };
 		03D0C0E81D26AC7600EE93D5 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0E71D26AC7600EE93D5 /* Task.swift */; };
 		03D0C0EA1D26AD2800EE93D5 /* TaskCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0E91D26AD2800EE93D5 /* TaskCellModel.swift */; };
-		03D0C0ED1D26AE7800EE93D5 /* ModelService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0EC1D26AE7800EE93D5 /* ModelService.swift */; };
 		03D0C0EF1D26AEC700EE93D5 /* ModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0EE1D26AEC700EE93D5 /* ModelType.swift */; };
 		03D0C0F21D26C4D900EE93D5 /* String+BoundingRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0F11D26C4D900EE93D5 /* String+BoundingRect.swift */; };
 		03D0C0F41D26C50100EE93D5 /* Snap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0F31D26C50100EE93D5 /* Snap.swift */; };
@@ -69,7 +68,6 @@
 		03D0C0E51D26AC4500EE93D5 /* TaskListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskListViewModel.swift; sourceTree = "<group>"; };
 		03D0C0E71D26AC7600EE93D5 /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		03D0C0E91D26AD2800EE93D5 /* TaskCellModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskCellModel.swift; sourceTree = "<group>"; };
-		03D0C0EC1D26AE7800EE93D5 /* ModelService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelService.swift; sourceTree = "<group>"; };
 		03D0C0EE1D26AEC700EE93D5 /* ModelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelType.swift; sourceTree = "<group>"; };
 		03D0C0F11D26C4D900EE93D5 /* String+BoundingRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+BoundingRect.swift"; sourceTree = "<group>"; };
 		03D0C0F31D26C50100EE93D5 /* Snap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snap.swift; sourceTree = "<group>"; };
@@ -219,7 +217,6 @@
 				035363061E26CE45005B565E /* BaseService.swift */,
 				035363011E26C9D4005B565E /* UserDefaultsService.swift */,
 				035362FF1E26C8E9005B565E /* TaskService.swift */,
-				03D0C0EC1D26AE7800EE93D5 /* ModelService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -522,7 +519,6 @@
 				03D0C0CD1D26A13E00EE93D5 /* TaskListViewController.swift in Sources */,
 				03D0C0F81D26C8B100EE93D5 /* TaskEditViewModel.swift in Sources */,
 				035363021E26C9D4005B565E /* UserDefaultsService.swift in Sources */,
-				03D0C0ED1D26AE7800EE93D5 /* ModelService.swift in Sources */,
 				035362FE1E26C8D1005B565E /* ServiceProvider.swift in Sources */,
 				03D0C0E01D26ABD600EE93D5 /* TaskCell.swift in Sources */,
 				03D0C0CC1D26A13E00EE93D5 /* AppDelegate.swift in Sources */,
