@@ -29,14 +29,13 @@ final class TaskEditViewController: BaseViewController {
 
   // MARK: Properties
 
-  let cancelBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
-  let doneBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
+  let cancelButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
+  let doneButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
   let titleInput = UITextField().then {
     $0.autocorrectionType = .no
+    $0.borderStyle = .roundedRect
     $0.font = Font.titleLabel
-    $0.layer.cornerRadius = Metric.titleInputCornerRadius
-    $0.layer.borderWidth = Metric.titleInputBorderWidth
-    $0.layer.borderColor = Color.titleInputBorder.cgColor
+    $0.placeholder = "Do something..."
   }
 
 
@@ -44,8 +43,8 @@ final class TaskEditViewController: BaseViewController {
 
   init(viewModel: TaskEditViewModelType) {
     super.init()
-    self.navigationItem.leftBarButtonItem = self.cancelBarButtonItem
-    self.navigationItem.rightBarButtonItem = self.doneBarButtonItem
+    self.navigationItem.leftBarButtonItem = self.cancelButtonItem
+    self.navigationItem.rightBarButtonItem = self.doneButtonItem
     self.configure(viewModel)
   }
 
@@ -69,7 +68,7 @@ final class TaskEditViewController: BaseViewController {
 
   override func setupConstraints() {
     self.titleInput.snp.makeConstraints { make in
-      make.top.equalTo(20 + 44 + Metric.padding)
+      make.top.equalTo(self.topLayoutGuide.snp.bottom).offset(Metric.padding)
       make.left.equalTo(Metric.padding)
       make.right.equalTo(-Metric.padding)
     }
@@ -79,17 +78,21 @@ final class TaskEditViewController: BaseViewController {
   // MARK: Configuring
 
   private func configure(_ viewModel: TaskEditViewModelType) {
-    // 2-Way Binding
-    (self.titleInput.rx.text <-> viewModel.title)
-      .addDisposableTo(self.disposeBag)
-
     // Input
-    self.cancelBarButtonItem.rx.tap
-      .bindTo(viewModel.cancelButtonDidTap)
+    self.rx.deallocated
+      .bindTo(viewModel.viewDidDeallocate)
       .addDisposableTo(self.disposeBag)
 
-    self.doneBarButtonItem.rx.tap
-      .bindTo(viewModel.doneButtonDidTap)
+    self.cancelButtonItem.rx.tap
+      .bindTo(viewModel.cancelButtonItemDidTap)
+      .addDisposableTo(self.disposeBag)
+
+    self.doneButtonItem.rx.tap
+      .bindTo(viewModel.doneButtonItemDidTap)
+      .addDisposableTo(self.disposeBag)
+
+    self.titleInput.rx.text.changed
+      .bindTo(viewModel.titleInputDidChangeText)
       .addDisposableTo(self.disposeBag)
 
     // Output
@@ -98,30 +101,41 @@ final class TaskEditViewController: BaseViewController {
       .addDisposableTo(self.disposeBag)
 
     viewModel.doneButtonEnabled
-      .drive(self.doneBarButtonItem.rx.isEnabled)
+      .drive(self.doneButtonItem.rx.isEnabled)
+      .addDisposableTo(self.disposeBag)
+
+    viewModel.titleInputText
+      .drive(self.titleInput.rx.text)
       .addDisposableTo(self.disposeBag)
 
     viewModel.presentCancelAlert
-      .drive(onNext: { [weak self] title, message, leaveTitle, stayTitle in
+      .subscribe(onNext: { [weak self] actions in
         guard let `self` = self else { return }
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let actions = [
-          UIAlertAction(title: leaveTitle, style: .destructive) { _ in
-            viewModel.alertLeaveButtonDidTap.onNext()
-          },
-          UIAlertAction(title: stayTitle, style: .default) { _ in
-            self.titleInput.becomeFirstResponder()
-            viewModel.alertStayButtonDidTap.onNext()
-          }
-        ]
-        actions.forEach(alertController.addAction)
         self.view.endEditing(true)
+        let alertController = UIAlertController(
+          title: "Really?",
+          message: "Changes will be lost.",
+          preferredStyle: .alert
+        )
+        actions
+          .map { action -> UIAlertAction in
+            let handler: (UIAlertAction) -> Void =  { _ in
+              viewModel.cancelAlertDidSelectAction.onNext(action)
+            }
+            switch action {
+            case .leave:
+              return UIAlertAction(title: "Leave", style: .destructive, handler: handler)
+            case .stay:
+              return UIAlertAction(title: "Stay", style: .default, handler: handler)
+            }
+          }
+          .forEach(alertController.addAction)
         self.present(alertController, animated: true, completion: nil)
       })
       .addDisposableTo(self.disposeBag)
 
     viewModel.dismissViewController
-      .drive(onNext: { [weak self] in
+      .subscribe(onNext: { [weak self] in
         self?.view.endEditing(true)
         self?.dismiss(animated: true, completion: nil)
       })

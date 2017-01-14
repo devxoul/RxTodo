@@ -11,14 +11,17 @@ import RxSwift
 
 protocol TaskCellModelType {
   var title: String { get }
+  var accessoryType: UITableViewCellAccessoryType { get }
 }
 
 struct TaskCellModel: TaskCellModelType {
 
   let title: String
+  let accessoryType: UITableViewCellAccessoryType
 
   init(task: Task) {
     self.title = task.title
+    self.accessoryType = task.isDone ? .checkmark : .none
   }
 
 }

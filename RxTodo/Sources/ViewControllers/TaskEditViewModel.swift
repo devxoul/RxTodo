@@ -14,128 +14,155 @@ enum TaskEditViewMode {
   case edit(Task)
 }
 
-protocol TaskEditViewModelType {
+enum TaskEditViewCancelAlertAction {
+  case leave
+  case stay
+}
 
-  // 2-Way Binding
-  var title: Variable<String?> { get }
-
+protocol TaskEditViewModelType: class {
   // Input
-  var cancelButtonDidTap: PublishSubject<Void> { get }
-  var doneButtonDidTap: PublishSubject<Void> { get }
-  var alertLeaveButtonDidTap: PublishSubject<Void> { get }
-  var alertStayButtonDidTap: PublishSubject<Void> { get }
-  var memo: PublishSubject<String> { get }
+  var viewDidDeallocate: PublishSubject<Void> { get }
+  var cancelButtonItemDidTap: PublishSubject<Void> { get }
+  var doneButtonItemDidTap: PublishSubject<Void> { get }
+  var titleInputDidChangeText: PublishSubject<String?> { get }
+  var cancelAlertDidSelectAction: PublishSubject<TaskEditViewCancelAlertAction> { get }
 
   // Output
   var navigationBarTitle: Driver<String?> { get }
   var doneButtonEnabled: Driver<Bool> { get }
-  var presentCancelAlert: Driver<(String, String, String, String)> { get }
-  var dismissViewController: Driver<Void> { get }
-
+  var titleInputText: Driver<String?> { get }
+  var presentCancelAlert: Observable<[TaskEditViewCancelAlertAction]> { get }
+  var dismissViewController: Observable<Void> { get }
 }
 
-struct TaskEditViewModel: TaskEditViewModelType {
-
-  // MARK: 2-Way Binding
-
-  var title: Variable<String?>
-
+final class TaskEditViewModel: TaskEditViewModelType {
 
   // MARK: Input
 
-  let cancelButtonDidTap = PublishSubject<Void>()
-  let doneButtonDidTap = PublishSubject<Void>()
-  let alertLeaveButtonDidTap = PublishSubject<Void>()
-  let alertStayButtonDidTap = PublishSubject<Void>()
-  let memo = PublishSubject<String>()
+  let viewDidDeallocate = PublishSubject<Void>()
+  let cancelButtonItemDidTap = PublishSubject<Void>()
+  let doneButtonItemDidTap = PublishSubject<Void>()
+  let titleInputDidChangeText = PublishSubject<String?>()
+  let cancelAlertDidSelectAction = PublishSubject<TaskEditViewCancelAlertAction>()
 
 
   // MARK: Output
 
   let navigationBarTitle: Driver<String?>
   let doneButtonEnabled: Driver<Bool>
-  let presentCancelAlert: Driver<(String, String, String, String)>
-  let dismissViewController: Driver<Void>
-
-
-  // MARK: Private
-
-  let disposeBag = DisposeBag()
+  let titleInputText: Driver<String?>
+  let presentCancelAlert: Observable<[TaskEditViewCancelAlertAction]>
+  let dismissViewController: Observable<Void>
 
 
   // MARK: Initializing
 
-  init(mode: TaskEditViewMode) {
-    switch mode {
-    case .new:
-      self.navigationBarTitle = .just("New")
-      self.title = Variable("")
+  init(provider: ServiceProviderType, mode: TaskEditViewMode) {
+    let cls = TaskEditViewModel.self
 
-    case .edit(let task):
-      self.navigationBarTitle = .just("Edit")
-      self.title = Variable(task.title)
-    }
+    //
+    // Title Input Text
+    //
+    self.titleInputText = cls.titleInputText(
+      mode: mode,
+      titleInputDidChangeText: titleInputDidChangeText.asObservable()
+    )
 
-    self.doneButtonEnabled = self.title.asDriver()
-      .map { $0 ?? "" }
-      .map { !$0.isEmpty }
-      .asDriver(onErrorJustReturn: false)
+    //
+    // Navigation Item
+    //
+    self.navigationBarTitle = cls.navigationBarTitle(mode: mode)
+    self.doneButtonEnabled = titleInputText
+      .map { text in text?.isEmpty == false }
       .startWith(false)
       .distinctUntilChanged()
+      .asDriver(onErrorJustReturn: false)
 
-    let needsPresentCancelAlert = self.cancelButtonDidTap.asDriver()
-      .withLatestFrom(self.title.asDriver())
-      .map { $0 ?? "" }
-      .map { title -> Bool in
+    //
+    // Confirm Cancel
+    //
+    self.presentCancelAlert = self.cancelButtonItemDidTap
+      .withLatestFrom(self.titleInputText)
+      .filter { cls.isTitleChanged(mode: mode, title: $0) }
+      .map { _ in [.leave, .stay] }
+      .observeOn(MainScheduler.instance)
+      .subscribeOn(ConcurrentMainScheduler.instance)
+
+    //
+    // Done
+    //
+    _ = self.doneButtonItemDidTap
+      .withLatestFrom(self.doneButtonEnabled)
+      .filter { isEnabled in isEnabled }
+      .withLatestFrom(self.titleInputText)
+      .filterNil()
+      .map { title -> TaskEvent in
         switch mode {
-        case .new: return !title.isEmpty
-        case .edit(let task): return title != task.title
+        case .new:
+          let newTask = Task(title: title)
+          return .create(newTask)
+        case .edit(let task):
+          let newTask = task.with { $0.title = title }
+          return .update(newTask)
         }
       }
+      .takeUntil(self.viewDidDeallocate)
+      .bindTo(provider.taskService.event)
 
-    self.presentCancelAlert = needsPresentCancelAlert
-      .filter { $0 }
-      .map { _ in
-        let title = "Really?"
-        let message = "Changes will be lost."
-        return (title, message, "Leave", "Stay")
-      }
-
-    let didDone = self.doneButtonDidTap.asDriver()
-      .withLatestFrom(self.doneButtonEnabled).filter { $0 }
+    //
+    // Dismiss
+    //
+    let cancelButtonDidTapWithoutChanges = self.cancelButtonItemDidTap
+      .withLatestFrom(self.titleInputText)
+      .filter { !cls.isTitleChanged(mode: mode, title: $0) }
       .map { _ in Void() }
 
+    let cancelAlertDidSelectLeaveAction = self.cancelAlertDidSelectAction
+      .filter { $0 == .leave }
+      .map { _ in Void() }
+
+    let doneButtonDidTapWhenEnabled = self.doneButtonItemDidTap
+      .withLatestFrom(self.doneButtonEnabled)
+      .filter { isEnabled in isEnabled }
+      .map { _ in Void() }
+
+    self.dismissViewController = Observable
+      .of(cancelButtonDidTapWithoutChanges, cancelAlertDidSelectLeaveAction, doneButtonDidTapWhenEnabled)
+      .merge()
+      .observeOn(MainScheduler.instance)
+      .subscribeOn(ConcurrentMainScheduler.instance)
+  }
+
+
+  // MARK: - Functions
+
+  class func navigationBarTitle(mode: TaskEditViewMode) -> Driver<String?> {
+    switch mode {
+    case .new: return .just("New")
+    case .edit: return .just("Edit")
+    }
+  }
+
+  class func titleInputText(
+    mode: TaskEditViewMode,
+    titleInputDidChangeText: Observable<String?>
+  ) -> Driver<String?> {
+    let source = titleInputDidChangeText.asDriver(onErrorJustReturn: nil)
+    switch mode {
+    case .edit(let task):
+      return source.startWith(task.title)
+    case .new:
+      return source.startWith(nil)
+    }
+  }
+
+  class func isTitleChanged(mode: TaskEditViewMode, title: String?) -> Bool {
     switch mode {
     case .new:
-      didDone
-        .withLatestFrom(self.title.asDriver())
-        .filterNil()
-        .map { title in
-          Task(title: title)
-        }
-        .drive(Task.didCreate)
-        .addDisposableTo(self.disposeBag)
-
+      return title?.isEmpty == false
     case .edit(let task):
-      didDone
-        .withLatestFrom(self.title.asDriver())
-        .filterNil()
-        .map { title in
-          task.with {
-            $0.title = title
-          }
-        }
-        .drive(Task.didUpdate)
-        .addDisposableTo(self.disposeBag)
+      return title != task.title
     }
-
-    self.dismissViewController = Driver
-      .of(
-        self.alertLeaveButtonDidTap.asDriver(),
-        didDone,
-        needsPresentCancelAlert.filter { !$0 }.map { _ in Void() }
-      )
-      .merge()
   }
 
 }

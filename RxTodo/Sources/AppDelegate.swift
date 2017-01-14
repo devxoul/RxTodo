@@ -27,7 +27,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window.backgroundColor = .white
     window.makeKeyAndVisible()
 
-    let viewModel = TaskListViewModel()
+    let serviceProvider = ServiceProvider()
+    let viewModel = TaskListViewModel(provider: serviceProvider)
     let viewController = TaskListViewController(viewModel: viewModel)
     let navigationController = UINavigationController(rootViewController: viewController)
     window.rootViewController = navigationController

@@ -26,8 +26,9 @@ final class TaskListViewController: BaseViewController {
 
   let dataSource = RxTableViewSectionedReloadDataSource<TaskListSection>()
 
-  let addBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
+  let addButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
   let tableView = UITableView().then {
+    $0.allowsSelectionDuringEditing = true
     $0.register(Reusable.taskCell)
   }
 
@@ -36,7 +37,8 @@ final class TaskListViewController: BaseViewController {
 
   init(viewModel: TaskListViewModelType) {
     super.init()
-    self.navigationItem.rightBarButtonItem = self.addBarButtonItem
+    self.navigationItem.leftBarButtonItem = self.editButtonItem
+    self.navigationItem.rightBarButtonItem = self.addButtonItem
     self.configure(viewModel)
   }
 
@@ -50,7 +52,6 @@ final class TaskListViewController: BaseViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     self.view.backgroundColor = .white
-    self.tableView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
     self.view.addSubview(self.tableView)
   }
 
@@ -65,15 +66,30 @@ final class TaskListViewController: BaseViewController {
   // MARK: Configuring
 
   private func configure(_ viewModel: TaskListViewModelType) {
+    self.tableView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
     self.dataSource.configureCell = { _, tableView, indexPath, viewModel in
       let cell = tableView.dequeue(Reusable.taskCell, for: indexPath)
       cell.configure(viewModel)
       return cell
     }
+    self.dataSource.canEditRowAtIndexPath = { _ in true }
+    self.dataSource.canMoveRowAtIndexPath = { _ in true }
 
     // Input
-    self.addBarButtonItem.rx.tap
-      .bindTo(viewModel.addButtonDidTap)
+    self.rx.viewDidLoad
+      .bindTo(viewModel.viewDidLoad)
+      .addDisposableTo(self.disposeBag)
+
+    self.rx.deallocated
+      .bindTo(viewModel.viewDidDeallocate)
+      .addDisposableTo(self.disposeBag)
+
+    self.editButtonItem.rx.tap
+      .bindTo(viewModel.editButtonItemDidTap)
+      .addDisposableTo(self.disposeBag)
+
+    self.addButtonItem.rx.tap
+      .bindTo(viewModel.addButtonItemDidTap)
       .addDisposableTo(self.disposeBag)
 
     self.tableView.rx.itemSelected
@@ -81,7 +97,11 @@ final class TaskListViewController: BaseViewController {
       .addDisposableTo(self.disposeBag)
 
     self.tableView.rx.itemDeleted
-      .bindTo(viewModel.itemDeleted)
+      .bindTo(viewModel.itemDidDelete)
+      .addDisposableTo(self.disposeBag)
+
+    self.tableView.rx.itemMoved
+      .bindTo(viewModel.itemDidMove)
       .addDisposableTo(self.disposeBag)
 
     // Ouput
@@ -89,12 +109,28 @@ final class TaskListViewController: BaseViewController {
       .drive(self.navigationItem.rx.title)
       .addDisposableTo(self.disposeBag)
 
+    viewModel.editButtonItemTitle
+      .drive(self.editButtonItem.rx.title)
+      .addDisposableTo(self.disposeBag)
+
+    viewModel.editButtonItemStyle
+      .drive(onNext: { [weak self] style in
+        self?.editButtonItem.style = style
+      })
+      .addDisposableTo(self.disposeBag)
+
     viewModel.sections
       .drive(self.tableView.rx.items(dataSource: self.dataSource))
       .addDisposableTo(self.disposeBag)
 
+    viewModel.isTableViewEditing
+      .drive(onNext: { [weak self] isEditing in
+        self?.tableView.setEditing(isEditing, animated: true)
+      })
+      .addDisposableTo(self.disposeBag)
+
     viewModel.presentTaskEditViewModel
-      .drive(onNext: { [weak self] viewModel in
+      .subscribe(onNext: { [weak self] viewModel in
         guard let `self` = self else { return }
         let viewController = TaskEditViewController(viewModel: viewModel)
         let navigationController = UINavigationController(rootViewController: viewController)
@@ -118,5 +154,7 @@ extension TaskListViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
   }
+
+//  tableview
 
 }

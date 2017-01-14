@@ -51,6 +51,7 @@ final class TaskCell: BaseTableViewCell {
 
   func configure(_ viewModel: TaskCellModelType) {
     self.titleLabel.text = viewModel.title
+    self.accessoryType = viewModel.accessoryType
   }
 
 
