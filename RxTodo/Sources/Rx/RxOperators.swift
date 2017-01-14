@@ -94,4 +94,11 @@ func <-> <T>(property: ControlProperty<T>, variable: Variable<T>) -> Disposable 
     return Disposables.create(bindToUIDisposable, bindToVariable)
 }
 
-// }
+
+// MARK: - IgnoreErrors
+
+extension ObservableType {
+  func ignoreErrors() -> Observable<E> {
+    return self.catchError { _ in .empty() }
+  }
+}
