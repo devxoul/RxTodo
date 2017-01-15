@@ -14,7 +14,7 @@ Features
 * Using [RxDataSources](https://github.com/RxSwiftCommunity/RxDataSources)
 * Observing model create/update/delete across the view controllers
 * Navigating between view controllers
-* Immutable models and view models
+* Immutable models
 * Testing with [RxExpect](https://github.com/devxoul/RxExpect)
 
 
@@ -73,7 +73,7 @@ Philosophy
       let productName: Driver<String>
       let formattedPrice: Driver<String>
       let formattedOriginalPrice: Driver<String>
-      let originalPriceHidden: Driver<Bool>
+      let isOriginalPriceHidden: Driver<Bool>
     }
     ```
 
@@ -89,13 +89,13 @@ Requirements
 Screenshots
 -----------
 
-![rxtodo](https://cloud.githubusercontent.com/assets/931655/16531082/eae3ead2-4005-11e6-8537-a6856d704d74.png)
+![rxtodo](https://cloud.githubusercontent.com/assets/931655/21965942/1611927a-dbad-11e6-99ee-3509d06dc242.png)
 
 
 Contribution
 ------------
 
-Discussion and pull requests are welcomed 💖 Correcting English grammar is welcomed, too.
+Discussion and pull requests are welcomed 💖
 
 
 License
