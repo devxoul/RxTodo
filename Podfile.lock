@@ -7,7 +7,7 @@ PODS:
   - RxDataSources (1.0.0):
     - RxCocoa (~> 3.0)
     - RxSwift (~> 3.0)
-  - RxExpect (0.2.0):
+  - RxExpect (0.3.0):
     - RxCocoa (>= 3.0)
     - RxSwift (>= 3.0)
     - RxTest (>= 3.0)
@@ -26,7 +26,7 @@ DEPENDENCIES:
   - ReusableKit (~> 1.1)
   - RxCocoa (~> 3.1)
   - RxDataSources (~> 1.0)
-  - RxExpect (~> 0.2)
+  - RxExpect (~> 0.3)
   - RxOptional (~> 3.1)
   - RxSwift (~> 3.1)
   - RxTest (~> 3.1)
@@ -39,13 +39,13 @@ SPEC CHECKSUMS:
   ReusableKit: 89e743a120bab0d95848bff27e481833c2768905
   RxCocoa: 50d7564866da9299161e86a263ce12a0873904d8
   RxDataSources: 824693e84d00781d0a5e5cedc1ff95ce9250aacd
-  RxExpect: e25c7fb54147d2b9181f943d17eb67fbbcfc3e34
+  RxExpect: 93b45e5b313327d3de055c52835a3d2c4da3d8e6
   RxOptional: b97b59183af80d1e729ac9e51d09a10be668d6a8
   RxSwift: 83ff553e7593fdfdcb2562933a64c0284dffdadc
   RxTest: 661e33b5022682961784da03cf79c175fcc4bd64
   SnapKit: 98af0a4e9369d3c58f758967518081dbdc7eb1d9
   Then: 8496793c8fcac95482b943909b440724c7d8d82c
 
-PODFILE CHECKSUM: 46c842fae4693dbd37bff1b6a8e97371e462b4f2
+PODFILE CHECKSUM: 47ea27ad7edd38a55354e0e31e56dc4ae7bbcfe7
 
 COCOAPODS: 1.1.1
