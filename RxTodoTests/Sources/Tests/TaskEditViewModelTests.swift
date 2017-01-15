@@ -19,58 +19,57 @@ class TaskEditViewModelTests: XCTestCase {
 
   func testNavigationBarTitle() {
     RxExpect { test in
-      let viewModel = TaskEditViewModel(mode: .new)
-      let title = viewModel.navigationBarTitle.map { $0! }
-      test.assertNextEqual(title, ["New"])
+      let provider = MockServiceProvider()
+      let viewModel = TaskEditViewModel(provider: provider, mode: .new)
+      test.assert(viewModel.navigationBarTitle.map { $0! })
+        .filterNext()
+        .equal(["New"])
     }
-    RxExpect { test in
-      let task = Task(title: "")
-      let viewModel = TaskEditViewModel(mode: .edit(task))
-      let title = viewModel.navigationBarTitle.map { $0! }
-      test.assertNextEqual(title, ["Edit"])
-    }
-  }
 
-  func testTitle() {
     RxExpect { test in
-      let viewModel = TaskEditViewModel(mode: .new)
-      test.assertNextEqual(viewModel.title.asDriver().filterNil(), [""])
-    }
-    RxExpect { test in
-      let task = Task(title: "Release a new version")
-      let viewModel = TaskEditViewModel(mode: .edit(task))
-      test.assertNextEqual(viewModel.title.asDriver().filterNil(), ["Release a new version"])
+      let task = Task(title: "Hello")
+      let provider = MockServiceProvider()
+      let viewModel = TaskEditViewModel(provider: provider, mode: .edit(task))
+      test.assert(viewModel.navigationBarTitle.map { $0! })
+        .filterNext()
+        .equal(["Edit"])
     }
   }
 
   func testDoneButtonEnabled() {
     RxExpect { test in
-      let viewModel = TaskEditViewModel(mode: .new)
-      test.input(viewModel.title, [
+      let provider = MockServiceProvider()
+      let viewModel = TaskEditViewModel(provider: provider, mode: .new)
+      test.input(viewModel.titleInputDidChangeText, [
         next(100, "A"),
         next(200, "AB"),
         next(300, ""),
       ])
-      test.assertNextEqual(viewModel.doneButtonEnabled, [false, true, false])
+      test.assert(viewModel.doneButtonEnabled)
+        .filterNext()
+        .since(100)
+        .equal([true, false])
     }
   }
 
   func testPresentCancelAlert_new() {
     RxExpect("it should not present cancel alert when title is empty") { test in
-      let viewModel = TaskEditViewModel(mode: .new)
-      test.input(viewModel.cancelButtonDidTap, [next(100, Void())])
-
-      let presented = viewModel.presentCancelAlert.map { _ in true }
-      test.assertNextEqual(presented, [] as [Bool])
+      let provider = MockServiceProvider()
+      let viewModel = TaskEditViewModel(provider: provider, mode: .new)
+      test.input(viewModel.cancelButtonItemDidTap, [next(100)])
+      test.assert(viewModel.presentCancelAlert)
+        .filterNext()
+        .isEmpty()
     }
 
     RxExpect("it should present cancel alert when title is not empty") { test in
-      let viewModel = TaskEditViewModel(mode: .new)
-      test.input(viewModel.title, [next(10, "A")])
-      test.input(viewModel.cancelButtonDidTap, [next(100, Void())])
-
-      let presented = viewModel.presentCancelAlert.map { _ in true }
-      test.assertNextEqual(presented, [true] as [Bool])
+      let provider = MockServiceProvider()
+      let viewModel = TaskEditViewModel(provider: provider, mode: .new)
+      test.input(viewModel.titleInputDidChangeText, [next(100, "A")])
+      test.input(viewModel.cancelButtonItemDidTap, [next(200)])
+      test.assert(viewModel.presentCancelAlert)
+        .filterNext()
+        .isNotEmpty()
     }
   }
 
@@ -78,91 +77,116 @@ class TaskEditViewModelTests: XCTestCase {
     let task = Task(title: "Clean my room")
 
     RxExpect("it should not present cancel alert when title is not changed") { test in
-      let viewModel = TaskEditViewModel(mode: .edit(task))
-      test.input(viewModel.cancelButtonDidTap, [next(100, Void())])
-
-      let presented = viewModel.presentCancelAlert.map { _ in true }
-      test.assertNextEqual(presented, [] as [Bool])
+      let provider = MockServiceProvider()
+      let viewModel = TaskEditViewModel(provider: provider, mode: .edit(task))
+      test.input(viewModel.cancelButtonItemDidTap, [next(200)])
+      test.assert(viewModel.presentCancelAlert)
+        .filterNext()
+        .isEmpty()
     }
 
     RxExpect("it should present cancel alert when title is changed") { test in
-      let viewModel = TaskEditViewModel(mode: .edit(task))
-      test.input(viewModel.title, [next(10, "A")])
-      test.input(viewModel.cancelButtonDidTap, [next(100, Void())])
-
-      let presented = viewModel.presentCancelAlert.map { _ in true }
-      test.assertNextEqual(presented, [true] as [Bool])
+      let provider = MockServiceProvider()
+      let viewModel = TaskEditViewModel(provider: provider, mode: .edit(task))
+      test.input(viewModel.titleInputDidChangeText, [next(100, "New Title")])
+      test.input(viewModel.cancelButtonItemDidTap, [next(200)])
+      test.assert(viewModel.presentCancelAlert)
+        .filterNext()
+        .isNotEmpty()
     }
   }
 
   func testDismissViewController_cancel() {
-    RxExpect("it should not dismiss view controller when cancel button tapped while title is changed") { test in
-      let viewModel = TaskEditViewModel(mode: .new)
-      test.input(viewModel.title, [next(100, "A")])
-      test.input(viewModel.cancelButtonDidTap, [next(200, Void())])
-
-      let dismissed = viewModel.dismissViewController.map { _ in true }
-      test.assertNextEqual(dismissed, [] as [Bool])
+    RxExpect("it should not dismiss view controller on tapping cancel button when title is changed") { test in
+      let provider = MockServiceProvider()
+      let viewModel = TaskEditViewModel(provider: provider, mode: .new)
+      test.input(viewModel.titleInputDidChangeText, [next(100, "A")])
+      test.input(viewModel.cancelButtonItemDidTap, [next(200)])
+      test.assert(viewModel.dismissViewController)
+        .filterNext()
+        .isEmpty()
     }
 
-    RxExpect("it should dismiss view controller when cancel button tapped while title is not changed") { test in
-      let viewModel = TaskEditViewModel(mode: .new)
-      test.input(viewModel.cancelButtonDidTap, [next(100, Void())])
-
-      let dismissed = viewModel.dismissViewController.map { _ in true }
-      test.assertNextEqual(dismissed, [true] as [Bool])
+    RxExpect("it should dismiss view controller on tapping cancel button when title is not changed") { test in
+      let provider = MockServiceProvider()
+      let viewModel = TaskEditViewModel(provider: provider, mode: .new)
+      test.input(viewModel.cancelButtonItemDidTap, [next(200)])
+      test.assert(viewModel.dismissViewController)
+        .filterNext()
+        .isNotEmpty()
     }
   }
 
   func testDismissViewController_leave() {
-    RxExpect("it should dismiss view controller when leave button tapped") { test in
-      let viewModel = TaskEditViewModel(mode: .new)
-      test.input(viewModel.alertLeaveButtonDidTap, [next(100, Void())])
-
-      let dismissed = viewModel.dismissViewController.map { _ in true }
-      test.assertNextEqual(dismissed, [true] as [Bool])
+    RxExpect("it should dismiss view controller on tapping leave button") { test in
+      let provider = MockServiceProvider()
+      let viewModel = TaskEditViewModel(provider: provider, mode: .new)
+      test.input(viewModel.cancelAlertDidSelectAction, [next(100, .leave)])
+      test.assert(viewModel.dismissViewController)
+        .filterNext()
+        .isNotEmpty()
     }
   }
 
   func testDismissViewController_done() {
-    RxExpect("it should not dismiss view controller when done button tapped while title is empty") { test in
-      let viewModel = TaskEditViewModel(mode: .new)
-      test.input(viewModel.doneButtonDidTap, [next(100, Void())])
-
-      let dismissed = viewModel.dismissViewController.map { _ in true }
-      test.assertNextEqual(dismissed, [] as [Bool])
+    RxExpect("it should not dismiss view controller on tapping done button when title is empty") { test in
+      let provider = MockServiceProvider()
+      let viewModel = TaskEditViewModel(provider: provider, mode: .new)
+      test.input(viewModel.doneButtonItemDidTap, [next(100)])
+      test.assert(viewModel.dismissViewController)
+        .filterNext()
+        .isEmpty()
     }
 
-    RxExpect("it should dismiss view controller when done button tapped while title is not empty") { test in
-      let viewModel = TaskEditViewModel(mode: .new)
-      test.input(viewModel.title, [next(100, "A")])
-      test.input(viewModel.doneButtonDidTap, [next(200, Void())])
-
-      let dismissed = viewModel.dismissViewController.map { _ in true }
-      test.assertNextEqual(dismissed, [true] as [Bool])
-    }
-  }
-
-  func testTaskDidCreate() {
-    RxExpect { test in
-      let viewModel = TaskEditViewModel(mode: .new)
-      test.input(viewModel.title, [next(100, "Hi")])
-      test.input(viewModel.doneButtonDidTap, [next(200, Void())])
-
-      let didCreate = Task.didCreate.filter { $0.title == "Hi" }.map { _ in true }
-      test.assertNextEqual(didCreate, [true])
+    RxExpect("it should dismiss view controller on tapping done button when title is not empty") { test in
+      let provider = MockServiceProvider()
+      let viewModel = TaskEditViewModel(provider: provider, mode: .new)
+      test.input(viewModel.titleInputDidChangeText, [next(100, "A")])
+      test.input(viewModel.doneButtonItemDidTap, [next(200)])
+      test.assert(viewModel.dismissViewController)
+        .filterNext()
+        .isNotEmpty()
     }
   }
 
-  func testTaskDidUpdate() {
-    RxExpect { test in
+  func testTaskEvent() {
+    RxExpect("it should emit TaskEvent.create when done editing") { test in
+      let provider = MockServiceProvider()
+      let viewModel = TaskEditViewModel(provider: provider, mode: .new)
+      test.input(viewModel.titleInputDidChangeText, [next(100, "A")])
+      test.input(viewModel.doneButtonItemDidTap, [next(200)])
+
+      let taskTitleFromCreateEvent = provider.taskService.event
+        .flatMap { event -> Observable<String> in
+          if case .create(let task) = event {
+            return .just(task.title)
+          } else {
+            return .empty()
+          }
+        }
+      test.assert(taskTitleFromCreateEvent)
+        .filterNext()
+        .equal(["A"])
+    }
+
+    RxExpect("it should emit TaskEvent.update when done editing") { test in
+      let provider = MockServiceProvider()
       let task = Task(title: "Clean my room")
-      let viewModel = TaskEditViewModel(mode: .edit(task))
-      test.input(viewModel.title, [next(100, "Hi")])
-      test.input(viewModel.doneButtonDidTap, [next(200, Void())])
+      let viewModel = TaskEditViewModel(provider: provider, mode: .edit(task))
+      test.input(viewModel.titleInputDidChangeText, [next(100, "Hi")])
+      test.input(viewModel.doneButtonItemDidTap, [next(200)])
 
-      let didUpdate = Task.didUpdate.filter { $0.title == "Hi" }.map { _ in true }
-      test.assertNextEqual(didUpdate, [true])
+      let taskTitleFromUpdateEvent = provider.taskService.event
+        .flatMap { event -> Observable<String> in
+          if case .update(let task) = event {
+            return .just(task.title)
+          } else {
+            return .empty()
+          }
+        }
+      test.assert(taskTitleFromUpdateEvent)
+        .filterNext()
+        .equal(["Hi"])
     }
   }
 
