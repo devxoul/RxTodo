@@ -26,7 +26,7 @@ Philosophy
     **Bad**
 
     ```swift
-    viewModel.title
+    viewModel.titleLabelText
       .map { $0 + "!" } // Bad: View should not modify the data
       .bindTo(self.titleLabel)
     ```
@@ -34,8 +34,8 @@ Philosophy
     **Good**
     
     ```swift
-    viewModel.title
-      .bindTo(self.titleLabel)
+    viewModel.titleLabelText
+      .bindTo(self.titleLabel.rx.text)
     ```
 
 * View doesn't know what ViewModel does. View can only communicate to ViewModel about what View did.
