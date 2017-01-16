@@ -37,7 +37,7 @@ final class TaskListViewModel: TaskListViewModelType {
 
   // MARK: Types
 
-  fileprivate enum TaskCommand {
+  fileprivate enum TaskOperation {
     case refresh([Task])
     case add(Task)
     case replace(Task)
@@ -94,17 +94,17 @@ final class TaskListViewModel: TaskListViewModelType {
       }
 
     //
-    // Task Command
+    // Task Operation
     //
-    let taskRefreshCommand = self.viewDidLoad
+    let taskRefreshOperation = self.viewDidLoad
       .flatMap {
         provider.taskService.fetchTasks()
           .ignoreErrors()
       }
-      .map(TaskCommand.refresh)
+      .map(TaskOperation.refresh)
 
-    let taskEventCommand = provider.taskService.event
-      .map { event -> TaskCommand in
+    let taskEventOperation = provider.taskService.event
+      .map { event -> TaskOperation in
         switch event {
         case let .create(task): return .add(task)
         case let .update(task): return .replace(task)
@@ -115,8 +115,8 @@ final class TaskListViewModel: TaskListViewModelType {
       }
       .shareReplay(1)
 
-    let taskMoveCommand = self.itemDidMove
-      .map { sourceIndexPath, destinationIndexPath -> TaskCommand in
+    let taskMoveOperation = self.itemDidMove
+      .map { sourceIndexPath, destinationIndexPath -> TaskOperation in
         return .move(from: sourceIndexPath.row, to: destinationIndexPath.row)
       }
 
@@ -124,10 +124,10 @@ final class TaskListViewModel: TaskListViewModelType {
     // Tasks
     //
     let tasks: Observable<[Task]> = Observable
-      .of(taskRefreshCommand, taskEventCommand, taskMoveCommand)
+      .of(taskRefreshOperation, taskEventOperation, taskMoveOperation)
       .merge()
-      .scan([]) { tasks, command in
-        switch command {
+      .scan([]) { tasks, operation in
+        switch operation {
         case let .refresh(newTasks):
           return newTasks
 
