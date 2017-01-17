@@ -26,7 +26,7 @@ extension Reactive where Base: UIViewController {
   var viewWillDisappear: Observable<Bool> {
     return self.sentMessage(#selector(Base.viewWillDisappear)).map { $0.first as? Bool ?? false }
   }
-  var rx_viewDidDisappear: Observable<Bool> {
+  var viewDidDisappear: Observable<Bool> {
     return self.sentMessage(#selector(Base.viewDidDisappear)).map { $0.first as? Bool ?? false }
   }
 
