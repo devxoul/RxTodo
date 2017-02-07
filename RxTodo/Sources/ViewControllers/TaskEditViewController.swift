@@ -109,8 +109,8 @@ final class TaskEditViewController: BaseViewController {
       .addDisposableTo(self.disposeBag)
 
     viewModel.presentCancelAlert
-      .subscribe(onNext: { [weak self] actions in
-        guard let `self` = self else { return }
+      .subscribe(onNext: { [weak self, weak viewModel] actions in
+        guard let `self` = self, let viewModel = viewModel else { return }
         self.view.endEditing(true)
         let alertController = UIAlertController(
           title: "Really?",
