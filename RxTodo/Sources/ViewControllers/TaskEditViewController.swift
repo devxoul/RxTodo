@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 
 final class TaskEditViewController: BaseViewController {
-
+  var viewModel: TaskEditViewModel!
   // MARK: Constants
 
   struct Metric {
@@ -42,11 +42,11 @@ final class TaskEditViewController: BaseViewController {
 
   // MARK: Initializing
 
-  init(viewModel: TaskEditViewModel) {
+  init(viewModel: @escaping TaskEditViewModel) {
     super.init()
     self.navigationItem.leftBarButtonItem = self.cancelButtonItem
     self.navigationItem.rightBarButtonItem = self.doneButtonItem
-    self.configure(viewModel)
+    self.viewModel = viewModel
   }
 
   required convenience init?(coder aDecoder: NSCoder) {
@@ -59,6 +59,7 @@ final class TaskEditViewController: BaseViewController {
     super.viewDidLoad()
     self.view.backgroundColor = .white
     self.view.addSubview(self.titleInput)
+    self.configure(self.viewModel)
   }
 
   override func viewDidAppear(_ animated: Bool) {

@@ -38,17 +38,12 @@ typealias TaskEditViewModel = (TaskEditViewModelInputs) -> TaskEditViewModelOutp
 
 func createTaskEditViewModel(provider: ServiceProviderType, mode: TaskEditViewMode) -> TaskEditViewModel {
     return { input in
-      let cancelAlertDidSelectAction = input.cancelAlertDidSelectAction.asInput()
-      let cancelButtonItemDidTap = input.cancelButtonItemDidTap.asInput()
-      let doneButtonItemDidTap = input.doneButtonItemDidTap.asInput()
-      let titleInputDidChangeText = input.titleInputDidChangeText.asInput()
-
         //
         // Title Input Text
         //
         let titleInputText = createTitleInputText(
             mode: mode,
-            titleInputDidChangeText: titleInputDidChangeText.asObservable()
+            titleInputDidChangeText: input.titleInputDidChangeText.asObservable()
         )
 
         //
@@ -65,7 +60,7 @@ func createTaskEditViewModel(provider: ServiceProviderType, mode: TaskEditViewMo
         //
         // Confirm Cancel
         //
-        let presentCancelAlert: Observable<[TaskEditViewCancelAlertAction]> = cancelButtonItemDidTap
+        let presentCancelAlert: Observable<[TaskEditViewCancelAlertAction]> = input.cancelButtonItemDidTap
             .withLatestFrom(titleInputText)
             .filter { isTitleChanged(mode: mode, title: $0) }
             .map { _ in [.leave, .stay] }
@@ -75,7 +70,7 @@ func createTaskEditViewModel(provider: ServiceProviderType, mode: TaskEditViewMo
         //
         // Done
         //
-        let createTaskEvent = doneButtonItemDidTap
+        let createTaskEvent = input.doneButtonItemDidTap
             .withLatestFrom(doneButtonEnabled)
             .filter { isEnabled in isEnabled }
             .withLatestFrom(titleInputText)
@@ -90,22 +85,23 @@ func createTaskEditViewModel(provider: ServiceProviderType, mode: TaskEditViewMo
                     return .update(newTask)
                 }
             }
+            .share()
 
         provider.taskService.add(event: createTaskEvent)
 
         //
         // Dismiss
         //
-        let cancelButtonDidTapWithoutChanges = cancelButtonItemDidTap
+        let cancelButtonDidTapWithoutChanges = input.cancelButtonItemDidTap
             .withLatestFrom(titleInputText)
             .filter { !isTitleChanged(mode: mode, title: $0) }
             .map { _ in Void() }
 
-        let cancelAlertDidSelectLeaveAction = cancelAlertDidSelectAction
+        let cancelAlertDidSelectLeaveAction = input.cancelAlertDidSelectAction
             .filter { $0 == .leave }
             .map { _ in Void() }
 
-        let doneButtonDidTapWhenEnabled = doneButtonItemDidTap
+        let doneButtonDidTapWhenEnabled = input.doneButtonItemDidTap
             .withLatestFrom(doneButtonEnabled)
             .filter { isEnabled in isEnabled }
             .map { _ in Void() }

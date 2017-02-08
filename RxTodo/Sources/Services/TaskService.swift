@@ -30,7 +30,7 @@ final class TaskService: BaseService, TaskServiceType {
   var event = PublishSubject<TaskEvent>()
 
   func add(event: Observable<TaskEvent>) {
-    _ = event.subscribe(self.event)
+    _ = event.concat(Observable.never()).subscribe(self.event)
   }
 
   func fetchTasks() -> Observable<[Task]> {

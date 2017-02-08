@@ -60,7 +60,7 @@ class TaskListViewModelTests: XCTestCase {
       task.title = "Hello, world!"
       test.input(provider.taskService.event, [next(200, .create(task))])
 
-      let firstItemTitle = outputs.sections.map { $0.first!.items.first!.title }.debug("first item")
+      let firstItemTitle = outputs.sections.map { $0.first!.items.first!.title }
       test.assert(firstItemTitle)
         .filterNext()
         .since(200)
@@ -76,7 +76,7 @@ class TaskListViewModelTests: XCTestCase {
       // input
       test.input(inputs.itemDidDelete, [next(200, IndexPath(row: 0, section: 0))])
 
-      let count = outputs.sections.map { $0.first!.items.count }.debug("count")
+      let count = outputs.sections.map { $0.first!.items.count }
       test.assert(count)
         .filterNext()
         .since(200)

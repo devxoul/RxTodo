@@ -44,18 +44,11 @@ private enum TaskOperation {
 
 func createTaskListViewModel(provider: ServiceProviderType) -> TaskListViewModel {
     return { input in
-      let addButtonItemDidTap = input.addButtonItemDidTap.asInput()
-      let editButtonItemDidTap = input.editButtonItemDidTap.asInput()
-      let itemDidDelete = input.itemDidDelete.asInput()
-      let itemDidMove = input.itemDidMove.asInput()
-      let itemDidSelect = input.itemDidSelect.asInput()
-      let viewDidLoad = input.viewDidLoad.asInput()
-
         //
         // Editing
         //
 
-        let isEditing = editButtonItemDidTap
+        let isEditing = input.editButtonItemDidTap
             .scan(false) { lastValue, _ in !lastValue }
             .startWith(false)
             .asDriver(onErrorJustReturn: false)
@@ -77,7 +70,7 @@ func createTaskListViewModel(provider: ServiceProviderType) -> TaskListViewModel
         //
         // Task Operation
         //
-        let taskRefreshOperation = viewDidLoad
+        let taskRefreshOperation = input.viewDidLoad
             .flatMap {
                 provider.taskService.fetchTasks()
                     .ignoreErrors()
@@ -96,7 +89,7 @@ func createTaskListViewModel(provider: ServiceProviderType) -> TaskListViewModel
             }
             .shareReplay(1)
 
-        let taskMoveOperation = itemDidMove
+        let taskMoveOperation = input.itemDidMove
             .map { sourceIndexPath, destinationIndexPath -> TaskOperation in
                 return .move(from: sourceIndexPath.row, to: destinationIndexPath.row)
             }
@@ -177,7 +170,7 @@ func createTaskListViewModel(provider: ServiceProviderType) -> TaskListViewModel
         // Interactions
         //
 
-        let selectTaskEvent = itemDidSelect
+        let selectTaskEvent = input.itemDidSelect
             .withLatestFrom(isEditing) { ($0, $1) }
             .filter { _, isEditing in !isEditing }
             .map { indexPath, _ in indexPath }
@@ -191,7 +184,7 @@ func createTaskListViewModel(provider: ServiceProviderType) -> TaskListViewModel
             }
         provider.taskService.add(event: selectTaskEvent)
 
-        let deleteTaskEvent = itemDidDelete
+        let deleteTaskEvent = input.itemDidDelete
             .withLatestFrom(tasks) { indexPath, tasks -> TaskEvent in
                 return TaskEvent.delete(id: tasks[indexPath.row].id)
             }
@@ -200,11 +193,11 @@ func createTaskListViewModel(provider: ServiceProviderType) -> TaskListViewModel
         //
         // View Controller Navigations
         //
-        let presentAddViewModel: Observable<TaskEditViewModel> = addButtonItemDidTap
+        let presentAddViewModel: Observable<TaskEditViewModel> = input.addButtonItemDidTap
             .map {
                 createTaskEditViewModel(provider: provider, mode: .new)
         }
-        let presentEditViewModel: Observable<TaskEditViewModel> = itemDidSelect
+        let presentEditViewModel: Observable<TaskEditViewModel> = input.itemDidSelect
             .withLatestFrom(isEditing) { ($0, $1) }
             .filter { _, isEditing in isEditing }
             .map { indexPath, _ in indexPath }

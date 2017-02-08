@@ -102,12 +102,3 @@ extension ObservableType {
     return self.catchError { _ in .empty() }
   }
 }
-
-// MARL: - asInput
-
-extension ObservableType {
-  /// Certain inputs such as ControlEvents will send Completion events before being disposed. This has the unfortunate effect of completing any downstream operators and subscriptions, even if their lifetime is intended to be longer than a single view controller. Using asInput on ControlEvents and other UI Units removes the completion events to avoid this problem.
-  func asInput() -> Observable<E> {
-    return self.concat(Observable.never())
-  }
-}

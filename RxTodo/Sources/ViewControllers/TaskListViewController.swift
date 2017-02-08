@@ -14,6 +14,7 @@ import RxSwift
 import ReusableKit
 
 final class TaskListViewController: BaseViewController {
+  var viewModel: TaskListViewModel!
 
   // MARK: Constants
 
@@ -35,11 +36,11 @@ final class TaskListViewController: BaseViewController {
 
   // MARK: Initializing
 
-  init(viewModel: TaskListViewModel) {
+  init(viewModel: @escaping TaskListViewModel) {
     super.init()
     self.navigationItem.leftBarButtonItem = self.editButtonItem
     self.navigationItem.rightBarButtonItem = self.addButtonItem
-    self.configure(viewModel)
+    self.viewModel = viewModel
   }
 
   required init?(coder aDecoder: NSCoder) {
@@ -52,6 +53,7 @@ final class TaskListViewController: BaseViewController {
     super.viewDidLoad()
     self.view.backgroundColor = .white
     self.view.addSubview(self.tableView)
+    self.configure(self.viewModel)
   }
 
   override func setupConstraints() {
@@ -74,7 +76,7 @@ final class TaskListViewController: BaseViewController {
     self.dataSource.canMoveRowAtIndexPath = { _ in true }
 
     // Input
-    let inputs = TaskListViewModelInputs(viewDidLoad: self.rx.viewDidLoad,
+    let inputs = TaskListViewModelInputs(viewDidLoad: .just(),
                                          editButtonItemDidTap: self.editButtonItem.rx.tap.asObservable(),
                                          addButtonItemDidTap: self.addButtonItem.rx.tap.asObservable(),
                                          itemDidSelect: self.tableView.rx.itemSelected.asObservable(),
