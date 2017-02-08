@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window.makeKeyAndVisible()
 
     let serviceProvider = ServiceProvider()
-    let viewModel = TaskListViewModel(provider: serviceProvider)
+    let viewModel = createTaskListViewModel(provider: serviceProvider)
     let viewController = TaskListViewController(viewModel: viewModel)
     let navigationController = UINavigationController(rootViewController: viewController)
     window.rootViewController = navigationController
