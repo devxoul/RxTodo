@@ -27,10 +27,10 @@ struct TaskListViewModelOutputs {
     var editButtonItemStyle: Driver<UIBarButtonItemStyle>
     var sections: Driver<[TaskListSection]>
     var isTableViewEditing: Driver<Bool>
-    var presentTaskEditViewModel: Observable<TaskEditViewModel>
+    var presentTaskEditViewModel: Observable<TaskEditViewModelType>
 }
 
-typealias TaskListViewModel = (TaskListViewModelInputs) -> TaskListViewModelOutputs
+typealias TaskListViewModelType = (TaskListViewModelInputs) -> TaskListViewModelOutputs
 
 private enum TaskOperation {
     case refresh([Task])
@@ -42,7 +42,7 @@ private enum TaskOperation {
     case markUndone(id: String)
 }
 
-func createTaskListViewModel(provider: ServiceProviderType) -> TaskListViewModel {
+func TaskListViewModel(provider: ServiceProviderType) -> TaskListViewModelType {
     return { input in
         //
         // Editing
@@ -193,17 +193,17 @@ func createTaskListViewModel(provider: ServiceProviderType) -> TaskListViewModel
         //
         // View Controller Navigations
         //
-        let presentAddViewModel: Observable<TaskEditViewModel> = input.addButtonItemDidTap
+        let presentAddViewModel: Observable<TaskEditViewModelType> = input.addButtonItemDidTap
             .map {
-                createTaskEditViewModel(provider: provider, mode: .new)
+                TaskEditViewModel(provider: provider, mode: .new)
         }
-        let presentEditViewModel: Observable<TaskEditViewModel> = input.itemDidSelect
+        let presentEditViewModel: Observable<TaskEditViewModelType> = input.itemDidSelect
             .withLatestFrom(isEditing) { ($0, $1) }
             .filter { _, isEditing in isEditing }
             .map { indexPath, _ in indexPath }
-            .withLatestFrom(tasks) { indexPath, tasks -> TaskEditViewModel in
+            .withLatestFrom(tasks) { indexPath, tasks -> TaskEditViewModelType in
                 let task = tasks[indexPath.row]
-                return createTaskEditViewModel(provider: provider, mode: .edit(task))
+                return TaskEditViewModel(provider: provider, mode: .edit(task))
         }
         let presentTaskEditViewModel = Observable
             .of(presentAddViewModel, presentEditViewModel)

@@ -34,9 +34,9 @@ struct TaskEditViewModelOutputs {
     var dismissViewController: Observable<Void>
 }
 
-typealias TaskEditViewModel = (TaskEditViewModelInputs) -> TaskEditViewModelOutputs
+typealias TaskEditViewModelType = (TaskEditViewModelInputs) -> TaskEditViewModelOutputs
 
-func createTaskEditViewModel(provider: ServiceProviderType, mode: TaskEditViewMode) -> TaskEditViewModel {
+func TaskEditViewModel(provider: ServiceProviderType, mode: TaskEditViewMode) -> TaskEditViewModelType {
     return { input in
         //
         // Title Input Text

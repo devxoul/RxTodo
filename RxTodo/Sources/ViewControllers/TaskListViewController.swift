@@ -14,7 +14,7 @@ import RxSwift
 import ReusableKit
 
 final class TaskListViewController: BaseViewController {
-  var viewModel: TaskListViewModel!
+  var viewModel: TaskListViewModelType!
 
   // MARK: Constants
 
@@ -36,7 +36,7 @@ final class TaskListViewController: BaseViewController {
 
   // MARK: Initializing
 
-  init(viewModel: @escaping TaskListViewModel) {
+  init(viewModel: @escaping TaskListViewModelType) {
     super.init()
     self.navigationItem.leftBarButtonItem = self.editButtonItem
     self.navigationItem.rightBarButtonItem = self.addButtonItem
@@ -65,7 +65,7 @@ final class TaskListViewController: BaseViewController {
 
   // MARK: Configuring
 
-  private func configure(_ viewModel: TaskListViewModel) {
+  private func configure(_ viewModel: TaskListViewModelType) {
     self.tableView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
     self.dataSource.configureCell = { _, tableView, indexPath, viewModel in
       let cell = tableView.dequeue(Reusable.taskCell, for: indexPath)

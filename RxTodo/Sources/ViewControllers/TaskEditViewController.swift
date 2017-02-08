@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 
 final class TaskEditViewController: BaseViewController {
-  var viewModel: TaskEditViewModel!
+  var viewModel: TaskEditViewModelType!
   // MARK: Constants
 
   struct Metric {
@@ -42,7 +42,7 @@ final class TaskEditViewController: BaseViewController {
 
   // MARK: Initializing
 
-  init(viewModel: @escaping TaskEditViewModel) {
+  init(viewModel: @escaping TaskEditViewModelType) {
     super.init()
     self.navigationItem.leftBarButtonItem = self.cancelButtonItem
     self.navigationItem.rightBarButtonItem = self.doneButtonItem
@@ -78,7 +78,7 @@ final class TaskEditViewController: BaseViewController {
 
   // MARK: Configuring
 
-  private func configure(_ viewModel: TaskEditViewModel) {
+  private func configure(_ viewModel: TaskEditViewModelType) {
     let cancelAlertDidSelectAction = PublishSubject<TaskEditViewCancelAlertAction>()
 
     let input = TaskEditViewModelInputs(cancelButtonItemDidTap: self.cancelButtonItem.rx.tap.asObservable(),

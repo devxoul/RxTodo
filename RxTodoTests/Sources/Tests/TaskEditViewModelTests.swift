@@ -20,7 +20,7 @@ class TaskEditViewModelTests: XCTestCase {
   func setupTest(mode: TaskEditViewMode) -> (MockServiceProvider, MockTaskEditViewModelInputs, TaskEditViewModelOutputs) {
     let provider = MockServiceProvider()
     let inputs = MockTaskEditViewModelInputs()
-    let viewModel = createTaskEditViewModel(provider: provider, mode: mode)
+    let viewModel = TaskEditViewModel(provider: provider, mode: mode)
     let outputs = viewModel(inputs.asInputs())
     return (provider, inputs, outputs)
   }

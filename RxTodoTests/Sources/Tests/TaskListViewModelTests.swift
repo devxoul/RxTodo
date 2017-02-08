@@ -19,7 +19,7 @@ class TaskListViewModelTests: XCTestCase {
   func setupTest() -> (MockServiceProvider, MockTaskListViewModelInputs, TaskListViewModelOutputs) {
     let provider = MockServiceProvider()
     let inputs = MockTaskListViewModelInputs()
-    let viewModel = createTaskListViewModel(provider: provider)
+    let viewModel = TaskListViewModel(provider: provider)
     let outputs = viewModel(inputs.asInputs())
     return (provider, inputs, outputs)
   }
