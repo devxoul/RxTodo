@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RxSwift
 
 final class TaskEditViewController: BaseViewController {
 
@@ -41,7 +42,7 @@ final class TaskEditViewController: BaseViewController {
 
   // MARK: Initializing
 
-  init(viewModel: TaskEditViewModelType) {
+  init(viewModel: TaskEditViewModel) {
     super.init()
     self.navigationItem.leftBarButtonItem = self.cancelButtonItem
     self.navigationItem.rightBarButtonItem = self.doneButtonItem
@@ -51,7 +52,6 @@ final class TaskEditViewController: BaseViewController {
   required convenience init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
-
 
   // MARK: View Life Cycle
 
@@ -77,38 +77,30 @@ final class TaskEditViewController: BaseViewController {
 
   // MARK: Configuring
 
-  private func configure(_ viewModel: TaskEditViewModelType) {
-    // Input
-    self.rx.deallocated
-      .bindTo(viewModel.viewDidDeallocate)
-      .addDisposableTo(self.disposeBag)
+  private func configure(_ viewModel: TaskEditViewModel) {
+    let cancelAlertDidSelectAction = PublishSubject<TaskEditViewCancelAlertAction>()
 
-    self.cancelButtonItem.rx.tap
-      .bindTo(viewModel.cancelButtonItemDidTap)
-      .addDisposableTo(self.disposeBag)
+    let input = TaskEditViewModelInputs(cancelButtonItemDidTap: self.cancelButtonItem.rx.tap.asObservable(),
+                                        doneButtonItemDidTap: self.doneButtonItem.rx.tap.asObservable(),
+                                        titleInputDidChangeText: self.titleInput.rx.text.changed.asObservable(),
+                                        cancelAlertDidSelectAction: cancelAlertDidSelectAction)
 
-    self.doneButtonItem.rx.tap
-      .bindTo(viewModel.doneButtonItemDidTap)
-      .addDisposableTo(self.disposeBag)
-
-    self.titleInput.rx.text.changed
-      .bindTo(viewModel.titleInputDidChangeText)
-      .addDisposableTo(self.disposeBag)
+    let output = viewModel(input)
 
     // Output
-    viewModel.navigationBarTitle
+    output.navigationBarTitle
       .drive(self.navigationItem.rx.title)
       .addDisposableTo(self.disposeBag)
 
-    viewModel.doneButtonEnabled
+    output.doneButtonEnabled
       .drive(self.doneButtonItem.rx.isEnabled)
       .addDisposableTo(self.disposeBag)
 
-    viewModel.titleInputText
+    output.titleInputText
       .drive(self.titleInput.rx.text)
       .addDisposableTo(self.disposeBag)
 
-    viewModel.presentCancelAlert
+    output.presentCancelAlert
       .subscribe(onNext: { [weak self] actions in
         guard let `self` = self else { return }
         self.view.endEditing(true)
@@ -120,7 +112,7 @@ final class TaskEditViewController: BaseViewController {
         actions
           .map { action -> UIAlertAction in
             let handler: (UIAlertAction) -> Void =  { _ in
-              viewModel.cancelAlertDidSelectAction.onNext(action)
+              cancelAlertDidSelectAction.onNext(action)
             }
             switch action {
             case .leave:
@@ -134,7 +126,7 @@ final class TaskEditViewController: BaseViewController {
       })
       .addDisposableTo(self.disposeBag)
 
-    viewModel.dismissViewController
+    output.dismissViewController
       .subscribe(onNext: { [weak self] in
         self?.view.endEditing(true)
         self?.dismiss(animated: true, completion: nil)

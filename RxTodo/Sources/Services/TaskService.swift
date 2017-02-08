@@ -18,6 +18,7 @@ enum TaskEvent {
 
 protocol TaskServiceType {
   var event: PublishSubject<TaskEvent> { get }
+  func add(event: Observable<TaskEvent>)
   func fetchTasks() -> Observable<[Task]>
 
   @discardableResult
@@ -26,7 +27,11 @@ protocol TaskServiceType {
 
 final class TaskService: BaseService, TaskServiceType {
 
-  let event = PublishSubject<TaskEvent>()
+  var event = PublishSubject<TaskEvent>()
+
+  func add(event: Observable<TaskEvent>) {
+    _ = event.subscribe(self.event)
+  }
 
   func fetchTasks() -> Observable<[Task]> {
     if let savedTaskDictionaries = self.provider.userDefaultsService.value(forKey: .tasks) {

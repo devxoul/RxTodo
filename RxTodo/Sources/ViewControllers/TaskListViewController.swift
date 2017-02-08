@@ -35,7 +35,7 @@ final class TaskListViewController: BaseViewController {
 
   // MARK: Initializing
 
-  init(viewModel: TaskListViewModelType) {
+  init(viewModel: TaskListViewModel) {
     super.init()
     self.navigationItem.leftBarButtonItem = self.editButtonItem
     self.navigationItem.rightBarButtonItem = self.addButtonItem
@@ -45,7 +45,6 @@ final class TaskListViewController: BaseViewController {
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
-
 
   // MARK: View Life Cycle
 
@@ -62,10 +61,9 @@ final class TaskListViewController: BaseViewController {
     }
   }
 
-
   // MARK: Configuring
 
-  private func configure(_ viewModel: TaskListViewModelType) {
+  private func configure(_ viewModel: TaskListViewModel) {
     self.tableView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
     self.dataSource.configureCell = { _, tableView, indexPath, viewModel in
       let cell = tableView.dequeue(Reusable.taskCell, for: indexPath)
@@ -76,60 +74,41 @@ final class TaskListViewController: BaseViewController {
     self.dataSource.canMoveRowAtIndexPath = { _ in true }
 
     // Input
-    self.rx.viewDidLoad
-      .bindTo(viewModel.viewDidLoad)
-      .addDisposableTo(self.disposeBag)
+    let inputs = TaskListViewModelInputs(viewDidLoad: self.rx.viewDidLoad,
+                                         editButtonItemDidTap: self.editButtonItem.rx.tap.asObservable(),
+                                         addButtonItemDidTap: self.addButtonItem.rx.tap.asObservable(),
+                                         itemDidSelect: self.tableView.rx.itemSelected.asObservable(),
+                                         itemDidDelete: self.tableView.rx.itemDeleted.asObservable(),
+                                         itemDidMove: self.tableView.rx.itemMoved.asObservable())
 
-    self.rx.deallocated
-      .bindTo(viewModel.viewDidDeallocate)
-      .addDisposableTo(self.disposeBag)
-
-    self.editButtonItem.rx.tap
-      .bindTo(viewModel.editButtonItemDidTap)
-      .addDisposableTo(self.disposeBag)
-
-    self.addButtonItem.rx.tap
-      .bindTo(viewModel.addButtonItemDidTap)
-      .addDisposableTo(self.disposeBag)
-
-    self.tableView.rx.itemSelected
-      .bindTo(viewModel.itemDidSelect)
-      .addDisposableTo(self.disposeBag)
-
-    self.tableView.rx.itemDeleted
-      .bindTo(viewModel.itemDidDelete)
-      .addDisposableTo(self.disposeBag)
-
-    self.tableView.rx.itemMoved
-      .bindTo(viewModel.itemDidMove)
-      .addDisposableTo(self.disposeBag)
+    let output = viewModel(inputs)
 
     // Ouput
-    viewModel.navigationBarTitle
+    output.navigationBarTitle
       .drive(self.navigationItem.rx.title)
       .addDisposableTo(self.disposeBag)
 
-    viewModel.editButtonItemTitle
+    output.editButtonItemTitle
       .drive(self.editButtonItem.rx.title)
       .addDisposableTo(self.disposeBag)
 
-    viewModel.editButtonItemStyle
+    output.editButtonItemStyle
       .drive(onNext: { [weak self] style in
         self?.editButtonItem.style = style
       })
       .addDisposableTo(self.disposeBag)
 
-    viewModel.sections
+    output.sections
       .drive(self.tableView.rx.items(dataSource: self.dataSource))
       .addDisposableTo(self.disposeBag)
 
-    viewModel.isTableViewEditing
+    output.isTableViewEditing
       .drive(onNext: { [weak self] isEditing in
         self?.tableView.setEditing(isEditing, animated: true)
       })
       .addDisposableTo(self.disposeBag)
 
-    viewModel.presentTaskEditViewModel
+    output.presentTaskEditViewModel
       .subscribe(onNext: { [weak self] viewModel in
         guard let `self` = self else { return }
         let viewController = TaskEditViewController(viewModel: viewModel)
