@@ -4,13 +4,13 @@ RxTodo
 ![Swift](https://img.shields.io/badge/Swift-3.0-orange.svg)
 [![Build Status](https://travis-ci.org/devxoul/RxTodo.svg?branch=master)](https://travis-ci.org/devxoul/RxTodo)
 
-RxTodo is an iOS application developed using [RxSwift](https://github.com/ReactiveX/RxSwift) and MVVM design pattern. This project is for whom having trouble with learning RxSwift and MVVM due to lack of references. (as I did 😁)
+RxTodo is an iOS application developed using [RxMVVM architecture](https://github.com/devxoul/RxMVVM) which is based on [RxSwift](https://github.com/ReactiveX/RxSwift) and MVVM design pattern. This project is for whom having trouble with learning RxSwift and MVVM due to lack of references. (as I did 😁)
 
 
 Features
 --------
 
-* MVVM design pattern
+* [RxMVVM](https://github.com/devxoul/RxMVVM) (RxSwift + MVVM) architecture
 * Using [RxDataSources](https://github.com/RxSwiftCommunity/RxDataSources)
 * Observing model create/update/delete across the view controllers
 * Navigating between view controllers
