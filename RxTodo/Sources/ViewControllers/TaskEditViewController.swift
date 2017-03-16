@@ -116,6 +116,7 @@ final class TaskEditViewController: BaseViewController {
           self.dismiss(animated: true, completion: nil)
         })
         alertController.addAction(UIAlertAction(title: "Stay", style: .cancel, handler: nil))
+        self.present(alertController, animated: true, completion: nil)
       })
       .addDisposableTo(self.disposeBag)
   }
