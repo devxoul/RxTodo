@@ -106,6 +106,7 @@ final class TaskEditViewController: BaseViewController {
         guard let `self` = self else { return }
         if !shouldConfirm {
           self.dismiss(animated: true, completion: nil)
+          return
         }
         let alertController = UIAlertController(
           title: "Really?",
