@@ -1,5 +1,5 @@
 //
-//  TaskEditViewModel.swift
+//  TaskEditViewReactor.swift
 //  RxTodo
 //
 //  Created by Suyeol Jeon on 7/2/16.
@@ -19,7 +19,7 @@ enum TaskEditViewCancelAlertAction {
   case stay
 }
 
-protocol TaskEditViewModelType: class {
+protocol TaskEditViewReactorType: class {
   // Input
   var viewDidDeallocate: PublishSubject<Void> { get }
   var cancelButtonItemDidTap: PublishSubject<Void> { get }
@@ -35,7 +35,7 @@ protocol TaskEditViewModelType: class {
   var dismissViewController: Observable<Void> { get }
 }
 
-final class TaskEditViewModel: TaskEditViewModelType {
+final class TaskEditViewReactor: TaskEditViewReactorType {
 
   // MARK: Input
 
@@ -58,7 +58,7 @@ final class TaskEditViewModel: TaskEditViewModelType {
   // MARK: Initializing
 
   init(provider: ServiceProviderType, mode: TaskEditViewMode) {
-    let cls = TaskEditViewModel.self
+    let cls = TaskEditViewReactor.self
 
     //
     // Title Input Text

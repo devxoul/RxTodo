@@ -1,5 +1,5 @@
 //
-//  TaskListViewModel.swift
+//  TaskListViewReactor.swift
 //  RxTodo
 //
 //  Created by Suyeol Jeon on 7/1/16.
@@ -12,7 +12,7 @@ import RxSwift
 
 typealias TaskListSection = SectionModel<Void, TaskCellModelType>
 
-protocol TaskListViewModelType: class {
+protocol TaskListViewReactorType: class {
 
   // Input
   var viewDidLoad: PublishSubject<Void> { get }
@@ -29,11 +29,11 @@ protocol TaskListViewModelType: class {
   var editButtonItemStyle: Driver<UIBarButtonItemStyle> { get }
   var sections: Driver<[TaskListSection]> { get }
   var isTableViewEditing: Driver<Bool> { get }
-  var presentTaskEditViewModel: Observable<TaskEditViewModelType> { get }
+  var presentTaskEditViewReactor: Observable<TaskEditViewReactorType> { get }
 
 }
 
-final class TaskListViewModel: TaskListViewModelType {
+final class TaskListViewReactor: TaskListViewReactorType {
 
   // MARK: Types
 
@@ -66,7 +66,7 @@ final class TaskListViewModel: TaskListViewModelType {
   let editButtonItemStyle: Driver<UIBarButtonItemStyle>
   let sections: Driver<[TaskListSection]>
   let isTableViewEditing: Driver<Bool>
-  let presentTaskEditViewModel: Observable<TaskEditViewModelType>
+  let presentTaskEditViewReactor: Observable<TaskEditViewReactorType>
 
 
   // MARK: Initializing
@@ -224,20 +224,20 @@ final class TaskListViewModel: TaskListViewModelType {
     //
     // View Controller Navigations
     //
-    let presentAddViewModel: Observable<TaskEditViewModelType> = self.addButtonItemDidTap
+    let presentAddViewReactor: Observable<TaskEditViewReactorType> = self.addButtonItemDidTap
       .map {
-        TaskEditViewModel(provider: provider, mode: .new)
+        TaskEditViewReactor(provider: provider, mode: .new)
       }
-    let presentEditViewModel: Observable<TaskEditViewModelType> = self.itemDidSelect
+    let presentEditViewReactor: Observable<TaskEditViewReactorType> = self.itemDidSelect
       .withLatestFrom(isEditing) { ($0, $1) }
       .filter { _, isEditing in isEditing }
       .map { indexPath, _ in indexPath }
-      .withLatestFrom(tasks) { indexPath, tasks -> TaskEditViewModel in
+      .withLatestFrom(tasks) { indexPath, tasks -> TaskEditViewReactor in
         let task = tasks[indexPath.row]
-        return TaskEditViewModel(provider: provider, mode: .edit(task))
+        return TaskEditViewReactor(provider: provider, mode: .edit(task))
       }
-    self.presentTaskEditViewModel = Observable
-      .of(presentAddViewModel, presentEditViewModel)
+    self.presentTaskEditViewReactor = Observable
+      .of(presentAddViewReactor, presentEditViewReactor)
       .merge()
       .observeOn(MainScheduler.instance)
       .subscribeOn(ConcurrentMainScheduler.instance)

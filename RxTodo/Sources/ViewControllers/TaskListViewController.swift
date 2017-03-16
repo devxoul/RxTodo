@@ -35,11 +35,11 @@ final class TaskListViewController: BaseViewController {
 
   // MARK: Initializing
 
-  init(viewModel: TaskListViewModelType) {
+  init(reactor: TaskListViewReactorType) {
     super.init()
     self.navigationItem.leftBarButtonItem = self.editButtonItem
     self.navigationItem.rightBarButtonItem = self.addButtonItem
-    self.configure(viewModel)
+    self.configure(reactor)
   }
 
   required init?(coder aDecoder: NSCoder) {
@@ -65,11 +65,11 @@ final class TaskListViewController: BaseViewController {
 
   // MARK: Configuring
 
-  private func configure(_ viewModel: TaskListViewModelType) {
+  private func configure(_ reactor: TaskListViewReactorType) {
     self.tableView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
-    self.dataSource.configureCell = { _, tableView, indexPath, viewModel in
+    self.dataSource.configureCell = { _, tableView, indexPath, reactor in
       let cell = tableView.dequeue(Reusable.taskCell, for: indexPath)
-      cell.configure(viewModel)
+      cell.configure(reactor)
       return cell
     }
     self.dataSource.canEditRowAtIndexPath = { _ in true }
@@ -77,62 +77,62 @@ final class TaskListViewController: BaseViewController {
 
     // Input
     self.rx.viewDidLoad
-      .bindTo(viewModel.viewDidLoad)
+      .bindTo(reactor.viewDidLoad)
       .addDisposableTo(self.disposeBag)
 
     self.rx.deallocated
-      .bindTo(viewModel.viewDidDeallocate)
+      .bindTo(reactor.viewDidDeallocate)
       .addDisposableTo(self.disposeBag)
 
     self.editButtonItem.rx.tap
-      .bindTo(viewModel.editButtonItemDidTap)
+      .bindTo(reactor.editButtonItemDidTap)
       .addDisposableTo(self.disposeBag)
 
     self.addButtonItem.rx.tap
-      .bindTo(viewModel.addButtonItemDidTap)
+      .bindTo(reactor.addButtonItemDidTap)
       .addDisposableTo(self.disposeBag)
 
     self.tableView.rx.itemSelected
-      .bindTo(viewModel.itemDidSelect)
+      .bindTo(reactor.itemDidSelect)
       .addDisposableTo(self.disposeBag)
 
     self.tableView.rx.itemDeleted
-      .bindTo(viewModel.itemDidDelete)
+      .bindTo(reactor.itemDidDelete)
       .addDisposableTo(self.disposeBag)
 
     self.tableView.rx.itemMoved
-      .bindTo(viewModel.itemDidMove)
+      .bindTo(reactor.itemDidMove)
       .addDisposableTo(self.disposeBag)
 
     // Ouput
-    viewModel.navigationBarTitle
+    reactor.navigationBarTitle
       .drive(self.navigationItem.rx.title)
       .addDisposableTo(self.disposeBag)
 
-    viewModel.editButtonItemTitle
+    reactor.editButtonItemTitle
       .drive(self.editButtonItem.rx.title)
       .addDisposableTo(self.disposeBag)
 
-    viewModel.editButtonItemStyle
+    reactor.editButtonItemStyle
       .drive(onNext: { [weak self] style in
         self?.editButtonItem.style = style
       })
       .addDisposableTo(self.disposeBag)
 
-    viewModel.sections
+    reactor.sections
       .drive(self.tableView.rx.items(dataSource: self.dataSource))
       .addDisposableTo(self.disposeBag)
 
-    viewModel.isTableViewEditing
+    reactor.isTableViewEditing
       .drive(onNext: { [weak self] isEditing in
         self?.tableView.setEditing(isEditing, animated: true)
       })
       .addDisposableTo(self.disposeBag)
 
-    viewModel.presentTaskEditViewModel
-      .subscribe(onNext: { [weak self] viewModel in
+    reactor.presentTaskEditViewReactor
+      .subscribe(onNext: { [weak self] reactor in
         guard let `self` = self else { return }
-        let viewController = TaskEditViewController(viewModel: viewModel)
+        let viewController = TaskEditViewController(reactor: reactor)
         let navigationController = UINavigationController(rootViewController: viewController)
         self.present(navigationController, animated: true, completion: nil)
       })
@@ -147,8 +147,8 @@ final class TaskListViewController: BaseViewController {
 extension TaskListViewController: UITableViewDelegate {
 
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    let viewModel = self.dataSource[indexPath]
-    return TaskCell.height(fits: tableView.width, viewModel: viewModel)
+    let reactor = self.dataSource[indexPath]
+    return TaskCell.height(fits: tableView.width, reactor: reactor)
   }
 
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
