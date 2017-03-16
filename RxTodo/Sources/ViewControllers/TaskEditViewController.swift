@@ -101,10 +101,10 @@ final class TaskEditViewController: BaseViewController {
       .addDisposableTo(self.disposeBag)
 
     self.cancelButtonItem.rx.tap
-      .withLatestFrom(viewModel.shouldComfirm)
-      .subscribe(onNext: { [weak self] shouldComfirm in
+      .withLatestFrom(viewModel.shouldConfirm)
+      .subscribe(onNext: { [weak self] shouldConfirm in
         guard let `self` = self else { return }
-        if !shouldComfirm {
+        if !shouldConfirm {
           self.dismiss(animated: true, completion: nil)
         }
         let alertController = UIAlertController(

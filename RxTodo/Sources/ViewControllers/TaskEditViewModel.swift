@@ -32,7 +32,7 @@ final class TaskEditViewModel: TaskEditViewModelType {
   let submit: PublishSubject<Void> = .init()
 
   let cancel: PublishSubject<Void> = .init()
-  let shouldComfirm: Driver<Bool>
+  let shouldConfirm: Driver<Bool>
 
 
   // MARK: Initializing
@@ -70,7 +70,7 @@ final class TaskEditViewModel: TaskEditViewModelType {
       .takeUntil(self.deallocate)
       .bindTo(provider.taskService.event)
 
-    self.shouldComfirm = self.title.asDriver()
+    self.shouldConfirm = self.title.asDriver()
       .map { $0 != initialTitle }
   }
 
