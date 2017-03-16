@@ -78,66 +78,44 @@ final class TaskEditViewController: BaseViewController {
   // MARK: Configuring
 
   private func configure(_ viewModel: TaskEditViewModelType) {
-    // Input
+    let viewModel = viewModel as! TaskEditViewModel
+
     self.rx.deallocated
-      .bindTo(viewModel.viewDidDeallocate)
+      .bindTo(viewModel.deallocate)
       .addDisposableTo(self.disposeBag)
 
-    self.cancelButtonItem.rx.tap
-      .bindTo(viewModel.cancelButtonItemDidTap)
+    self.titleInput.rx.text
+      .bindTo(viewModel.title)
       .addDisposableTo(self.disposeBag)
 
-    self.doneButtonItem.rx.tap
-      .bindTo(viewModel.doneButtonItemDidTap)
-      .addDisposableTo(self.disposeBag)
-
-    self.titleInput.rx.text.changed
-      .bindTo(viewModel.titleInputDidChangeText)
-      .addDisposableTo(self.disposeBag)
-
-    // Output
-    viewModel.navigationBarTitle
-      .drive(self.navigationItem.rx.title)
-      .addDisposableTo(self.disposeBag)
-
-    viewModel.doneButtonEnabled
-      .drive(self.doneButtonItem.rx.isEnabled)
-      .addDisposableTo(self.disposeBag)
-
-    viewModel.titleInputText
+    viewModel.title.asDriver()
       .drive(self.titleInput.rx.text)
       .addDisposableTo(self.disposeBag)
 
-    viewModel.presentCancelAlert
-      .subscribe(onNext: { [weak self, weak viewModel] actions in
-        guard let `self` = self, let viewModel = viewModel else { return }
-        self.view.endEditing(true)
+    viewModel.canSubmit
+      .drive(self.doneButtonItem.rx.isEnabled)
+      .addDisposableTo(self.disposeBag)
+
+    self.doneButtonItem.rx.tap
+      .bindTo(viewModel.submit)
+      .addDisposableTo(self.disposeBag)
+
+    self.cancelButtonItem.rx.tap
+      .withLatestFrom(viewModel.shouldComfirm)
+      .subscribe(onNext: { [weak self] shouldComfirm in
+        guard let `self` = self else { return }
+        if !shouldComfirm {
+          self.dismiss(animated: true, completion: nil)
+        }
         let alertController = UIAlertController(
           title: "Really?",
           message: "Changes will be lost.",
           preferredStyle: .alert
         )
-        actions
-          .map { action -> UIAlertAction in
-            let handler: (UIAlertAction) -> Void =  { _ in
-              viewModel.cancelAlertDidSelectAction.onNext(action)
-            }
-            switch action {
-            case .leave:
-              return UIAlertAction(title: "Leave", style: .destructive, handler: handler)
-            case .stay:
-              return UIAlertAction(title: "Stay", style: .default, handler: handler)
-            }
-          }
-          .forEach(alertController.addAction)
-        self.present(alertController, animated: true, completion: nil)
-      })
-      .addDisposableTo(self.disposeBag)
-
-    viewModel.dismissViewController
-      .subscribe(onNext: { [weak self] in
-        self?.view.endEditing(true)
-        self?.dismiss(animated: true, completion: nil)
+        alertController.addAction(UIAlertAction(title: "Leave", style: .destructive) { _ in
+          self.dismiss(animated: true, completion: nil)
+        })
+        alertController.addAction(UIAlertAction(title: "Stay", style: .cancel, handler: nil))
       })
       .addDisposableTo(self.disposeBag)
   }
