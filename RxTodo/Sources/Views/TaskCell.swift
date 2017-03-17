@@ -49,7 +49,7 @@ final class TaskCell: BaseTableViewCell {
 
   // MARK: Configuring
 
-  func configure(_ reactor: TaskCellModelType) {
+  func configure(_ reactor: TaskCellReactorType) {
     self.titleLabel.text = reactor.title
     self.accessoryType = reactor.accessoryType
   }
@@ -69,7 +69,7 @@ final class TaskCell: BaseTableViewCell {
 
   // MARK: Cell Height
 
-  class func height(fits width: CGFloat, reactor: TaskCellModelType) -> CGFloat {
+  class func height(fits width: CGFloat, reactor: TaskCellReactorType) -> CGFloat {
     let height =  reactor.title.height(
       fits: width - Metric.cellPadding * 2,
       font: Font.titleLabel,

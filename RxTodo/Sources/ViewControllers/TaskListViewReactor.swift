@@ -10,7 +10,7 @@ import RxCocoa
 import RxDataSources
 import RxSwift
 
-typealias TaskListSection = SectionModel<Void, TaskCellModelType>
+typealias TaskListSection = SectionModel<Void, TaskCellReactorType>
 
 protocol TaskListViewReactorType: class {
 
@@ -184,8 +184,8 @@ final class TaskListViewReactor: TaskListViewReactorType {
     //
     self.sections = tasks
       .map { tasks in
-        let cellModels = tasks.map(TaskCellModel.init) as [TaskCellModelType]
-        let section = TaskListSection(model: Void(), items: cellModels)
+        let reactors = tasks.map(TaskCellReactor.init) as [TaskCellReactorType]
+        let section = TaskListSection(model: Void(), items: reactors)
         return [section]
       }
       .asDriver(onErrorJustReturn: [])

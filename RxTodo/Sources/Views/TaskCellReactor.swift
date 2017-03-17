@@ -1,5 +1,5 @@
 //
-//  TaskCellModel.swift
+//  TaskCellReactor.swift
 //  RxTodo
 //
 //  Created by Suyeol Jeon on 7/1/16.
@@ -9,12 +9,12 @@
 import RxCocoa
 import RxSwift
 
-protocol TaskCellModelType {
+protocol TaskCellReactorType {
   var title: String { get }
   var accessoryType: UITableViewCellAccessoryType { get }
 }
 
-struct TaskCellModel: TaskCellModelType {
+struct TaskCellReactor: TaskCellReactorType {
 
   let title: String
   let accessoryType: UITableViewCellAccessoryType

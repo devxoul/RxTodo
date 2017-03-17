@@ -25,7 +25,7 @@
 		03D0C0E41D26AC0100EE93D5 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0E31D26AC0100EE93D5 /* BaseViewController.swift */; };
 		03D0C0E61D26AC4500EE93D5 /* TaskListViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0E51D26AC4500EE93D5 /* TaskListViewReactor.swift */; };
 		03D0C0E81D26AC7600EE93D5 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0E71D26AC7600EE93D5 /* Task.swift */; };
-		03D0C0EA1D26AD2800EE93D5 /* TaskCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0E91D26AD2800EE93D5 /* TaskCellModel.swift */; };
+		03D0C0EA1D26AD2800EE93D5 /* TaskCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0E91D26AD2800EE93D5 /* TaskCellReactor.swift */; };
 		03D0C0EF1D26AEC700EE93D5 /* ModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0EE1D26AEC700EE93D5 /* ModelType.swift */; };
 		03D0C0F21D26C4D900EE93D5 /* String+BoundingRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0F11D26C4D900EE93D5 /* String+BoundingRect.swift */; };
 		03D0C0F41D26C50100EE93D5 /* Snap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0F31D26C50100EE93D5 /* Snap.swift */; };
@@ -71,7 +71,7 @@
 		03D0C0E31D26AC0100EE93D5 /* BaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		03D0C0E51D26AC4500EE93D5 /* TaskListViewReactor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskListViewReactor.swift; sourceTree = "<group>"; };
 		03D0C0E71D26AC7600EE93D5 /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
-		03D0C0E91D26AD2800EE93D5 /* TaskCellModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskCellModel.swift; sourceTree = "<group>"; };
+		03D0C0E91D26AD2800EE93D5 /* TaskCellReactor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskCellReactor.swift; sourceTree = "<group>"; };
 		03D0C0EE1D26AEC700EE93D5 /* ModelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelType.swift; sourceTree = "<group>"; };
 		03D0C0F11D26C4D900EE93D5 /* String+BoundingRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+BoundingRect.swift"; sourceTree = "<group>"; };
 		03D0C0F31D26C50100EE93D5 /* Snap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snap.swift; sourceTree = "<group>"; };
@@ -201,7 +201,7 @@
 			children = (
 				03D0C0E11D26ABDC00EE93D5 /* BaseTableViewCell.swift */,
 				03D0C0DF1D26ABD600EE93D5 /* TaskCell.swift */,
-				03D0C0E91D26AD2800EE93D5 /* TaskCellModel.swift */,
+				03D0C0E91D26AD2800EE93D5 /* TaskCellReactor.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -528,7 +528,7 @@
 				03D0C0F21D26C4D900EE93D5 /* String+BoundingRect.swift in Sources */,
 				03D0C0F41D26C50100EE93D5 /* Snap.swift in Sources */,
 				03D0C0FE1D26E55B00EE93D5 /* RxOperators.swift in Sources */,
-				03D0C0EA1D26AD2800EE93D5 /* TaskCellModel.swift in Sources */,
+				03D0C0EA1D26AD2800EE93D5 /* TaskCellReactor.swift in Sources */,
 				03D0C0FB1D26DE2C00EE93D5 /* ObservableConvertibleType+Void.swift in Sources */,
 				03D0C0CD1D26A13E00EE93D5 /* TaskListViewController.swift in Sources */,
 				03D0C0F81D26C8B100EE93D5 /* TaskEditViewReactor.swift in Sources */,
