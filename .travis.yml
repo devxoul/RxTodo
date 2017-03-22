@@ -21,4 +21,4 @@ install:
   - bundle exec pod install
 
 script:
-  - xcodebuild -workspace 'RxTodo.xcworkspace' -scheme 'RxTodo' -sdk iphonesimulator CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO test | xcpretty -c
+  - set -o pipefail && xcodebuild clean $ACTION -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$IOS_DESTINATION" -configuration Debug CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO | xcpretty -c
