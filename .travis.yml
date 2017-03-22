@@ -20,5 +20,8 @@ install:
   - bundle exec pod repo update --silent
   - bundle exec pod install
 
+before_script:
+  - fastlane snapshot reset_simulators --force
+
 script:
   - set -o pipefail && xcodebuild clean $ACTION -workspace "$WORKSPACE" -scheme "$SCHEME" -sdk "$SDK" -destination "$IOS_DESTINATION" -configuration Debug CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO | xcpretty -c
