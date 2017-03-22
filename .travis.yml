@@ -7,6 +7,14 @@ cache:
   - bundler
   - cocoapods
 
+env:
+  global:
+    - WORKSPACE="RxTodo.xcworkspace"
+    - IOS_SDK="iphonesimulator10.2"
+    - IOS_DESTINATION="platform=iOS Simulator,name=iPhone 7,OS=10.2"
+  matrix:
+    - SCHEME="RxTodo"        SDK="$IOS_SDK"      ACTION="test"
+
 install:
   - bundle install
   - bundle exec pod repo update --silent
