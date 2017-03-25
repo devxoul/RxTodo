@@ -16,6 +16,8 @@
 		035363091E26D0B8005B565E /* UIViewController+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035363081E26D0B8005B565E /* UIViewController+Rx.swift */; };
 		038232231E2AAE2C0022E1CE /* MockServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038232221E2AAE2C0022E1CE /* MockServiceProvider.swift */; };
 		038232251E2AAE330022E1CE /* MockUserDefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038232241E2AAE330022E1CE /* MockUserDefaultsService.swift */; };
+		03A20F941E86C3C30066A057 /* Architecture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A20F931E86C3C30066A057 /* Architecture.swift */; };
+		03A20F961E86E86D0066A057 /* Array+SectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A20F951E86E86D0066A057 /* Array+SectionModel.swift */; };
 		03D0C0CC1D26A13E00EE93D5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0C51D26A13E00EE93D5 /* AppDelegate.swift */; };
 		03D0C0CD1D26A13E00EE93D5 /* TaskListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D0C0C81D26A13E00EE93D5 /* TaskListViewController.swift */; };
 		03D0C0D51D26A18900EE93D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03D0C0D21D26A18900EE93D5 /* Assets.xcassets */; };
@@ -60,6 +62,8 @@
 		035363081E26D0B8005B565E /* UIViewController+Rx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Rx.swift"; sourceTree = "<group>"; };
 		038232221E2AAE2C0022E1CE /* MockServiceProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockServiceProvider.swift; sourceTree = "<group>"; };
 		038232241E2AAE330022E1CE /* MockUserDefaultsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockUserDefaultsService.swift; sourceTree = "<group>"; };
+		03A20F931E86C3C30066A057 /* Architecture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Architecture.swift; sourceTree = "<group>"; };
+		03A20F951E86E86D0066A057 /* Array+SectionModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+SectionModel.swift"; sourceTree = "<group>"; };
 		03D0C0AF1D269F7900EE93D5 /* RxTodo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RxTodo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		03D0C0C51D26A13E00EE93D5 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		03D0C0C81D26A13E00EE93D5 /* TaskListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskListViewController.swift; sourceTree = "<group>"; };
@@ -164,6 +168,7 @@
 			children = (
 				03FB82FA1D591556004EF4FB /* main.swift */,
 				03D0C0C51D26A13E00EE93D5 /* AppDelegate.swift */,
+				03A20F931E86C3C30066A057 /* Architecture.swift */,
 				035363031E26CACE005B565E /* Types */,
 				03D0C0EB1D26AE7300EE93D5 /* Services */,
 				03D0C0C61D26A13E00EE93D5 /* Models */,
@@ -239,6 +244,7 @@
 			children = (
 				03D0C0F31D26C50100EE93D5 /* Snap.swift */,
 				03D0C0F11D26C4D900EE93D5 /* String+BoundingRect.swift */,
+				03A20F951E86E86D0066A057 /* Array+SectionModel.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -519,6 +525,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				03D0C0E41D26AC0100EE93D5 /* BaseViewController.swift in Sources */,
+				03A20F941E86C3C30066A057 /* Architecture.swift in Sources */,
 				03D0C0EF1D26AEC700EE93D5 /* ModelType.swift in Sources */,
 				03FB82FB1D591556004EF4FB /* main.swift in Sources */,
 				035363051E26CAD7005B565E /* UserDefaultsKey.swift in Sources */,
@@ -528,6 +535,7 @@
 				03D0C0F21D26C4D900EE93D5 /* String+BoundingRect.swift in Sources */,
 				03D0C0F41D26C50100EE93D5 /* Snap.swift in Sources */,
 				03D0C0FE1D26E55B00EE93D5 /* RxOperators.swift in Sources */,
+				03A20F961E86E86D0066A057 /* Array+SectionModel.swift in Sources */,
 				03D0C0EA1D26AD2800EE93D5 /* TaskCellReactor.swift in Sources */,
 				03D0C0FB1D26DE2C00EE93D5 /* ObservableConvertibleType+Void.swift in Sources */,
 				03D0C0CD1D26A13E00EE93D5 /* TaskListViewController.swift in Sources */,

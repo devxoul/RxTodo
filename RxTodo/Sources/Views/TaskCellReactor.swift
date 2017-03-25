@@ -9,19 +9,8 @@
 import RxCocoa
 import RxSwift
 
-protocol TaskCellReactorType {
-  var title: String { get }
-  var accessoryType: UITableViewCellAccessoryType { get }
-}
-
-struct TaskCellReactor: TaskCellReactorType {
-
-  let title: String
-  let accessoryType: UITableViewCellAccessoryType
-
+class TaskCellReactor: Reactor<NoAction, Task> {
   init(task: Task) {
-    self.title = task.title
-    self.accessoryType = task.isDone ? .checkmark : .none
+    super.init(initialState: task)
   }
-
 }
