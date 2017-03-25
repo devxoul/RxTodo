@@ -6,6 +6,10 @@
 //  Copyright © 2017 Suyeol Jeon. All rights reserved.
 //
 
+//////
+// This code will become an independent library in the future.
+//////
+
 import RxSwift
 
 // MARK: - Reactor
