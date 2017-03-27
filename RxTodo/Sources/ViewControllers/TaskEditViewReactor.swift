@@ -19,45 +19,58 @@ enum TaskEditViewCancelAlertAction {
   case stay
 }
 
-protocol TaskEditViewReactorType: class {
-  // Input
-  var viewDidDeallocate: PublishSubject<Void> { get }
-  var cancelButtonItemDidTap: PublishSubject<Void> { get }
-  var doneButtonItemDidTap: PublishSubject<Void> { get }
-  var titleInputDidChangeText: PublishSubject<String?> { get }
-  var cancelAlertDidSelectAction: PublishSubject<TaskEditViewCancelAlertAction> { get }
-
-  // Output
-  var navigationBarTitle: Driver<String?> { get }
-  var doneButtonEnabled: Driver<Bool> { get }
-  var titleInputText: Driver<String?> { get }
-  var presentCancelAlert: Observable<[TaskEditViewCancelAlertAction]> { get }
-  var dismissViewController: Observable<Void> { get }
+enum TaskEditViewAction {
+  case updateTaskTitle(String)
+  case cancel()
+  case done()
 }
 
-final class TaskEditViewReactor: TaskEditViewReactorType {
+struct TaskEditViewState {
+  var title: String?
+  var taskTitle: String?
+  var canDone: Bool
+}
 
-  // MARK: Input
+final class TaskEditViewReactor: Reactor<TaskEditViewAction, TaskEditViewState> {
 
-  let viewDidDeallocate = PublishSubject<Void>()
-  let cancelButtonItemDidTap = PublishSubject<Void>()
-  let doneButtonItemDidTap = PublishSubject<Void>()
-  let titleInputDidChangeText = PublishSubject<String?>()
-  let cancelAlertDidSelectAction = PublishSubject<TaskEditViewCancelAlertAction>()
+  init(provider: ServiceProviderType, mode: TaskEditViewMode) {
+    let initialState: State
+    switch mode {
+    case .new:
+      initialState = State(
+        title: "New",
+        taskTitle: nil,
+        canDone: false
+      )
+    case .edit(let task):
+      initialState = State(
+        title: "Edit",
+        taskTitle: task.title,
+        canDone: true
+      )
+    }
+    super.init(initialState: initialState)
+  }
 
-
-  // MARK: Output
-
-  let navigationBarTitle: Driver<String?>
-  let doneButtonEnabled: Driver<Bool>
-  let titleInputText: Driver<String?>
-  let presentCancelAlert: Observable<[TaskEditViewCancelAlertAction]>
-  let dismissViewController: Observable<Void>
+//  override func reduce(state: State, action: Action) -> State {
+//    var state = state
+//    switch action {
+//    case let .updateTaskTitle(taskTitle):
+//      state.taskTitle = taskTitle
+//      return state
+//
+//    case .cancel:
+//      return state
+//
+//    case .done:
+//      return state
+//    }
+//  }
 
 
   // MARK: Initializing
 
-  init(provider: ServiceProviderType, mode: TaskEditViewMode) {
+  /*init(provider: ServiceProviderType, mode: TaskEditViewMode) {
     let cls = TaskEditViewReactor.self
 
     //
@@ -163,6 +176,6 @@ final class TaskEditViewReactor: TaskEditViewReactorType {
     case .edit(let task):
       return title != task.title
     }
-  }
+  }*/
 
 }

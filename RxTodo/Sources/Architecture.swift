@@ -11,9 +11,14 @@
 //////
 
 import RxSwift
+import RxDataSources
 
 // MARK: - Reactor
 
+public enum Phase<Value> {
+  case begin
+  case end(Value)
+}
 public struct NoAction {}
 
 public protocol ReactorType {
@@ -21,11 +26,13 @@ public protocol ReactorType {
   associatedtype State
 
   var action: PublishSubject<Action> { get }
+
   var initialState: State { get }
+  var currentState: State { get }
   var state: Observable<State> { get }
 
-  func transformAction(_ action: Observable<Action>) -> Observable<Action>
-  func reduce(state: State, action: Action) -> Observable<State>
+  func flatMap(action: Action) -> Observable<Action>
+  func reduce(state: State, action: Action) -> State
 }
 
 open class Reactor<ActionType, StateType>: ReactorType {
@@ -33,35 +40,40 @@ open class Reactor<ActionType, StateType>: ReactorType {
   public typealias State = StateType
 
   open let action: PublishSubject<Action> = .init()
+
   open let initialState: State
-  open private(set) lazy var state: Observable<State> = self.createStateStream()
+  open private(set) var currentState: State
+  open lazy private(set) var state: Observable<State> = self.createStateStream()
 
   public init(initialState: State) {
     self.initialState = initialState
+    self.currentState = initialState
   }
 
   func createStateStream() -> Observable<State> {
-    return self.transformAction(self.action)
-      .scan(.just(self.initialState)) { [weak self] stateObservable, action -> Observable<State> in
-        return stateObservable
-          .flatMap { state -> Observable<State> in
-            guard let `self` = self else { return .empty() }
-            return self.reduce(state: state, action: action)
-          }
-          .shareReplay(1)
+    return self.action
+      .flatMap { [weak self] action -> Observable<Action> in
+        guard let `self` = self else { return .empty() }
+        return self.flatMap(action: action)
       }
-      .flatMap { $0 }
+      .scan(self.initialState) { [weak self] state, action -> State in
+        guard let `self` = self else { return state }
+        return self.reduce(state: state, action: action)
+      }
       .startWith(self.initialState)
       .shareReplay(1)
       .observeOn(ConcurrentMainScheduler.instance)
+      .do(onNext: { [weak self] state in
+        self?.currentState = state
+      })
   }
 
-  open func transformAction(_ action: Observable<Action>) -> Observable<Action> {
-    return action
+  open func flatMap(action: Action) -> Observable<Action> {
+    return .just(action)
   }
 
-  open func reduce(state: State, action: Action) -> Observable<State> {
-    return .just(self.initialState)
+  open func reduce(state: State, action: Action) -> State {
+    return state
   }
 }
 

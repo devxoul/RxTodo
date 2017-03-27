@@ -53,8 +53,8 @@ final class TaskCell: BaseTableViewCell, ViewType {
   // MARK: Configuring
 
   func configure(reactor: Reactor) {
-    self.titleLabel.text = reactor.initialState.title
-    self.accessoryType = reactor.initialState.isDone ? .checkmark : .none
+    self.titleLabel.text = reactor.currentState.title
+    self.accessoryType = reactor.currentState.isDone ? .checkmark : .none
   }
 
 
@@ -73,7 +73,7 @@ final class TaskCell: BaseTableViewCell, ViewType {
   // MARK: Cell Height
 
   class func height(fits width: CGFloat, reactor: Reactor) -> CGFloat {
-    let height =  reactor.initialState.title.height(
+    let height =  reactor.currentState.title.height(
       fits: width - Metric.cellPadding * 2,
       font: Font.titleLabel,
       maximumNumberOfLines: Constant.titleLabelNumberOfLines

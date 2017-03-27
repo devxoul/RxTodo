@@ -27,7 +27,6 @@ final class TaskListViewController: BaseViewController, ViewType {
 
   // MARK: Properties
 
-  fileprivate let reactor: Reactor
   let dataSource = RxTableViewSectionedReloadDataSource<TaskListSection>()
 
   let addButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
@@ -39,8 +38,7 @@ final class TaskListViewController: BaseViewController, ViewType {
 
   // MARK: Initializing
 
-  init(reactor: TaskListViewReactor) {
-    self.reactor = reactor
+  init(reactor: Reactor) {
     super.init()
     self.navigationItem.leftBarButtonItem = self.editButtonItem
     self.navigationItem.rightBarButtonItem = self.addButtonItem
@@ -81,22 +79,43 @@ final class TaskListViewController: BaseViewController, ViewType {
     self.dataSource.canEditRowAtIndexPath = { _ in true }
     self.dataSource.canMoveRowAtIndexPath = { _ in true }
 
-    let actions = [
-      self.rx.viewDidLoad.map(Reactor.Action.refresh),
-      self.editButtonItem.rx.tap.map(Reactor.Action.toggleEditing),
-      self.tableView.rx.itemMoved.map(Reactor.Action.moveTask),
-      self.tableView.rx.itemDeleted.map(Reactor.Action.deleteTask),
-    ]
-    Observable.from(actions)
-      .merge()
+//    let actions = [
+//      self.rx.viewDidLoad.map(Reactor.Action.refresh),
+//      self.editButtonItem.rx.tap.map(Reactor.Action.toggleEditing),
+//      self.tableView.rx.itemMoved.map(Reactor.Action.moveItem),
+//      self.tableView.rx.itemDeleted.map(Reactor.Action.deleteItem),
+//    ]
+//    Observable.from(actions)
+//      .merge()
+//      .bindTo(reactor.action)
+//      .addDisposableTo(self.disposeBag)
+
+    self.rx.viewDidLoad
+      .map { Reactor.Action.refresh(.begin) }
       .bindTo(reactor.action)
       .addDisposableTo(self.disposeBag)
 
-    reactor.state.map { $0.sections }
+    self.editButtonItem.rx.tap
+      .map { Reactor.Action.toggleEditing }
+      .bindTo(reactor.action)
+      .addDisposableTo(self.disposeBag)
+
+    self.tableView.rx.itemSelected
+      .withLatestFrom(reactor.state) { indexPath, state -> Reactor.Action in
+        if state.isEditing {
+          return .toggleTaskDone(indexPath)
+        } else {
+          return .presentEditView(indexPath)
+        }
+      }
+      .bindTo(reactor.action)
+      .addDisposableTo(self.disposeBag)
+
+    reactor.state.asObservable().map { $0.sections }
       .bindTo(self.tableView.rx.items(dataSource: self.dataSource))
       .addDisposableTo(self.disposeBag)
 
-    reactor.state.map { $0.isEditing }
+    reactor.state.asObservable().map { $0.isEditing }
       .distinctUntilChanged()
       .subscribe(onNext: { [weak self] isEditing in
         guard let `self` = self else { return }
@@ -122,7 +141,5 @@ extension TaskListViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
   }
-
-//  tableview
 
 }

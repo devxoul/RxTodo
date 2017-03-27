@@ -8,7 +8,12 @@
 
 import UIKit
 
-final class TaskEditViewController: BaseViewController {
+import RxSwift
+
+final class TaskEditViewController: BaseViewController, ViewType {
+
+  typealias Reactor = TaskEditViewReactor
+
 
   // MARK: Constants
 
@@ -41,11 +46,11 @@ final class TaskEditViewController: BaseViewController {
 
   // MARK: Initializing
 
-  init(reactor: TaskEditViewReactorType) {
+  init(reactor: Reactor) {
     super.init()
     self.navigationItem.leftBarButtonItem = self.cancelButtonItem
     self.navigationItem.rightBarButtonItem = self.doneButtonItem
-    self.configure(reactor)
+    self.configure(reactor: reactor)
   }
 
   required convenience init?(coder aDecoder: NSCoder) {
@@ -77,8 +82,34 @@ final class TaskEditViewController: BaseViewController {
 
   // MARK: Configuring
 
-  private func configure(_ reactor: TaskEditViewReactorType) {
-    // Input
+  func configure(reactor: Reactor) {
+    // Action
+    let actions = [
+      self.cancelButtonItem.rx.tap.map(Reactor.Action.cancel),
+      self.doneButtonItem.rx.tap.map(Reactor.Action.done),
+    ]
+    Observable.from(actions).merge()
+      .bindTo(reactor.action)
+      .addDisposableTo(self.disposeBag)
+
+    // State
+    reactor.state.asObservable().map { $0.title }
+      .distinctUntilChanged()
+      .bindTo(self.navigationItem.rx.title)
+      .addDisposableTo(self.disposeBag)
+
+    reactor.state.asObservable().map { $0.taskTitle }
+      .distinctUntilChanged()
+      .bindTo(self.titleInput.rx.text)
+      .addDisposableTo(self.disposeBag)
+
+    reactor.state.asObservable().map { $0.canDone }
+      .distinctUntilChanged()
+      .bindTo(self.doneButtonItem.rx.isEnabled)
+      .addDisposableTo(self.disposeBag)
+
+
+    /*// Input
     self.rx.deallocated
       .bindTo(reactor.viewDidDeallocate)
       .addDisposableTo(self.disposeBag)
@@ -139,7 +170,7 @@ final class TaskEditViewController: BaseViewController {
         self?.view.endEditing(true)
         self?.dismiss(animated: true, completion: nil)
       })
-      .addDisposableTo(self.disposeBag)
+      .addDisposableTo(self.disposeBag)*/
   }
 
 }

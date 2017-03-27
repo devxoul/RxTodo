@@ -22,6 +22,23 @@ class TaskListViewReactorTests: XCTestCase {
       let reactor = TaskListViewReactor(provider: provider)
 
       // input
+      test.input(reactor.action, [next(100, TaskListViewReactor.Action.refresh())])
+
+      // assertion
+      let taskCount = reactor.state.map { $0.sections.first!.items.count }
+      test.assert(taskCount)
+        .since(100)
+        .filterNext()
+        .equal([3])
+    }
+  }
+/*
+  func testFetchTasks() {
+    RxExpect("it should fetch saved tasks") { test in
+      let provider = MockServiceProvider()
+      let reactor = TaskListViewReactor(provider: provider)
+
+      // input
       test.input(reactor.viewDidLoad, [next(100, Void())])
 
       // assertion
@@ -185,5 +202,5 @@ class TaskListViewReactorTests: XCTestCase {
         .equal([true])
     }
   }
-
+*/
 }
