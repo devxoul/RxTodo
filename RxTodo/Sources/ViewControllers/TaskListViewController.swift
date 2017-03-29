@@ -27,6 +27,7 @@ final class TaskListViewController: BaseViewController, ViewType {
 
   // MARK: Properties
 
+  let reactor: Reactor?
   let dataSource = RxTableViewSectionedReloadDataSource<TaskListSection>()
 
   let addButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
@@ -39,6 +40,7 @@ final class TaskListViewController: BaseViewController, ViewType {
   // MARK: Initializing
 
   init(reactor: Reactor) {
+    self.reactor = reactor
     super.init()
     self.navigationItem.leftBarButtonItem = self.editButtonItem
     self.navigationItem.rightBarButtonItem = self.addButtonItem
@@ -79,17 +81,7 @@ final class TaskListViewController: BaseViewController, ViewType {
     self.dataSource.canEditRowAtIndexPath = { _ in true }
     self.dataSource.canMoveRowAtIndexPath = { _ in true }
 
-//    let actions = [
-//      self.rx.viewDidLoad.map(Reactor.Action.refresh),
-//      self.editButtonItem.rx.tap.map(Reactor.Action.toggleEditing),
-//      self.tableView.rx.itemMoved.map(Reactor.Action.moveItem),
-//      self.tableView.rx.itemDeleted.map(Reactor.Action.deleteItem),
-//    ]
-//    Observable.from(actions)
-//      .merge()
-//      .bindTo(reactor.action)
-//      .addDisposableTo(self.disposeBag)
-
+    // Action
     self.rx.viewDidLoad
       .map { Reactor.Action.refresh(.begin) }
       .bindTo(reactor.action)
@@ -100,9 +92,9 @@ final class TaskListViewController: BaseViewController, ViewType {
       .bindTo(reactor.action)
       .addDisposableTo(self.disposeBag)
 
-    self.tableView.rx.itemSelected
+    self.tableView.rx.modelSelected(type(of: self.dataSource).Section.Item.self)
       .withLatestFrom(reactor.state) { indexPath, state -> Reactor.Action in
-        if state.isEditing {
+        if !state.isEditing {
           return .toggleTaskDone(indexPath)
         } else {
           return .presentEditView(indexPath)
@@ -111,6 +103,17 @@ final class TaskListViewController: BaseViewController, ViewType {
       .bindTo(reactor.action)
       .addDisposableTo(self.disposeBag)
 
+    self.tableView.rx.itemDeleted
+      .map(Reactor.Action.deleteTask)
+      .bindTo(reactor.action)
+      .addDisposableTo(self.disposeBag)
+
+    self.tableView.rx.itemMoved
+    .map(Reactor.Action.moveTask)
+      .bindTo(reactor.action)
+      .addDisposableTo(self.disposeBag)
+
+    // State
     reactor.state.asObservable().map { $0.sections }
       .bindTo(self.tableView.rx.items(dataSource: self.dataSource))
       .addDisposableTo(self.disposeBag)

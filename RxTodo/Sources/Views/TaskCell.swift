@@ -36,6 +36,11 @@ final class TaskCell: BaseTableViewCell, ViewType {
 
   // MARK: Properties
 
+  var reactor: Reactor?
+
+
+  // MARK: UI
+
   let titleLabel = UILabel().then {
     $0.font = Font.titleLabel
     $0.textColor = Color.titleLabelText
@@ -53,6 +58,7 @@ final class TaskCell: BaseTableViewCell, ViewType {
   // MARK: Configuring
 
   func configure(reactor: Reactor) {
+    self.reactor = reactor
     self.titleLabel.text = reactor.currentState.title
     self.accessoryType = reactor.currentState.isDone ? .checkmark : .none
   }

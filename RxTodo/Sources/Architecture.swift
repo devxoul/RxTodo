@@ -31,8 +31,23 @@ public protocol ReactorType {
   var currentState: State { get }
   var state: Observable<State> { get }
 
-  func flatMap(action: Action) -> Observable<Action>
+  func transform(action: Observable<Action>) -> Observable<Action>
   func reduce(state: State, action: Action) -> State
+  func transform(state: Observable<State>) -> Observable<State>
+}
+
+extension ReactorType {
+  public func transform(action: Observable<Action>) -> Observable<Action> {
+    return action
+  }
+
+  public func reduce(state: State, action: Action) -> State {
+    return state
+  }
+
+  public func transform(state: Observable<State>) -> Observable<State> {
+    return state
+  }
 }
 
 open class Reactor<ActionType, StateType>: ReactorType {
@@ -51,28 +66,29 @@ open class Reactor<ActionType, StateType>: ReactorType {
   }
 
   func createStateStream() -> Observable<State> {
-    return self.action
-      .flatMap { [weak self] action -> Observable<Action> in
-        guard let `self` = self else { return .empty() }
-        return self.flatMap(action: action)
-      }
+    return self.transform(action: self.action)
+      .observeOn(ConcurrentDispatchQueueScheduler(qos: .userInitiated))
       .scan(self.initialState) { [weak self] state, action -> State in
         guard let `self` = self else { return state }
         return self.reduce(state: state, action: action)
       }
       .startWith(self.initialState)
       .shareReplay(1)
-      .observeOn(ConcurrentMainScheduler.instance)
       .do(onNext: { [weak self] state in
         self?.currentState = state
       })
+      .observeOn(MainScheduler.instance)
   }
 
-  open func flatMap(action: Action) -> Observable<Action> {
-    return .just(action)
+  open func transform(action: Observable<Action>) -> Observable<Action> {
+    return action
   }
 
   open func reduce(state: State, action: Action) -> State {
+    return state
+  }
+
+  open func transform(state: Observable<State>) -> Observable<State> {
     return state
   }
 }
@@ -83,5 +99,16 @@ open class Reactor<ActionType, StateType>: ReactorType {
 public protocol ViewType {
   associatedtype Reactor: ReactorType
 
+  var reactor: Reactor? { get }
+
   func configure(reactor: Reactor)
+  func configure(reactor: Reactor?) // sugar
+}
+
+extension ViewType {
+  func configure(reactor: Reactor?) {
+    if let reactor = reactor {
+      self.configure(reactor: reactor)
+    }
+  }
 }

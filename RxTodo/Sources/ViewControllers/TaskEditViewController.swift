@@ -34,6 +34,11 @@ final class TaskEditViewController: BaseViewController, ViewType {
 
   // MARK: Properties
 
+  let reactor: Reactor?
+
+
+  // MARK: UI
+
   let cancelButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
   let doneButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
   let titleInput = UITextField().then {
@@ -47,6 +52,7 @@ final class TaskEditViewController: BaseViewController, ViewType {
   // MARK: Initializing
 
   init(reactor: Reactor) {
+    self.reactor = reactor
     super.init()
     self.navigationItem.leftBarButtonItem = self.cancelButtonItem
     self.navigationItem.rightBarButtonItem = self.doneButtonItem

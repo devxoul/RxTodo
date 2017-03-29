@@ -27,9 +27,10 @@ extension Array where Element: SectionModelType {
     }
   }
 
-  public mutating func remove(at indexPath: IndexPath) {
-    self.update(section: indexPath.section) { items in
-      items.remove(at: indexPath.item)
+  @discardableResult
+  public mutating func remove(at indexPath: IndexPath) -> Element.Item {
+    return self.update(section: indexPath.section) { items in
+      return items.remove(at: indexPath.item)
     }
   }
 
@@ -37,10 +38,11 @@ extension Array where Element: SectionModelType {
     self[section] = Element.init(original: self[section], items: items)
   }
 
-  private mutating func update(section: Int, mutate: (inout [Element.Item]) -> Void) {
+  private mutating func update<T>(section: Int, mutate: (inout [Element.Item]) -> T) -> T {
     var items = self[section].items
-    mutate(&items)
+    let value = mutate(&items)
     self[section] = Element.init(original: self[section], items: items)
+    return value
   }
 
 }
