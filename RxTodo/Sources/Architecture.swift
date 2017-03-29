@@ -21,9 +21,11 @@ public enum Phase<Value> {
 }
 
 public struct NoAction {}
+public struct NoMutation {}
 
 public protocol ReactorType {
   associatedtype Action
+  associatedtype Mutation
   associatedtype State
 
   /// The action from the view. Bind user inputs to this subject.
@@ -38,14 +40,18 @@ public protocol ReactorType {
   /// The state stream. Use this observable to observe the state changes.
   var state: Observable<State> { get }
 
-  /// Transforms the action. This is a good place to perform side-effects such as async tasks. This
-  /// method is called once before the state stream is created.
+  /// Transforms the action. Use this function to combine with other observables. This method is
+  /// called once before the state stream is created.
   func transform(action: Observable<Action>) -> Observable<Action>
+
+  /// Commits mutation from the action. This is the best place to perform side-effects such as
+  /// async tasks.
+  func mutate(action: Action) -> Observable<Mutation>
 
   /// Generates a new state from the previous state with the action. It should be purely functional
   /// so don't perform side-effects here. This method is called every time when the action is
   /// performed.
-  func reduce(state: State, action: Action) -> State
+  func reduce(state: State, mutation: Mutation) -> State
 
   /// Transforms the state stream. Use this function to perform side-effects such as logging. This
   /// method is called once after the state stream is created.
@@ -57,18 +63,21 @@ extension ReactorType {
     return action
   }
 
-  public func reduce(state: State, action: Action) -> State {
-    return state
-  }
-
   public func transform(state: Observable<State>) -> Observable<State> {
     return state
   }
 }
 
+extension ReactorType where Action == Mutation {
+  public func mutate(action: Action) -> Observable<Mutation> {
+    return .just(action)
+  }
+}
+
 /// The base class of reactors.
-open class Reactor<ActionType, StateType>: ReactorType {
+open class Reactor<ActionType, MutationType, StateType>: ReactorType {
   public typealias Action = ActionType
+  public typealias Mutation = MutationType
   public typealias State = StateType
 
   open let action: PublishSubject<Action> = .init()
@@ -83,11 +92,15 @@ open class Reactor<ActionType, StateType>: ReactorType {
   }
 
   func createStateStream() -> Observable<State> {
-    return self.transform(action: self.action)
+    let state = self.transform(action: self.action)
       .observeOn(ConcurrentDispatchQueueScheduler(qos: .userInitiated))
-      .scan(self.initialState) { [weak self] state, action -> State in
+      .flatMap { [weak self] action -> Observable<Mutation> in
+        guard let `self` = self else { return .empty() }
+        return self.mutate(action: action)
+      }
+      .scan(self.initialState) { [weak self] state, mutation -> State in
         guard let `self` = self else { return state }
-        return self.reduce(state: state, action: action)
+        return self.reduce(state: state, mutation: mutation)
       }
       .startWith(self.initialState)
       .shareReplay(1)
@@ -95,13 +108,18 @@ open class Reactor<ActionType, StateType>: ReactorType {
         self?.currentState = state
       })
       .observeOn(MainScheduler.instance)
+    return self.transform(state: state)
   }
 
   open func transform(action: Observable<Action>) -> Observable<Action> {
     return action
   }
 
-  open func reduce(state: State, action: Action) -> State {
+  open func mutate(action: Action) -> Observable<Mutation> {
+    return .empty()
+  }
+
+  open func reduce(state: State, mutation: Mutation) -> State {
     return state
   }
 
