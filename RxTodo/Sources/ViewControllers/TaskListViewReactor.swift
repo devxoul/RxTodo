@@ -18,7 +18,6 @@ enum TasListViewAction {
   case toggleTaskDone(TaskListSection.Item)
   case deleteTask(IndexPath)
   case moveTask(IndexPath, IndexPath)
-  case presentEditView(TaskListSection.Item)
   case taskEvent(TaskEvent)
 }
 
@@ -55,12 +54,11 @@ final class TaskListViewReactor: Reactor<TasListViewAction, TaskListViewState> {
 
         case let .toggleTaskDone(sectionItem):
           let task = sectionItem.currentState
-          if task.isDone {
-            self.provider.taskService.event.onNext(.markUndone(id: task.id))
+          if !task.isDone {
+            return self.provider.taskService.markAsDone(taskID: task.id).flatMap { _ in Observable.empty() }
           } else {
-            self.provider.taskService.event.onNext(.markDone(id: task.id))
+            return self.provider.taskService.markAsUndone(taskID: task.id).flatMap { _ in Observable.never() }
           }
-          return .just(action)
 
         default:
           return .just(action)
@@ -94,9 +92,6 @@ final class TaskListViewReactor: Reactor<TasListViewAction, TaskListViewState> {
       state.sections.insert(newElement: sectionItem, at: destinationIndexPath)
       return state
 
-    case .presentEditView:
-      return state
-
     case let .taskEvent(event):
       return self.reduceTaskEvent(state: state, event: event)
     }
@@ -120,14 +115,14 @@ final class TaskListViewReactor: Reactor<TasListViewAction, TaskListViewState> {
       state.sections.remove(at: indexPath)
       return state
 
-    case let .markDone(id):
+    case let .markAsDone(id):
       guard let indexPath = self.indexPath(forTaskID: id, from: state) else { return state }
       var task = state.sections[indexPath].currentState
       task.isDone = true
       state.sections[indexPath] = TaskCellReactor(task: task)
       return state
 
-    case let .markUndone(id):
+    case let .markAsUndone(id):
       guard let indexPath = self.indexPath(forTaskID: id, from: state) else { return state }
       var task = state.sections[indexPath].currentState
       task.isDone = false
@@ -144,6 +139,15 @@ final class TaskListViewReactor: Reactor<TasListViewAction, TaskListViewState> {
     } else {
       return nil
     }
+  }
+
+  func reactorForCreatingTask() -> TaskEditViewReactor {
+    return TaskEditViewReactor(provider: self.provider, mode: .new)
+  }
+
+  func reactorForEditingTask(_ taskCellReactor: TaskCellReactor) -> TaskEditViewReactor {
+    let task = taskCellReactor.currentState
+    return TaskEditViewReactor(provider: self.provider, mode: .edit(task))
   }
 
 }

@@ -93,13 +93,8 @@ final class TaskListViewController: BaseViewController, ViewType {
       .addDisposableTo(self.disposeBag)
 
     self.tableView.rx.modelSelected(type(of: self.dataSource).Section.Item.self)
-      .withLatestFrom(reactor.state) { indexPath, state -> Reactor.Action in
-        if !state.isEditing {
-          return .toggleTaskDone(indexPath)
-        } else {
-          return .presentEditView(indexPath)
-        }
-      }
+      .filterNot(reactor.state.map { $0.isEditing })
+      .map { indexPath in .toggleTaskDone(indexPath) }
       .bindTo(reactor.action)
       .addDisposableTo(self.disposeBag)
 
@@ -109,8 +104,29 @@ final class TaskListViewController: BaseViewController, ViewType {
       .addDisposableTo(self.disposeBag)
 
     self.tableView.rx.itemMoved
-    .map(Reactor.Action.moveTask)
+      .map(Reactor.Action.moveTask)
       .bindTo(reactor.action)
+      .addDisposableTo(self.disposeBag)
+
+    self.addButtonItem.rx.tap
+      .map(reactor.reactorForCreatingTask)
+      .subscribe(onNext: { [weak self] reactor in
+        guard let `self` = self else { return }
+        let viewController = TaskEditViewController(reactor: reactor)
+        let navigationController = UINavigationController(rootViewController: viewController)
+        self.present(navigationController, animated: true, completion: nil)
+      })
+      .addDisposableTo(self.disposeBag)
+
+    self.tableView.rx.modelSelected(type(of: self.dataSource).Section.Item.self)
+      .filter(reactor.state.map { $0.isEditing })
+      .map(reactor.reactorForEditingTask)
+      .subscribe(onNext: { [weak self] reactor in
+        guard let `self` = self else { return }
+        let viewController = TaskEditViewController(reactor: reactor)
+        let navigationController = UINavigationController(rootViewController: viewController)
+        self.present(navigationController, animated: true, completion: nil)
+      })
       .addDisposableTo(self.disposeBag)
 
     // State

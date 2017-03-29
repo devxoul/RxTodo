@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		030BC4881D6B5EC700744138 /* TaskEditViewReactorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 030BC4871D6B5EC700744138 /* TaskEditViewReactorTests.swift */; };
+		034AEF111E8BAC28001528E9 /* AlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034AEF101E8BAC28001528E9 /* AlertService.swift */; };
 		035362FE1E26C8D1005B565E /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035362FD1E26C8D1005B565E /* ServiceProvider.swift */; };
 		035363001E26C8E9005B565E /* TaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035362FF1E26C8E9005B565E /* TaskService.swift */; };
 		035363021E26C9D4005B565E /* UserDefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035363011E26C9D4005B565E /* UserDefaultsService.swift */; };
@@ -54,6 +55,7 @@
 
 /* Begin PBXFileReference section */
 		030BC4871D6B5EC700744138 /* TaskEditViewReactorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskEditViewReactorTests.swift; sourceTree = "<group>"; };
+		034AEF101E8BAC28001528E9 /* AlertService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertService.swift; sourceTree = "<group>"; };
 		035362FD1E26C8D1005B565E /* ServiceProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceProvider.swift; sourceTree = "<group>"; };
 		035362FF1E26C8E9005B565E /* TaskService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskService.swift; sourceTree = "<group>"; };
 		035363011E26C9D4005B565E /* UserDefaultsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultsService.swift; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 				035363061E26CE45005B565E /* BaseService.swift */,
 				035363011E26C9D4005B565E /* UserDefaultsService.swift */,
 				035362FF1E26C8E9005B565E /* TaskService.swift */,
+				034AEF101E8BAC28001528E9 /* AlertService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -543,6 +546,7 @@
 				035363021E26C9D4005B565E /* UserDefaultsService.swift in Sources */,
 				035362FE1E26C8D1005B565E /* ServiceProvider.swift in Sources */,
 				03D0C0E01D26ABD600EE93D5 /* TaskCell.swift in Sources */,
+				034AEF111E8BAC28001528E9 /* AlertService.swift in Sources */,
 				03D0C0CC1D26A13E00EE93D5 /* AppDelegate.swift in Sources */,
 				03D0C0F61D26C8AB00EE93D5 /* TaskEditViewController.swift in Sources */,
 				035363071E26CE45005B565E /* BaseService.swift in Sources */,

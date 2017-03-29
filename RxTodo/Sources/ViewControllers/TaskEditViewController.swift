@@ -90,11 +90,19 @@ final class TaskEditViewController: BaseViewController, ViewType {
 
   func configure(reactor: Reactor) {
     // Action
-    let actions = [
-      self.cancelButtonItem.rx.tap.map(Reactor.Action.cancel),
-      self.doneButtonItem.rx.tap.map(Reactor.Action.done),
-    ]
-    Observable.from(actions).merge()
+    self.cancelButtonItem.rx.tap
+      .map { Reactor.Action.cancel }
+      .bindTo(reactor.action)
+      .addDisposableTo(self.disposeBag)
+
+    self.doneButtonItem.rx.tap
+      .map { Reactor.Action.submit }
+      .bindTo(reactor.action)
+      .addDisposableTo(self.disposeBag)
+
+    self.titleInput.rx.text
+      .filterNil()
+      .map(Reactor.Action.updateTaskTitle)
       .bindTo(reactor.action)
       .addDisposableTo(self.disposeBag)
 
@@ -109,74 +117,18 @@ final class TaskEditViewController: BaseViewController, ViewType {
       .bindTo(self.titleInput.rx.text)
       .addDisposableTo(self.disposeBag)
 
-    reactor.state.asObservable().map { $0.canDone }
+    reactor.state.asObservable().map { $0.canSubmit }
       .distinctUntilChanged()
       .bindTo(self.doneButtonItem.rx.isEnabled)
       .addDisposableTo(self.disposeBag)
 
-
-    /*// Input
-    self.rx.deallocated
-      .bindTo(reactor.viewDidDeallocate)
-      .addDisposableTo(self.disposeBag)
-
-    self.cancelButtonItem.rx.tap
-      .bindTo(reactor.cancelButtonItemDidTap)
-      .addDisposableTo(self.disposeBag)
-
-    self.doneButtonItem.rx.tap
-      .bindTo(reactor.doneButtonItemDidTap)
-      .addDisposableTo(self.disposeBag)
-
-    self.titleInput.rx.text.changed
-      .bindTo(reactor.titleInputDidChangeText)
-      .addDisposableTo(self.disposeBag)
-
-    // Output
-    reactor.navigationBarTitle
-      .drive(self.navigationItem.rx.title)
-      .addDisposableTo(self.disposeBag)
-
-    reactor.doneButtonEnabled
-      .drive(self.doneButtonItem.rx.isEnabled)
-      .addDisposableTo(self.disposeBag)
-
-    reactor.titleInputText
-      .drive(self.titleInput.rx.text)
-      .addDisposableTo(self.disposeBag)
-
-    reactor.presentCancelAlert
-      .subscribe(onNext: { [weak self, weak reactor] actions in
-        guard let `self` = self, let reactor = reactor else { return }
-        self.view.endEditing(true)
-        let alertController = UIAlertController(
-          title: "Really?",
-          message: "Changes will be lost.",
-          preferredStyle: .alert
-        )
-        actions
-          .map { action -> UIAlertAction in
-            let handler: (UIAlertAction) -> Void =  { _ in
-              reactor.cancelAlertDidSelectAction.onNext(action)
-            }
-            switch action {
-            case .leave:
-              return UIAlertAction(title: "Leave", style: .destructive, handler: handler)
-            case .stay:
-              return UIAlertAction(title: "Stay", style: .default, handler: handler)
-            }
-          }
-          .forEach(alertController.addAction)
-        self.present(alertController, animated: true, completion: nil)
-      })
-      .addDisposableTo(self.disposeBag)
-
-    reactor.dismissViewController
-      .subscribe(onNext: { [weak self] in
-        self?.view.endEditing(true)
+    reactor.state.asObservable().map { $0.isDismissed }
+      .distinctUntilChanged()
+      .filter { $0 }
+      .subscribe(onNext: { [weak self] _ in
         self?.dismiss(animated: true, completion: nil)
       })
-      .addDisposableTo(self.disposeBag)*/
+      .addDisposableTo(self.disposeBag)
   }
 
 }

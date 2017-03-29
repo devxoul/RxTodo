@@ -14,168 +14,131 @@ enum TaskEditViewMode {
   case edit(Task)
 }
 
-enum TaskEditViewCancelAlertAction {
+enum TaskEditViewCancelAlertAction: AlertActionType {
   case leave
   case stay
+
+  var title: String? {
+    switch self {
+    case .leave: return "Leave"
+    case .stay: return "Stay"
+    }
+  }
+
+  var style: UIAlertActionStyle {
+    switch self {
+    case .leave: return .destructive
+    case .stay: return .default
+    }
+  }
 }
 
 enum TaskEditViewAction {
   case updateTaskTitle(String)
-  case cancel()
-  case done()
+  case cancel
+  case submit
+  case dismiss
 }
 
 struct TaskEditViewState {
-  var title: String?
-  var taskTitle: String?
-  var canDone: Bool
+  var title: String
+  var taskTitle: String
+  var canSubmit: Bool
+  var shouldConfirmCancel: Bool
+  var isDismissed: Bool
+
+  init(title: String, taskTitle: String, canSubmit: Bool) {
+    self.title = title
+    self.taskTitle = taskTitle
+    self.canSubmit = canSubmit
+    self.shouldConfirmCancel = false
+    self.isDismissed = false
+  }
 }
 
 final class TaskEditViewReactor: Reactor<TaskEditViewAction, TaskEditViewState> {
 
+  let provider: ServiceProviderType
+  let mode: TaskEditViewMode
+
   init(provider: ServiceProviderType, mode: TaskEditViewMode) {
+    self.provider = provider
+    self.mode = mode
+
     let initialState: State
     switch mode {
     case .new:
-      initialState = State(
-        title: "New",
-        taskTitle: nil,
-        canDone: false
-      )
+      initialState = State(title: "New", taskTitle: "", canSubmit: false)
     case .edit(let task):
-      initialState = State(
-        title: "Edit",
-        taskTitle: task.title,
-        canDone: true
-      )
+      initialState = State(title: "Edit", taskTitle: task.title, canSubmit: true)
     }
     super.init(initialState: initialState)
   }
 
-//  override func reduce(state: State, action: Action) -> State {
-//    var state = state
-//    switch action {
-//    case let .updateTaskTitle(taskTitle):
-//      state.taskTitle = taskTitle
-//      return state
-//
-//    case .cancel:
-//      return state
-//
-//    case .done:
-//      return state
-//    }
-//  }
+  override func transform(action: Observable<Action>) -> Observable<Action> {
+    return action
+      .flatMap { action -> Observable<Action> in
+        switch action {
+        case .submit where self.currentState.canSubmit:
+          switch self.mode {
+          case .new:
+            return self.provider.taskService
+              .create(title: self.currentState.taskTitle, memo: nil)
+              .map { _ in .dismiss }
 
+          case .edit(let task):
+            return self.provider.taskService
+              .update(taskID: task.id, title: self.currentState.taskTitle, memo: nil)
+              .map { _ in .dismiss }
+          }
 
-  // MARK: Initializing
+        case .cancel:
+          if !self.currentState.shouldConfirmCancel {
+            return .just(.dismiss)
+          }
+          let alertActions: [TaskEditViewCancelAlertAction] = [.leave, .stay]
+          return self.provider.alertService
+            .show(
+              title: "Really?",
+              message: "All changes will be lost",
+              preferredStyle: .alert,
+              actions: alertActions
+            )
+            .flatMap { alertAction -> Observable<Action> in
+              switch alertAction {
+              case .leave:
+                return .just(.dismiss)
 
-  /*init(provider: ServiceProviderType, mode: TaskEditViewMode) {
-    let cls = TaskEditViewReactor.self
+              case .stay:
+                return .empty()
+              }
+            }
 
-    //
-    // Title Input Text
-    //
-    self.titleInputText = cls.titleInputText(
-      mode: mode,
-      titleInputDidChangeText: titleInputDidChangeText.asObservable()
-    )
-
-    //
-    // Navigation Item
-    //
-    self.navigationBarTitle = cls.navigationBarTitle(mode: mode)
-    self.doneButtonEnabled = titleInputText
-      .map { text in text?.isEmpty == false }
-      .startWith(false)
-      .distinctUntilChanged()
-      .asDriver(onErrorJustReturn: false)
-
-    //
-    // Confirm Cancel
-    //
-    self.presentCancelAlert = self.cancelButtonItemDidTap
-      .withLatestFrom(self.titleInputText)
-      .filter { cls.isTitleChanged(mode: mode, title: $0) }
-      .map { _ in [.leave, .stay] }
-      .observeOn(MainScheduler.instance)
-      .subscribeOn(ConcurrentMainScheduler.instance)
-
-    //
-    // Done
-    //
-    _ = self.doneButtonItemDidTap
-      .withLatestFrom(self.doneButtonEnabled)
-      .filter { isEnabled in isEnabled }
-      .withLatestFrom(self.titleInputText)
-      .filterNil()
-      .map { title -> TaskEvent in
-        switch mode {
-        case .new:
-          let newTask = Task(title: title)
-          return .create(newTask)
-        case .edit(let task):
-          let newTask = task.with { $0.title = title }
-          return .update(newTask)
+        default:
+          return .just(action)
         }
       }
-      .takeUntil(self.viewDidDeallocate)
-      .bindTo(provider.taskService.event)
-
-    //
-    // Dismiss
-    //
-    let cancelButtonDidTapWithoutChanges = self.cancelButtonItemDidTap
-      .withLatestFrom(self.titleInputText)
-      .filter { !cls.isTitleChanged(mode: mode, title: $0) }
-      .map { _ in Void() }
-
-    let cancelAlertDidSelectLeaveAction = self.cancelAlertDidSelectAction
-      .filter { $0 == .leave }
-      .map { _ in Void() }
-
-    let doneButtonDidTapWhenEnabled = self.doneButtonItemDidTap
-      .withLatestFrom(self.doneButtonEnabled)
-      .filter { isEnabled in isEnabled }
-      .map { _ in Void() }
-
-    self.dismissViewController = Observable
-      .of(cancelButtonDidTapWithoutChanges, cancelAlertDidSelectLeaveAction, doneButtonDidTapWhenEnabled)
-      .merge()
-      .observeOn(MainScheduler.instance)
-      .subscribeOn(ConcurrentMainScheduler.instance)
   }
 
+  override func reduce(state: State, action: Action) -> State {
+    var state = state
+    switch action {
+    case let .updateTaskTitle(taskTitle):
+      state.taskTitle = taskTitle
+      state.canSubmit = !taskTitle.isEmpty
+      state.shouldConfirmCancel = taskTitle != self.initialState.taskTitle
+      return state
 
-  // MARK: - Functions
+    case .cancel:
+      return state
 
-  class func navigationBarTitle(mode: TaskEditViewMode) -> Driver<String?> {
-    switch mode {
-    case .new: return .just("New")
-    case .edit: return .just("Edit")
+    case .submit:
+      return state
+
+    case .dismiss:
+      state.isDismissed = true
+      return state
     }
   }
-
-  class func titleInputText(
-    mode: TaskEditViewMode,
-    titleInputDidChangeText: Observable<String?>
-  ) -> Driver<String?> {
-    let source = titleInputDidChangeText.asDriver(onErrorJustReturn: nil)
-    switch mode {
-    case .edit(let task):
-      return source.startWith(task.title)
-    case .new:
-      return source.startWith(nil)
-    }
-  }
-
-  class func isTitleChanged(mode: TaskEditViewMode, title: String?) -> Bool {
-    switch mode {
-    case .new:
-      return title?.isEmpty == false
-    case .edit(let task):
-      return title != task.title
-    }
-  }*/
 
 }

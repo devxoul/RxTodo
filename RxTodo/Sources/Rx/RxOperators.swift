@@ -102,3 +102,22 @@ extension ObservableType {
     return self.catchError { _ in .empty() }
   }
 }
+
+
+// MARK: - Filter
+
+extension ObservableType {
+  func filter<O: ObservableType>(_ predicate: O) -> Observable<E> where O.E == Bool {
+    return self
+      .withLatestFrom(predicate) { element, predicate in (element, predicate) }
+      .filter { _, predicate in predicate }
+      .map { element, _ in element }
+  }
+
+  func filterNot<O: ObservableType>(_ predicate: O) -> Observable<E> where O.E == Bool {
+    return self
+      .withLatestFrom(predicate) { element, predicate in (element, predicate) }
+      .filter { _, predicate in !predicate }
+      .map { element, _ in element }
+  }
+}
