@@ -48,9 +48,9 @@ public protocol ReactorType {
   /// async tasks.
   func mutate(action: Action) -> Observable<Mutation>
 
-  /// Generates a new state from the previous state with the action. It should be purely functional
-  /// so don't perform side-effects here. This method is called every time when the action is
-  /// performed.
+  /// Generates a new state with the previous state and the action. It should be purely functional
+  /// so it should not perform any side-effects here. This method is called every time when the
+  /// mutation is committed.
   func reduce(state: State, mutation: Mutation) -> State
 
   /// Transforms the state stream. Use this function to perform side-effects such as logging. This
