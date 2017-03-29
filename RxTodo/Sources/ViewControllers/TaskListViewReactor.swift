@@ -12,13 +12,22 @@ import RxSwift
 
 typealias TaskListSection = SectionModel<Void, TaskCellReactor>
 
-enum TasListViewAction {
-  case refresh(Phase<[TaskListSection]>)
+enum TaskListViewAction {
+  case refresh
   case toggleEditing
-  case toggleTaskDone(TaskListSection.Item)
+  case toggleTaskDone(IndexPath)
   case deleteTask(IndexPath)
   case moveTask(IndexPath, IndexPath)
   case taskEvent(TaskEvent)
+}
+
+enum TaskListViewMutation {
+  case toggleEditing
+  case setSections([TaskListSection])
+  case insertSectionItem(IndexPath, TaskListSection.Item)
+  case updateSectionItem(IndexPath, TaskListSection.Item)
+  case deleteSectionItem(IndexPath)
+  case moveSectionItem(IndexPath, IndexPath)
 }
 
 struct TaskListViewState {
@@ -26,7 +35,7 @@ struct TaskListViewState {
   var sections: [TaskListSection]
 }
 
-final class TaskListViewReactor: Reactor<TasListViewAction, TaskListViewState> {
+final class TaskListViewReactor: Reactor<TaskListViewAction, TaskListViewMutation, TaskListViewState> {
 
   let provider: ServiceProviderType
 
@@ -42,37 +51,85 @@ final class TaskListViewReactor: Reactor<TasListViewAction, TaskListViewState> {
   override func transform(action: Observable<Action>) -> Observable<Action> {
     let actionFromTaskEvent = self.provider.taskService.event.map(Action.taskEvent)
     return Observable.of(action, actionFromTaskEvent).merge()
-      .flatMap { action -> Observable<Action> in
-        switch action {
-        case .refresh(.begin):
-          return self.provider.taskService.fetchTasks()
-            .map { tasks in
-              let sectionItems = tasks.map(TaskCellReactor.init)
-              let section = TaskListSection(model: Void(), items: sectionItems)
-              return .refresh(.end([section]))
-            }
-
-        case let .toggleTaskDone(sectionItem):
-          let task = sectionItem.currentState
-          if !task.isDone {
-            return self.provider.taskService.markAsDone(taskID: task.id).flatMap { _ in Observable.empty() }
-          } else {
-            return self.provider.taskService.markAsUndone(taskID: task.id).flatMap { _ in Observable.never() }
-          }
-
-        default:
-          return .just(action)
-        }
-      }
   }
 
-  override func reduce(state: State, action: Action) -> State {
-    var state = state
+  override func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case .refresh(.begin):
-      return state
+    case .refresh:
+      return self.provider.taskService.fetchTasks()
+        .map { tasks in
+          let sectionItems = tasks.map(TaskCellReactor.init)
+          let section = TaskListSection(model: Void(), items: sectionItems)
+          return .setSections([section])
+        }
 
-    case let .refresh(.end(sections)):
+    case .toggleEditing:
+      return .just(.toggleEditing)
+
+    case let .toggleTaskDone(indexPath):
+      let task = self.currentState.sections[indexPath].currentState
+      if !task.isDone {
+        return self.provider.taskService.markAsDone(taskID: task.id).flatMap { _ in Observable.empty() }
+      } else {
+        return self.provider.taskService.markAsUndone(taskID: task.id).flatMap { _ in Observable.empty() }
+      }
+
+    case let .deleteTask(indexPath):
+      let task = self.currentState.sections[indexPath].currentState
+      return self.provider.taskService.delete(taskID: task.id).flatMap { _ in Observable.empty() }
+
+    case let .moveTask(sourceIndexPath, destinationIndexPath):
+      let task = self.currentState.sections[sourceIndexPath].currentState
+      return self.provider.taskService.move(taskID: task.id, to: destinationIndexPath.item)
+        .flatMap { _ in Observable.empty() }
+
+    case let .taskEvent(taskEvent):
+      return self.mutate(taskEvent: taskEvent)
+    }
+  }
+
+  private func mutate(taskEvent: TaskEvent) -> Observable<Mutation> {
+    let state = self.currentState
+    switch taskEvent {
+    case let .create(task):
+      let indexPath = IndexPath(item: 0, section: 0)
+      let reactor = TaskCellReactor(task: task)
+      return .just(.insertSectionItem(indexPath, reactor))
+
+    case let .update(task):
+      guard let indexPath = self.indexPath(forTaskID: task.id, from: state) else { return .empty() }
+      let reactor = TaskCellReactor(task: task)
+      return .just(.updateSectionItem(indexPath, reactor))
+
+    case let .delete(id):
+      guard let indexPath = self.indexPath(forTaskID: id, from: state) else { return .empty() }
+      return .just(.deleteSectionItem(indexPath))
+
+    case let .move(id, index):
+      guard let sourceIndexPath = self.indexPath(forTaskID: id, from: state) else { return .empty() }
+      let destinationIndexPath = IndexPath(item: index, section: 0)
+      return .just(.moveSectionItem(sourceIndexPath, destinationIndexPath))
+
+    case let .markAsDone(id):
+      guard let indexPath = self.indexPath(forTaskID: id, from: state) else { return .empty() }
+      var task = state.sections[indexPath].currentState
+      task.isDone = true
+      let reactor = TaskCellReactor(task: task)
+      return .just(.updateSectionItem(indexPath, reactor))
+
+    case let .markAsUndone(id):
+      guard let indexPath = self.indexPath(forTaskID: id, from: state) else { return .empty() }
+      var task = state.sections[indexPath].currentState
+      task.isDone = false
+      let reactor = TaskCellReactor(task: task)
+      return .just(.updateSectionItem(indexPath, reactor))
+    }
+  }
+
+  override func reduce(state: State, mutation: Mutation) -> State {
+    var state = state
+    switch mutation {
+    case let .setSections(sections):
       state.sections = sections
       return state
 
@@ -80,53 +137,21 @@ final class TaskListViewReactor: Reactor<TasListViewAction, TaskListViewState> {
       state.isEditing = !state.isEditing
       return state
 
-    case .toggleTaskDone:
+    case let .insertSectionItem(indexPath, sectionItem):
+      state.sections.insert(sectionItem, at: indexPath)
       return state
 
-    case let .deleteTask(indexPath):
+    case let .updateSectionItem(indexPath, sectionItem):
+      state.sections[indexPath] = sectionItem
+      return state
+
+    case let .deleteSectionItem(indexPath):
       state.sections.remove(at: indexPath)
       return state
 
-    case let .moveTask(sourceIndexPath, destinationIndexPath):
+    case let .moveSectionItem(sourceIndexPath, destinationIndexPath):
       let sectionItem = state.sections.remove(at: sourceIndexPath)
-      state.sections.insert(newElement: sectionItem, at: destinationIndexPath)
-      return state
-
-    case let .taskEvent(event):
-      return self.reduceTaskEvent(state: state, event: event)
-    }
-  }
-
-  private func reduceTaskEvent(state: State, event: TaskEvent) -> State {
-    var state = state
-    switch event {
-    case let .create(task):
-      let reactor = TaskCellReactor(task: task)
-      state.sections[0].items.insert(reactor, at: 0)
-      return state
-
-    case let .update(task):
-      guard let indexPath = self.indexPath(forTaskID: task.id, from: state) else { return state }
-      state.sections[indexPath] = TaskCellReactor(task: task)
-      return state
-
-    case let .delete(id):
-      guard let indexPath = self.indexPath(forTaskID: id, from: state) else { return state }
-      state.sections.remove(at: indexPath)
-      return state
-
-    case let .markAsDone(id):
-      guard let indexPath = self.indexPath(forTaskID: id, from: state) else { return state }
-      var task = state.sections[indexPath].currentState
-      task.isDone = true
-      state.sections[indexPath] = TaskCellReactor(task: task)
-      return state
-
-    case let .markAsUndone(id):
-      guard let indexPath = self.indexPath(forTaskID: id, from: state) else { return state }
-      var task = state.sections[indexPath].currentState
-      task.isDone = false
-      state.sections[indexPath] = TaskCellReactor(task: task)
+      state.sections.insert(sectionItem, at: destinationIndexPath)
       return state
     }
   }

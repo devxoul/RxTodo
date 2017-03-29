@@ -21,7 +21,7 @@ extension Array where Element: SectionModelType {
     }
   }
 
-  public mutating func insert(newElement: Element.Item, at indexPath: IndexPath) {
+  public mutating func insert(_ newElement: Element.Item, at indexPath: IndexPath) {
     self.update(section: indexPath.section) { items in
       items.insert(newElement, at: indexPath.item)
     }

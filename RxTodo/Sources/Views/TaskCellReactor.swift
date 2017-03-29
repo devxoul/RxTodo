@@ -9,7 +9,7 @@
 import RxCocoa
 import RxSwift
 
-class TaskCellReactor: Reactor<NoAction, Task> {
+class TaskCellReactor: Reactor<NoAction, NoMutation, Task> {
   init(task: Task) {
     super.init(initialState: task)
   }

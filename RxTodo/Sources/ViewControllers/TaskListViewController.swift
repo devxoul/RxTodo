@@ -83,7 +83,7 @@ final class TaskListViewController: BaseViewController, ViewType {
 
     // Action
     self.rx.viewDidLoad
-      .map { Reactor.Action.refresh(.begin) }
+      .map { Reactor.Action.refresh }
       .bindTo(reactor.action)
       .addDisposableTo(self.disposeBag)
 
@@ -92,7 +92,7 @@ final class TaskListViewController: BaseViewController, ViewType {
       .bindTo(reactor.action)
       .addDisposableTo(self.disposeBag)
 
-    self.tableView.rx.modelSelected(type(of: self.dataSource).Section.Item.self)
+    self.tableView.rx.itemSelected
       .filterNot(reactor.state.map { $0.isEditing })
       .map { indexPath in .toggleTaskDone(indexPath) }
       .bindTo(reactor.action)
