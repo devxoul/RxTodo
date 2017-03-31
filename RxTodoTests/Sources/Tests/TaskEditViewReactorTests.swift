@@ -16,178 +16,197 @@ import RxSwift
 import RxTest
 
 class TaskEditViewReactorTests: XCTestCase {
-/*
-  func testNavigationBarTitle() {
-    RxExpect { test in
+
+  func testTitle() {
+    RxExpect("it should use 'New' title when the editor mode is .new") { test in
       let provider = MockServiceProvider()
       let reactor = TaskEditViewReactor(provider: provider, mode: .new)
-      test.assert(reactor.navigationBarTitle.map { $0! })
+      test.assert(reactor.state.map { $0.title })
         .filterNext()
         .equal(["New"])
     }
 
-    RxExpect { test in
-      let task = Task(title: "Hello")
+    RxExpect("it should use 'Edit' title when the editor mode is .edit") { test in
       let provider = MockServiceProvider()
+      let task = Task(title: "Test")
       let reactor = TaskEditViewReactor(provider: provider, mode: .edit(task))
-      test.assert(reactor.navigationBarTitle.map { $0! })
+      test.assert(reactor.state.map { $0.title })
         .filterNext()
         .equal(["Edit"])
     }
   }
 
-  func testDoneButtonEnabled() {
-    RxExpect { test in
+  func testTaskTitle() {
+    RxExpect("it should update taskTitle") { test in
       let provider = MockServiceProvider()
       let reactor = TaskEditViewReactor(provider: provider, mode: .new)
-      test.input(reactor.titleInputDidChangeText, [
-        next(100, "A"),
-        next(200, "AB"),
-        next(300, ""),
+
+      // input
+      test.input(reactor.action, [
+        next(100, .updateTaskTitle("a")),
+        next(200, .updateTaskTitle("ab")),
+        next(300, .updateTaskTitle("")),
       ])
-      test.assert(reactor.doneButtonEnabled)
-        .filterNext()
+
+      // output
+      test.assert(reactor.state.map { $0.taskTitle })
         .since(100)
-        .equal([true, false])
+        .filterNext()
+        .equal([
+          "a",
+          "ab",
+          "",
+        ])
     }
   }
 
-  func testPresentCancelAlert_new() {
-    RxExpect("it should not present cancel alert when title is empty") { test in
+  func testCanSubmit() {
+    RxExpect("it should adjust canSubmit when the editor mode is .new") { test in
       let provider = MockServiceProvider()
       let reactor = TaskEditViewReactor(provider: provider, mode: .new)
-      test.input(reactor.cancelButtonItemDidTap, [next(100)])
-      test.assert(reactor.presentCancelAlert)
+
+      // input
+      test.input(reactor.action, [
+        next(100, .updateTaskTitle("a")),
+        next(200, .updateTaskTitle("")),
+      ])
+
+      // assert
+      test.assert(reactor.state.map { $0.canSubmit })
         .filterNext()
-        .isEmpty()
+        .equal([
+          false, // initial
+          true,  // "a"
+          false, // ""
+        ])
     }
 
-    RxExpect("it should present cancel alert when title is not empty") { test in
+    RxExpect("it should adjust canSubmit when the editor mode is .edit") { test in
       let provider = MockServiceProvider()
-      let reactor = TaskEditViewReactor(provider: provider, mode: .new)
-      test.input(reactor.titleInputDidChangeText, [next(100, "A")])
-      test.input(reactor.cancelButtonItemDidTap, [next(200)])
-      test.assert(reactor.presentCancelAlert)
-        .filterNext()
-        .isNotEmpty()
-    }
-  }
-
-  func testPresentCancelAlert_edit() {
-    let task = Task(title: "Clean my room")
-
-    RxExpect("it should not present cancel alert when title is not changed") { test in
-      let provider = MockServiceProvider()
+      let task = Task(title: "Test")
       let reactor = TaskEditViewReactor(provider: provider, mode: .edit(task))
-      test.input(reactor.cancelButtonItemDidTap, [next(200)])
-      test.assert(reactor.presentCancelAlert)
+
+      // input
+      test.input(reactor.action, [
+        next(100, .updateTaskTitle("a")),
+        next(200, .updateTaskTitle("")),
+      ])
+
+      // assert
+      test.assert(reactor.state.map { $0.canSubmit })
         .filterNext()
-        .isEmpty()
+        .equal([
+          true,  // initial
+          true,  // "a"
+          false, // ""
+        ])
+    }
+  }
+
+  func testShouldComfirmCancel() {
+    RxExpect("it should confirm cancel when the editor mode is .new") { test in
+      let provider = MockServiceProvider()
+      let reactor = TaskEditViewReactor(provider: provider, mode: .new)
+
+      // input
+      test.input(reactor.action, [
+        next(100, .updateTaskTitle("a")),
+        next(200, .updateTaskTitle("")),
+      ])
+
+      // assert
+      test.assert(reactor.state.map { $0.shouldConfirmCancel })
+        .filterNext()
+        .equal([
+          false, // initial
+          true,  // "a"
+          false, // ""
+        ])
     }
 
-    RxExpect("it should present cancel alert when title is changed") { test in
+    RxExpect("it should confirm cancel when the editor mode is .edit") { test in
       let provider = MockServiceProvider()
+      let task = Task(title: "TEST")
       let reactor = TaskEditViewReactor(provider: provider, mode: .edit(task))
-      test.input(reactor.titleInputDidChangeText, [next(100, "New Title")])
-      test.input(reactor.cancelButtonItemDidTap, [next(200)])
-      test.assert(reactor.presentCancelAlert)
+
+      // input
+      test.input(reactor.action, [
+        next(100, .updateTaskTitle("a")),
+        next(200, .updateTaskTitle("")),
+        next(300, .updateTaskTitle("TEST")),
+      ])
+
+      // assert
+      test.assert(reactor.state.map { $0.shouldConfirmCancel })
         .filterNext()
-        .isNotEmpty()
+        .equal([
+          false, // initial
+          true,  // "a"
+          true,  // ""
+          false, // "TEST"
+        ])
     }
   }
 
-  func testDismissViewController_cancel() {
-    RxExpect("it should not dismiss view controller on tapping cancel button when title is changed") { test in
+  func testIsDismissed() {
+    RxExpect("it should dismiss on cancel") { test in
       let provider = MockServiceProvider()
       let reactor = TaskEditViewReactor(provider: provider, mode: .new)
-      test.input(reactor.titleInputDidChangeText, [next(100, "A")])
-      test.input(reactor.cancelButtonItemDidTap, [next(200)])
-      test.assert(reactor.dismissViewController)
+
+      // input
+      test.input(reactor.action, [
+        next(100, .cancel),
+      ])
+
+      // assert
+      test.assert(reactor.state.map { $0.isDismissed }.distinctUntilChanged())
         .filterNext()
-        .isEmpty()
+        .equal([
+          false, // initial
+          true,  // cancel
+        ])
     }
 
-    RxExpect("it should dismiss view controller on tapping cancel button when title is not changed") { test in
+    RxExpect("it should dismiss when select leave on cancel alert") { test in
+      let provider = MockServiceProvider()
+      provider.alertService = MockAlertService(provider: provider).then {
+        $0.selectAction = TaskEditViewCancelAlertAction.leave
+      }
+      let reactor = TaskEditViewReactor(provider: provider, mode: .new)
+
+      // input
+      test.input(reactor.action, [
+        next(100, .updateTaskTitle("a")),
+        next(200, .cancel),
+      ])
+
+      // assert
+      test.assert(reactor.state.map { $0.isDismissed }.distinctUntilChanged())
+        .filterNext()
+        .equal([
+          false, // initial
+          true,  // cancel
+        ])
+    }
+
+    RxExpect("it should dismiss on submit") { test in
       let provider = MockServiceProvider()
       let reactor = TaskEditViewReactor(provider: provider, mode: .new)
-      test.input(reactor.cancelButtonItemDidTap, [next(200)])
-      test.assert(reactor.dismissViewController)
+
+      // input
+      test.input(reactor.action, [
+        next(100, .updateTaskTitle("a")),
+        next(200, .submit),
+      ])
+
+      // assert
+      test.assert(reactor.state.map { $0.isDismissed }.distinctUntilChanged())
         .filterNext()
-        .isNotEmpty()
+        .equal([
+          false, // initial
+          true,  // submit
+        ])
     }
   }
 
-  func testDismissViewController_leave() {
-    RxExpect("it should dismiss view controller on tapping leave button") { test in
-      let provider = MockServiceProvider()
-      let reactor = TaskEditViewReactor(provider: provider, mode: .new)
-      test.input(reactor.cancelAlertDidSelectAction, [next(100, .leave)])
-      test.assert(reactor.dismissViewController)
-        .filterNext()
-        .isNotEmpty()
-    }
-  }
-
-  func testDismissViewController_done() {
-    RxExpect("it should not dismiss view controller on tapping done button when title is empty") { test in
-      let provider = MockServiceProvider()
-      let reactor = TaskEditViewReactor(provider: provider, mode: .new)
-      test.input(reactor.doneButtonItemDidTap, [next(100)])
-      test.assert(reactor.dismissViewController)
-        .filterNext()
-        .isEmpty()
-    }
-
-    RxExpect("it should dismiss view controller on tapping done button when title is not empty") { test in
-      let provider = MockServiceProvider()
-      let reactor = TaskEditViewReactor(provider: provider, mode: .new)
-      test.input(reactor.titleInputDidChangeText, [next(100, "A")])
-      test.input(reactor.doneButtonItemDidTap, [next(200)])
-      test.assert(reactor.dismissViewController)
-        .filterNext()
-        .isNotEmpty()
-    }
-  }
-
-  func testTaskEvent() {
-    RxExpect("it should emit TaskEvent.create when done editing") { test in
-      let provider = MockServiceProvider()
-      let reactor = TaskEditViewReactor(provider: provider, mode: .new)
-      test.input(reactor.titleInputDidChangeText, [next(100, "A")])
-      test.input(reactor.doneButtonItemDidTap, [next(200)])
-
-      let taskTitleFromCreateEvent = provider.taskService.event
-        .flatMap { event -> Observable<String> in
-          if case .create(let task) = event {
-            return .just(task.title)
-          } else {
-            return .empty()
-          }
-        }
-      test.assert(taskTitleFromCreateEvent)
-        .filterNext()
-        .equal(["A"])
-    }
-
-    RxExpect("it should emit TaskEvent.update when done editing") { test in
-      let provider = MockServiceProvider()
-      let task = Task(title: "Clean my room")
-      let reactor = TaskEditViewReactor(provider: provider, mode: .edit(task))
-      test.input(reactor.titleInputDidChangeText, [next(100, "Hi")])
-      test.input(reactor.doneButtonItemDidTap, [next(200)])
-
-      let taskTitleFromUpdateEvent = provider.taskService.event
-        .flatMap { event -> Observable<String> in
-          if case .update(let task) = event {
-            return .just(task.title)
-          } else {
-            return .empty()
-          }
-        }
-      test.assert(taskTitleFromUpdateEvent)
-        .filterNext()
-        .equal(["Hi"])
-    }
-  }
-*/
 }

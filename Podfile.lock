@@ -7,7 +7,7 @@ PODS:
   - RxDataSources (1.0.0):
     - RxCocoa (~> 3.0)
     - RxSwift (~> 3.0)
-  - RxExpect (0.3.0):
+  - RxExpect (0.5.1):
     - RxCocoa (>= 3.0)
     - RxSwift (>= 3.0)
     - RxTest (>= 3.0)
@@ -15,7 +15,7 @@ PODS:
     - RxCocoa
     - RxSwift
   - RxSwift (3.1.0)
-  - RxTest (3.1.0):
+  - RxTest (3.2.0):
     - RxSwift (~> 3.0)
   - SnapKit (3.0.0)
   - Then (2.1.0)
@@ -41,10 +41,10 @@ SPEC CHECKSUMS:
   ReusableKit: 89e743a120bab0d95848bff27e481833c2768905
   RxCocoa: 50d7564866da9299161e86a263ce12a0873904d8
   RxDataSources: 824693e84d00781d0a5e5cedc1ff95ce9250aacd
-  RxExpect: 93b45e5b313327d3de055c52835a3d2c4da3d8e6
+  RxExpect: b5b995662f56e8efa3c15a600b187b07f0578b44
   RxOptional: b97b59183af80d1e729ac9e51d09a10be668d6a8
   RxSwift: 83ff553e7593fdfdcb2562933a64c0284dffdadc
-  RxTest: 661e33b5022682961784da03cf79c175fcc4bd64
+  RxTest: 85fdd6f753e8e62635a58d37bbdd3ce7d5abbef3
   SnapKit: 98af0a4e9369d3c58f758967518081dbdc7eb1d9
   Then: 8496793c8fcac95482b943909b440724c7d8d82c
   URLNavigator: 269e73ee727a7cabfa8e510a312bac3884325cc3

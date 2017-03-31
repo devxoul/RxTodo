@@ -93,7 +93,6 @@ open class Reactor<ActionType, MutationType, StateType>: ReactorType {
 
   func createStateStream() -> Observable<State> {
     let state = self.transform(action: self.action)
-      .observeOn(ConcurrentDispatchQueueScheduler(qos: .userInitiated))
       .flatMap { [weak self] action -> Observable<Mutation> in
         guard let `self` = self else { return .empty() }
         return self.mutate(action: action)
