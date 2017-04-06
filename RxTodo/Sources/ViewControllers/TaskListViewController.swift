@@ -13,7 +13,7 @@ import RxDataSources
 import RxSwift
 import ReusableKit
 
-final class TaskListViewController: BaseViewController, ViewType {
+final class TaskListViewController: BaseViewController {
 
   typealias Reactor = TaskListViewReactor
 

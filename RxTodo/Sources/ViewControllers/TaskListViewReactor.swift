@@ -6,6 +6,7 @@
 //  Copyright © 2016 Suyeol Jeon. All rights reserved.
 //
 
+import Reactor
 import RxCocoa
 import RxDataSources
 import RxSwift

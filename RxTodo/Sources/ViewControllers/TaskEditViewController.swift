@@ -10,7 +10,7 @@ import UIKit
 
 import RxSwift
 
-final class TaskEditViewController: BaseViewController, ViewType {
+final class TaskEditViewController: BaseViewController {
 
   typealias Reactor = TaskEditViewReactor
 

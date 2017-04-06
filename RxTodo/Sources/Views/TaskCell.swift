@@ -10,7 +10,7 @@ import UIKit
 
 import RxSwift
 
-final class TaskCell: BaseTableViewCell, ViewType {
+final class TaskCell: BaseTableViewCell {
 
   typealias Reactor = TaskCellReactor
 

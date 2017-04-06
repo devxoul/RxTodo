@@ -3,6 +3,10 @@ platform :ios, '8.0'
 target 'RxTodo' do
   use_frameworks!
 
+  # Architecture
+  pod 'Reactor', :git => 'https://github.com/devxoul/TheReactiveArchitecture.git',
+                 :branch => 'reactor'
+
   # Rx
   pod 'RxSwift', '~> 3.1'
   pod 'RxCocoa', '~> 3.1'
