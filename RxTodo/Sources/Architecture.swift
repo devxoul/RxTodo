@@ -29,7 +29,7 @@ public protocol ReactorType {
   associatedtype State
 
   /// The action from the view. Bind user inputs to this subject.
-  var action: PublishSubject<Action> { get }
+  var action: AnyObserver<Action> { get }
 
   /// The initial state.
   var initialState: State { get }
@@ -80,19 +80,21 @@ open class Reactor<ActionType, MutationType, StateType>: ReactorType {
   public typealias Mutation = MutationType
   public typealias State = StateType
 
-  open let action: PublishSubject<Action> = .init()
+  let actionSubject: PublishSubject<Action> = .init()
+  open let action: AnyObserver<Action>
 
   open let initialState: State
   open private(set) var currentState: State
   open lazy private(set) var state: Observable<State> = self.createStateStream()
 
   public init(initialState: State) {
+    self.action = self.actionSubject.asObserver()
     self.initialState = initialState
     self.currentState = initialState
   }
 
   func createStateStream() -> Observable<State> {
-    let state = self.transform(action: self.action)
+    let state = self.transform(action: self.actionSubject)
       .flatMap { [weak self] action -> Observable<Mutation> in
         guard let `self` = self else { return .empty() }
         return self.mutate(action: action)
