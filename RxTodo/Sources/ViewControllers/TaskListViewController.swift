@@ -8,15 +8,13 @@
 
 import UIKit
 
+import ReactorKit
 import RxCocoa
 import RxDataSources
 import RxSwift
 import ReusableKit
 
-final class TaskListViewController: BaseViewController {
-
-  typealias Reactor = TaskListViewReactor
-
+final class TaskListViewController: BaseViewController, View {
 
   // MARK: Constants
 
@@ -27,7 +25,6 @@ final class TaskListViewController: BaseViewController {
 
   // MARK: Properties
 
-  let reactor: Reactor?
   let dataSource = RxTableViewSectionedReloadDataSource<TaskListSection>()
 
   let addButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
@@ -39,12 +36,11 @@ final class TaskListViewController: BaseViewController {
 
   // MARK: Initializing
 
-  init(reactor: Reactor) {
-    self.reactor = reactor
+  init(reactor: TaskListViewReactor) {
     super.init()
     self.navigationItem.leftBarButtonItem = self.editButtonItem
     self.navigationItem.rightBarButtonItem = self.addButtonItem
-    self.configure(reactor: reactor)
+    self.reactor = reactor
   }
 
   required init?(coder aDecoder: NSCoder) {
@@ -68,14 +64,14 @@ final class TaskListViewController: BaseViewController {
   }
 
 
-  // MARK: Configuring
+  // MARK: Binding
 
-  func configure(reactor: Reactor) {
+  func bind(reactor: TaskListViewReactor) {
     // DataSource
     self.tableView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
     self.dataSource.configureCell = { _, tableView, indexPath, reactor in
       let cell = tableView.dequeue(Reusable.taskCell, for: indexPath)
-      cell.configure(reactor: reactor)
+      cell.reactor = reactor
       return cell
     }
     self.dataSource.canEditRowAtIndexPath = { _ in true }

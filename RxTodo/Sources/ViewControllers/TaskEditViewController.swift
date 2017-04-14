@@ -8,12 +8,10 @@
 
 import UIKit
 
+import ReactorKit
 import RxSwift
 
-final class TaskEditViewController: BaseViewController {
-
-  typealias Reactor = TaskEditViewReactor
-
+final class TaskEditViewController: BaseViewController, View {
 
   // MARK: Constants
 
@@ -32,11 +30,6 @@ final class TaskEditViewController: BaseViewController {
   }
 
 
-  // MARK: Properties
-
-  let reactor: Reactor?
-
-
   // MARK: UI
 
   let cancelButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
@@ -51,12 +44,11 @@ final class TaskEditViewController: BaseViewController {
 
   // MARK: Initializing
 
-  init(reactor: Reactor) {
-    self.reactor = reactor
+  init(reactor: TaskEditViewReactor) {
     super.init()
     self.navigationItem.leftBarButtonItem = self.cancelButtonItem
     self.navigationItem.rightBarButtonItem = self.doneButtonItem
-    self.configure(reactor: reactor)
+    self.reactor = reactor
   }
 
   required convenience init?(coder aDecoder: NSCoder) {
@@ -86,9 +78,9 @@ final class TaskEditViewController: BaseViewController {
   }
 
 
-  // MARK: Configuring
+  // MARK: Binding
 
-  func configure(reactor: Reactor) {
+  func bind(reactor: TaskEditViewReactor) {
     // Action
     self.cancelButtonItem.rx.tap
       .map { Reactor.Action.cancel }

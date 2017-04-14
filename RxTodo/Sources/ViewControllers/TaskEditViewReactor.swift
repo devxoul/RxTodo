@@ -6,7 +6,7 @@
 //  Copyright © 2016 Suyeol Jeon. All rights reserved.
 //
 
-import Reactor
+import ReactorKit
 import RxCocoa
 import RxSwift
 
@@ -34,53 +34,53 @@ enum TaskEditViewCancelAlertAction: AlertActionType {
   }
 }
 
-enum TaskEditViewAction {
-  case updateTaskTitle(String)
-  case cancel
-  case submit
-}
 
-enum TaskEditViewMutation {
-  case updateTaskTitle(String)
-  case dismiss
-}
+final class TaskEditViewReactor: Reactor {
 
-struct TaskEditViewState {
-  var title: String
-  var taskTitle: String
-  var canSubmit: Bool
-  var shouldConfirmCancel: Bool
-  var isDismissed: Bool
-
-  init(title: String, taskTitle: String, canSubmit: Bool) {
-    self.title = title
-    self.taskTitle = taskTitle
-    self.canSubmit = canSubmit
-    self.shouldConfirmCancel = false
-    self.isDismissed = false
+  enum Action {
+    case updateTaskTitle(String)
+    case cancel
+    case submit
   }
-}
 
-final class TaskEditViewReactor: Reactor<TaskEditViewAction, TaskEditViewMutation, TaskEditViewState> {
+  enum Mutation {
+    case updateTaskTitle(String)
+    case dismiss
+  }
+
+  struct State {
+    var title: String
+    var taskTitle: String
+    var canSubmit: Bool
+    var shouldConfirmCancel: Bool
+    var isDismissed: Bool
+
+    init(title: String, taskTitle: String, canSubmit: Bool) {
+      self.title = title
+      self.taskTitle = taskTitle
+      self.canSubmit = canSubmit
+      self.shouldConfirmCancel = false
+      self.isDismissed = false
+    }
+  }
 
   let provider: ServiceProviderType
   let mode: TaskEditViewMode
+  let initialState: State
 
   init(provider: ServiceProviderType, mode: TaskEditViewMode) {
     self.provider = provider
     self.mode = mode
 
-    let initialState: State
     switch mode {
     case .new:
-      initialState = State(title: "New", taskTitle: "", canSubmit: false)
+      self.initialState = State(title: "New", taskTitle: "", canSubmit: false)
     case .edit(let task):
-      initialState = State(title: "Edit", taskTitle: task.title, canSubmit: true)
+      self.initialState = State(title: "Edit", taskTitle: task.title, canSubmit: true)
     }
-    super.init(initialState: initialState)
   }
 
-  override func mutate(action: Action) -> Observable<Mutation> {
+  func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case let .updateTaskTitle(taskTitle):
       return .just(.updateTaskTitle(taskTitle))
@@ -123,7 +123,7 @@ final class TaskEditViewReactor: Reactor<TaskEditViewAction, TaskEditViewMutatio
     }
   }
 
-  override func reduce(state: State, mutation: Mutation) -> State {
+  func reduce(state: State, mutation: Mutation) -> State {
     var state = state
     switch mutation {
     case let .updateTaskTitle(taskTitle):

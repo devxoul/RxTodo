@@ -6,12 +6,16 @@
 //  Copyright © 2016 Suyeol Jeon. All rights reserved.
 //
 
-import Reactor
+import ReactorKit
 import RxCocoa
 import RxSwift
 
-class TaskCellReactor: Reactor<NoAction, NoMutation, Task> {
+class TaskCellReactor: Reactor {
+  typealias Action = NoAction
+
+  let initialState: Task
+
   init(task: Task) {
-    super.init(initialState: task)
+    self.initialState = task
   }
 }

@@ -8,12 +8,11 @@
 
 import UIKit
 
+import ReactorKit
 import RxSwift
 
-final class TaskCell: BaseTableViewCell {
-
+final class TaskCell: BaseTableViewCell, View {
   typealias Reactor = TaskCellReactor
-
 
   // MARK: Constants
 
@@ -34,11 +33,6 @@ final class TaskCell: BaseTableViewCell {
   }
 
 
-  // MARK: Properties
-
-  var reactor: Reactor?
-
-
   // MARK: UI
 
   let titleLabel = UILabel().then {
@@ -55,10 +49,9 @@ final class TaskCell: BaseTableViewCell {
   }
 
 
-  // MARK: Configuring
+  // MARK: Binding
 
-  func configure(reactor: Reactor) {
-    self.reactor = reactor
+  func bind(reactor: Reactor) {
     self.titleLabel.text = reactor.currentState.title
     self.accessoryType = reactor.currentState.isDone ? .checkmark : .none
   }

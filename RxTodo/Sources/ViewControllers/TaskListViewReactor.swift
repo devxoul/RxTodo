@@ -6,55 +6,55 @@
 //  Copyright © 2016 Suyeol Jeon. All rights reserved.
 //
 
-import Reactor
+import ReactorKit
 import RxCocoa
 import RxDataSources
 import RxSwift
 
 typealias TaskListSection = SectionModel<Void, TaskCellReactor>
 
-enum TaskListViewAction {
-  case refresh
-  case toggleEditing
-  case toggleTaskDone(IndexPath)
-  case deleteTask(IndexPath)
-  case moveTask(IndexPath, IndexPath)
-  case taskEvent(TaskEvent)
-}
+final class TaskListViewReactor: Reactor {
 
-enum TaskListViewMutation {
-  case toggleEditing
-  case setSections([TaskListSection])
-  case insertSectionItem(IndexPath, TaskListSection.Item)
-  case updateSectionItem(IndexPath, TaskListSection.Item)
-  case deleteSectionItem(IndexPath)
-  case moveSectionItem(IndexPath, IndexPath)
-}
+  enum Action {
+    case refresh
+    case toggleEditing
+    case toggleTaskDone(IndexPath)
+    case deleteTask(IndexPath)
+    case moveTask(IndexPath, IndexPath)
+    case taskEvent(TaskEvent)
+  }
 
-struct TaskListViewState {
-  var isEditing: Bool
-  var sections: [TaskListSection]
-}
+  enum Mutation {
+    case toggleEditing
+    case setSections([TaskListSection])
+    case insertSectionItem(IndexPath, TaskListSection.Item)
+    case updateSectionItem(IndexPath, TaskListSection.Item)
+    case deleteSectionItem(IndexPath)
+    case moveSectionItem(IndexPath, IndexPath)
+  }
 
-final class TaskListViewReactor: Reactor<TaskListViewAction, TaskListViewMutation, TaskListViewState> {
+  struct State {
+    var isEditing: Bool
+    var sections: [TaskListSection]
+  }
 
   let provider: ServiceProviderType
+  let initialState: State
 
   init(provider: ServiceProviderType) {
     self.provider = provider
-    let initialState = State(
+    self.initialState = State(
       isEditing: false,
       sections: [TaskListSection(model: Void(), items: [])]
     )
-    super.init(initialState: initialState)
   }
 
-  override func transform(action: Observable<Action>) -> Observable<Action> {
+  func transform(action: Observable<Action>) -> Observable<Action> {
     let actionFromTaskEvent = self.provider.taskService.event.map(Action.taskEvent)
     return Observable.of(action, actionFromTaskEvent).merge()
   }
 
-  override func mutate(action: Action) -> Observable<Mutation> {
+  func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .refresh:
       return self.provider.taskService.fetchTasks()
@@ -127,7 +127,7 @@ final class TaskListViewReactor: Reactor<TaskListViewAction, TaskListViewMutatio
     }
   }
 
-  override func reduce(state: State, mutation: Mutation) -> State {
+  func reduce(state: State, mutation: Mutation) -> State {
     var state = state
     switch mutation {
     case let .setSections(sections):
