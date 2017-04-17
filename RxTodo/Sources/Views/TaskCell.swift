@@ -8,9 +8,11 @@
 
 import UIKit
 
+import ReactorKit
 import RxSwift
 
-final class TaskCell: BaseTableViewCell {
+final class TaskCell: BaseTableViewCell, View {
+  typealias Reactor = TaskCellReactor
 
   // MARK: Constants
 
@@ -31,7 +33,7 @@ final class TaskCell: BaseTableViewCell {
   }
 
 
-  // MARK: Properties
+  // MARK: UI
 
   let titleLabel = UILabel().then {
     $0.font = Font.titleLabel
@@ -47,11 +49,11 @@ final class TaskCell: BaseTableViewCell {
   }
 
 
-  // MARK: Configuring
+  // MARK: Binding
 
-  func configure(_ reactor: TaskCellReactorType) {
-    self.titleLabel.text = reactor.title
-    self.accessoryType = reactor.accessoryType
+  func bind(reactor: Reactor) {
+    self.titleLabel.text = reactor.currentState.title
+    self.accessoryType = reactor.currentState.isDone ? .checkmark : .none
   }
 
 
@@ -69,8 +71,8 @@ final class TaskCell: BaseTableViewCell {
 
   // MARK: Cell Height
 
-  class func height(fits width: CGFloat, reactor: TaskCellReactorType) -> CGFloat {
-    let height =  reactor.title.height(
+  class func height(fits width: CGFloat, reactor: Reactor) -> CGFloat {
+    let height =  reactor.currentState.title.height(
       fits: width - Metric.cellPadding * 2,
       font: Font.titleLabel,
       maximumNumberOfLines: Constant.titleLabelNumberOfLines

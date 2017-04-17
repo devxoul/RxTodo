@@ -25,7 +25,7 @@ class BaseViewController: UIViewController {
 
   // MARK: Rx
 
-  let disposeBag = DisposeBag()
+  var disposeBag = DisposeBag()
 
 
   // MARK: Layout Constraints

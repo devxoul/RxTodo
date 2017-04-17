@@ -6,22 +6,16 @@
 //  Copyright © 2016 Suyeol Jeon. All rights reserved.
 //
 
+import ReactorKit
 import RxCocoa
 import RxSwift
 
-protocol TaskCellReactorType {
-  var title: String { get }
-  var accessoryType: UITableViewCellAccessoryType { get }
-}
+class TaskCellReactor: Reactor {
+  typealias Action = NoAction
 
-struct TaskCellReactor: TaskCellReactorType {
-
-  let title: String
-  let accessoryType: UITableViewCellAccessoryType
+  let initialState: Task
 
   init(task: Task) {
-    self.title = task.title
-    self.accessoryType = task.isDone ? .checkmark : .none
+    self.initialState = task
   }
-
 }

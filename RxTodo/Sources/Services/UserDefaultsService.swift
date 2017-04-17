@@ -29,6 +29,7 @@ final class UserDefaultsService: BaseService, UserDefaultsServiceType {
 
   func set<T>(value: T?, forKey key: UserDefaultsKey<T>) {
     self.defaults.set(value, forKey: key.key)
+    self.defaults.synchronize()
   }
 
 }

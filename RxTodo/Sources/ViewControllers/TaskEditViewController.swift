@@ -8,7 +8,10 @@
 
 import UIKit
 
-final class TaskEditViewController: BaseViewController {
+import ReactorKit
+import RxSwift
+
+final class TaskEditViewController: BaseViewController, View {
 
   // MARK: Constants
 
@@ -27,7 +30,7 @@ final class TaskEditViewController: BaseViewController {
   }
 
 
-  // MARK: Properties
+  // MARK: UI
 
   let cancelButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
   let doneButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: nil)
@@ -41,11 +44,11 @@ final class TaskEditViewController: BaseViewController {
 
   // MARK: Initializing
 
-  init(reactor: TaskEditViewReactorType) {
+  init(reactor: TaskEditViewReactor) {
     super.init()
     self.navigationItem.leftBarButtonItem = self.cancelButtonItem
     self.navigationItem.rightBarButtonItem = self.doneButtonItem
-    self.configure(reactor)
+    self.reactor = reactor
   }
 
   required convenience init?(coder aDecoder: NSCoder) {
@@ -75,68 +78,46 @@ final class TaskEditViewController: BaseViewController {
   }
 
 
-  // MARK: Configuring
+  // MARK: Binding
 
-  private func configure(_ reactor: TaskEditViewReactorType) {
-    // Input
-    self.rx.deallocated
-      .bindTo(reactor.viewDidDeallocate)
-      .addDisposableTo(self.disposeBag)
-
+  func bind(reactor: TaskEditViewReactor) {
+    // Action
     self.cancelButtonItem.rx.tap
-      .bindTo(reactor.cancelButtonItemDidTap)
+      .map { Reactor.Action.cancel }
+      .bindTo(reactor.action)
       .addDisposableTo(self.disposeBag)
 
     self.doneButtonItem.rx.tap
-      .bindTo(reactor.doneButtonItemDidTap)
+      .map { Reactor.Action.submit }
+      .bindTo(reactor.action)
       .addDisposableTo(self.disposeBag)
 
-    self.titleInput.rx.text.changed
-      .bindTo(reactor.titleInputDidChangeText)
+    self.titleInput.rx.text
+      .filterNil()
+      .map(Reactor.Action.updateTaskTitle)
+      .bindTo(reactor.action)
       .addDisposableTo(self.disposeBag)
 
-    // Output
-    reactor.navigationBarTitle
-      .drive(self.navigationItem.rx.title)
+    // State
+    reactor.state.asObservable().map { $0.title }
+      .distinctUntilChanged()
+      .bindTo(self.navigationItem.rx.title)
       .addDisposableTo(self.disposeBag)
 
-    reactor.doneButtonEnabled
-      .drive(self.doneButtonItem.rx.isEnabled)
+    reactor.state.asObservable().map { $0.taskTitle }
+      .distinctUntilChanged()
+      .bindTo(self.titleInput.rx.text)
       .addDisposableTo(self.disposeBag)
 
-    reactor.titleInputText
-      .drive(self.titleInput.rx.text)
+    reactor.state.asObservable().map { $0.canSubmit }
+      .distinctUntilChanged()
+      .bindTo(self.doneButtonItem.rx.isEnabled)
       .addDisposableTo(self.disposeBag)
 
-    reactor.presentCancelAlert
-      .subscribe(onNext: { [weak self, weak reactor] actions in
-        guard let `self` = self, let reactor = reactor else { return }
-        self.view.endEditing(true)
-        let alertController = UIAlertController(
-          title: "Really?",
-          message: "Changes will be lost.",
-          preferredStyle: .alert
-        )
-        actions
-          .map { action -> UIAlertAction in
-            let handler: (UIAlertAction) -> Void =  { _ in
-              reactor.cancelAlertDidSelectAction.onNext(action)
-            }
-            switch action {
-            case .leave:
-              return UIAlertAction(title: "Leave", style: .destructive, handler: handler)
-            case .stay:
-              return UIAlertAction(title: "Stay", style: .default, handler: handler)
-            }
-          }
-          .forEach(alertController.addAction)
-        self.present(alertController, animated: true, completion: nil)
-      })
-      .addDisposableTo(self.disposeBag)
-
-    reactor.dismissViewController
-      .subscribe(onNext: { [weak self] in
-        self?.view.endEditing(true)
+    reactor.state.asObservable().map { $0.isDismissed }
+      .distinctUntilChanged()
+      .filter { $0 }
+      .subscribe(onNext: { [weak self] _ in
         self?.dismiss(animated: true, completion: nil)
       })
       .addDisposableTo(self.disposeBag)

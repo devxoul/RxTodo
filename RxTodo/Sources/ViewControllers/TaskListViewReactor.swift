@@ -6,241 +6,174 @@
 //  Copyright © 2016 Suyeol Jeon. All rights reserved.
 //
 
+import ReactorKit
 import RxCocoa
 import RxDataSources
 import RxSwift
 
-typealias TaskListSection = SectionModel<Void, TaskCellReactorType>
+typealias TaskListSection = SectionModel<Void, TaskCellReactor>
 
-protocol TaskListViewReactorType: class {
+final class TaskListViewReactor: Reactor {
 
-  // Input
-  var viewDidLoad: PublishSubject<Void> { get }
-  var viewDidDeallocate: PublishSubject<Void> { get }
-  var editButtonItemDidTap: PublishSubject<Void> { get }
-  var addButtonItemDidTap: PublishSubject<Void> { get }
-  var itemDidSelect: PublishSubject<IndexPath> { get }
-  var itemDidDelete: PublishSubject<IndexPath> { get }
-  var itemDidMove: PublishSubject<(sourceIndex: IndexPath, destinationIndex: IndexPath)> { get }
-
-  // Output
-  var navigationBarTitle: Driver<String?> { get }
-  var editButtonItemTitle: Driver<String> { get }
-  var editButtonItemStyle: Driver<UIBarButtonItemStyle> { get }
-  var sections: Driver<[TaskListSection]> { get }
-  var isTableViewEditing: Driver<Bool> { get }
-  var presentTaskEditViewReactor: Observable<TaskEditViewReactorType> { get }
-
-}
-
-final class TaskListViewReactor: TaskListViewReactorType {
-
-  // MARK: Types
-
-  fileprivate enum TaskOperation {
-    case refresh([Task])
-    case add(Task)
-    case replace(Task)
-    case move(from: Int, to: Int)
-    case delete(id: String)
-    case markDone(id: String)
-    case markUndone(id: String)
+  enum Action {
+    case refresh
+    case toggleEditing
+    case toggleTaskDone(IndexPath)
+    case deleteTask(IndexPath)
+    case moveTask(IndexPath, IndexPath)
+    case taskEvent(TaskEvent)
   }
 
+  enum Mutation {
+    case toggleEditing
+    case setSections([TaskListSection])
+    case insertSectionItem(IndexPath, TaskListSection.Item)
+    case updateSectionItem(IndexPath, TaskListSection.Item)
+    case deleteSectionItem(IndexPath)
+    case moveSectionItem(IndexPath, IndexPath)
+  }
 
-  // MARK: Input
+  struct State {
+    var isEditing: Bool
+    var sections: [TaskListSection]
+  }
 
-  let viewDidLoad = PublishSubject<Void>()
-  let viewDidDeallocate = PublishSubject<Void>()
-  let editButtonItemDidTap = PublishSubject<Void>()
-  let addButtonItemDidTap = PublishSubject<Void>()
-  let itemDidSelect = PublishSubject<IndexPath>()
-  let itemDidDelete = PublishSubject<IndexPath>()
-  let itemDidMove = PublishSubject<(sourceIndex: IndexPath, destinationIndex: IndexPath)>()
-
-
-  // MARK: Output
-
-  let navigationBarTitle: Driver<String?>
-  let editButtonItemTitle: Driver<String>
-  let editButtonItemStyle: Driver<UIBarButtonItemStyle>
-  let sections: Driver<[TaskListSection]>
-  let isTableViewEditing: Driver<Bool>
-  let presentTaskEditViewReactor: Observable<TaskEditViewReactorType>
-
-
-  // MARK: Initializing
+  let provider: ServiceProviderType
+  let initialState: State
 
   init(provider: ServiceProviderType) {
-    //
-    // Editing
-    //
-    let isEditing = self.editButtonItemDidTap
-      .scan(false) { lastValue, _ in !lastValue }
-      .startWith(false)
-      .asDriver(onErrorJustReturn: false)
+    self.provider = provider
+    self.initialState = State(
+      isEditing: false,
+      sections: [TaskListSection(model: Void(), items: [])]
+    )
+  }
 
-    //
-    // Navigation Item
-    //
-    self.navigationBarTitle = .just("Tasks")
-    self.editButtonItemTitle = isEditing
-      .map { isEditing in
-        return isEditing ? "Done" : "Edit"
-      }
-    self.editButtonItemStyle = isEditing
-      .map { isEditing in
-        return isEditing ? .done : .plain
-      }
+  func transform(action: Observable<Action>) -> Observable<Action> {
+    let actionFromTaskEvent = self.provider.taskService.event.map(Action.taskEvent)
+    return Observable.of(action, actionFromTaskEvent).merge()
+  }
 
-    //
-    // Task Operation
-    //
-    let taskRefreshOperation = self.viewDidLoad
-      .flatMap {
-        provider.taskService.fetchTasks()
-          .ignoreErrors()
-      }
-      .map(TaskOperation.refresh)
-
-    let taskEventOperation = provider.taskService.event
-      .map { event -> TaskOperation in
-        switch event {
-        case let .create(task): return .add(task)
-        case let .update(task): return .replace(task)
-        case let .delete(id): return .delete(id: id)
-        case let .markDone(id): return .markDone(id: id)
-        case let .markUndone(id): return .markUndone(id: id)
+  func mutate(action: Action) -> Observable<Mutation> {
+    switch action {
+    case .refresh:
+      return self.provider.taskService.fetchTasks()
+        .map { tasks in
+          let sectionItems = tasks.map(TaskCellReactor.init)
+          let section = TaskListSection(model: Void(), items: sectionItems)
+          return .setSections([section])
         }
+
+    case .toggleEditing:
+      return .just(.toggleEditing)
+
+    case let .toggleTaskDone(indexPath):
+      let task = self.currentState.sections[indexPath].currentState
+      if !task.isDone {
+        return self.provider.taskService.markAsDone(taskID: task.id).flatMap { _ in Observable.empty() }
+      } else {
+        return self.provider.taskService.markAsUndone(taskID: task.id).flatMap { _ in Observable.empty() }
       }
-      .shareReplay(1)
 
-    let taskMoveOperation = self.itemDidMove
-      .map { sourceIndexPath, destinationIndexPath -> TaskOperation in
-        return .move(from: sourceIndexPath.row, to: destinationIndexPath.row)
-      }
+    case let .deleteTask(indexPath):
+      let task = self.currentState.sections[indexPath].currentState
+      return self.provider.taskService.delete(taskID: task.id).flatMap { _ in Observable.empty() }
 
-    //
-    // Tasks
-    //
-    let tasks: Observable<[Task]> = Observable
-      .of(taskRefreshOperation, taskEventOperation, taskMoveOperation)
-      .merge()
-      .scan([]) { tasks, operation in
-        switch operation {
-        case let .refresh(newTasks):
-          return newTasks
+    case let .moveTask(sourceIndexPath, destinationIndexPath):
+      let task = self.currentState.sections[sourceIndexPath].currentState
+      return self.provider.taskService.move(taskID: task.id, to: destinationIndexPath.item)
+        .flatMap { _ in Observable.empty() }
 
-        case let .add(newTask):
-          var newTasks = tasks
-          newTasks.insert(newTask, at: 0)
-          return newTasks
+    case let .taskEvent(taskEvent):
+      return self.mutate(taskEvent: taskEvent)
+    }
+  }
 
-        case let .replace(newTask):
-          guard let index = tasks.index(where: { $0.id == newTask.id }) else { return tasks }
-          var newTasks = tasks
-          newTasks[index] = newTask
-          return newTasks
+  private func mutate(taskEvent: TaskEvent) -> Observable<Mutation> {
+    let state = self.currentState
+    switch taskEvent {
+    case let .create(task):
+      let indexPath = IndexPath(item: 0, section: 0)
+      let reactor = TaskCellReactor(task: task)
+      return .just(.insertSectionItem(indexPath, reactor))
 
-        case let .delete(id):
-          guard let index = tasks.index(where: { $0.id == id }) else { return tasks }
-          var newTasks = tasks
-          newTasks.remove(at: index)
-          return newTasks
+    case let .update(task):
+      guard let indexPath = self.indexPath(forTaskID: task.id, from: state) else { return .empty() }
+      let reactor = TaskCellReactor(task: task)
+      return .just(.updateSectionItem(indexPath, reactor))
 
-        case let .move(from, to):
-          var newTasks = tasks
-          let task = newTasks.remove(at: from)
-          newTasks.insert(task, at: to)
-          return newTasks
+    case let .delete(id):
+      guard let indexPath = self.indexPath(forTaskID: id, from: state) else { return .empty() }
+      return .just(.deleteSectionItem(indexPath))
 
-        case let .markDone(id):
-          guard let index = tasks.index(where: { $0.id == id }) else { return tasks }
-          var task = tasks[index]
-          task.isDone = true
-          var newTasks = tasks
-          newTasks[index] = task
-          return newTasks
+    case let .move(id, index):
+      guard let sourceIndexPath = self.indexPath(forTaskID: id, from: state) else { return .empty() }
+      let destinationIndexPath = IndexPath(item: index, section: 0)
+      return .just(.moveSectionItem(sourceIndexPath, destinationIndexPath))
 
-        case let .markUndone(id):
-          guard let index = tasks.index(where: { $0.id == id }) else { return tasks }
-          var task = tasks[index]
-          task.isDone = false
-          var newTasks = tasks
-          newTasks[index] = task
-          return newTasks
-        }
-      }
-      .shareReplay(1)
+    case let .markAsDone(id):
+      guard let indexPath = self.indexPath(forTaskID: id, from: state) else { return .empty() }
+      var task = state.sections[indexPath].currentState
+      task.isDone = true
+      let reactor = TaskCellReactor(task: task)
+      return .just(.updateSectionItem(indexPath, reactor))
 
-    _ = tasks
-      .takeUntil(self.viewDidDeallocate)
-      .subscribe(onNext: { tasks in
-        provider.taskService.saveTasks(tasks)
-      })
+    case let .markAsUndone(id):
+      guard let indexPath = self.indexPath(forTaskID: id, from: state) else { return .empty() }
+      var task = state.sections[indexPath].currentState
+      task.isDone = false
+      let reactor = TaskCellReactor(task: task)
+      return .just(.updateSectionItem(indexPath, reactor))
+    }
+  }
 
-    // 
-    // Sections
-    //
-    self.sections = tasks
-      .map { tasks in
-        let reactors = tasks.map(TaskCellReactor.init) as [TaskCellReactorType]
-        let section = TaskListSection(model: Void(), items: reactors)
-        return [section]
-      }
-      .asDriver(onErrorJustReturn: [])
+  func reduce(state: State, mutation: Mutation) -> State {
+    var state = state
+    switch mutation {
+    case let .setSections(sections):
+      state.sections = sections
+      return state
 
-    //
-    // Table View Editing
-    //
-    self.isTableViewEditing = isEditing
+    case .toggleEditing:
+      state.isEditing = !state.isEditing
+      return state
 
-    //
-    // Interactions
-    //
-    _ = self.itemDidSelect
-      .withLatestFrom(isEditing) { ($0, $1) }
-      .filter { _, isEditing in !isEditing }
-      .map { indexPath, _ in indexPath }
-      .withLatestFrom(tasks) { indexPath, tasks -> TaskEvent in
-        let task = tasks[indexPath.row]
-        if task.isDone {
-          return .markUndone(id: task.id)
-        } else {
-          return .markDone(id: task.id)
-        }
-      }
-      .takeUntil(self.viewDidDeallocate)
-      .bindTo(provider.taskService.event)
+    case let .insertSectionItem(indexPath, sectionItem):
+      state.sections.insert(sectionItem, at: indexPath)
+      return state
 
-    _ = self.itemDidDelete
-      .withLatestFrom(tasks) { indexPath, tasks -> TaskEvent in
-        return TaskEvent.delete(id: tasks[indexPath.row].id)
-      }
-      .takeUntil(self.viewDidDeallocate)
-      .bindTo(provider.taskService.event)
+    case let .updateSectionItem(indexPath, sectionItem):
+      state.sections[indexPath] = sectionItem
+      return state
 
+    case let .deleteSectionItem(indexPath):
+      state.sections.remove(at: indexPath)
+      return state
 
-    //
-    // View Controller Navigations
-    //
-    let presentAddViewReactor: Observable<TaskEditViewReactorType> = self.addButtonItemDidTap
-      .map {
-        TaskEditViewReactor(provider: provider, mode: .new)
-      }
-    let presentEditViewReactor: Observable<TaskEditViewReactorType> = self.itemDidSelect
-      .withLatestFrom(isEditing) { ($0, $1) }
-      .filter { _, isEditing in isEditing }
-      .map { indexPath, _ in indexPath }
-      .withLatestFrom(tasks) { indexPath, tasks -> TaskEditViewReactor in
-        let task = tasks[indexPath.row]
-        return TaskEditViewReactor(provider: provider, mode: .edit(task))
-      }
-    self.presentTaskEditViewReactor = Observable
-      .of(presentAddViewReactor, presentEditViewReactor)
-      .merge()
-      .observeOn(MainScheduler.instance)
-      .subscribeOn(ConcurrentMainScheduler.instance)
+    case let .moveSectionItem(sourceIndexPath, destinationIndexPath):
+      let sectionItem = state.sections.remove(at: sourceIndexPath)
+      state.sections.insert(sectionItem, at: destinationIndexPath)
+      return state
+    }
+  }
+
+  private func indexPath(forTaskID taskID: String, from state: State) -> IndexPath? {
+    let section = 0
+    let item = state.sections[section].items.index { reactor in reactor.currentState.id == taskID }
+    if let item = item {
+      return IndexPath(item: item, section: section)
+    } else {
+      return nil
+    }
+  }
+
+  func reactorForCreatingTask() -> TaskEditViewReactor {
+    return TaskEditViewReactor(provider: self.provider, mode: .new)
+  }
+
+  func reactorForEditingTask(_ taskCellReactor: TaskCellReactor) -> TaskEditViewReactor {
+    let task = taskCellReactor.currentState
+    return TaskEditViewReactor(provider: self.provider, mode: .edit(task))
   }
 
 }

@@ -3,6 +3,9 @@ platform :ios, '8.0'
 target 'RxTodo' do
   use_frameworks!
 
+  # Architecture
+  pod 'ReactorKit'
+
   # Rx
   pod 'RxSwift', '~> 3.1'
   pod 'RxCocoa', '~> 3.1'
@@ -17,6 +20,7 @@ target 'RxTodo' do
   pod 'Then', '~> 2.1'
   pod 'ReusableKit', '~> 1.1'
   pod 'CGFloatLiteral', '~> 0.2'
+  pod 'URLNavigator'
 
   # Testing
   target 'RxTodoTests' do
