@@ -1,7 +1,7 @@
 PODS:
   - CGFloatLiteral (0.2.0)
   - ManualLayout (1.3.0)
-  - Reactor (0.1.0):
+  - ReactorKit (0.1.0):
     - RxSwift (>= 3.0.0)
   - ReusableKit (1.1.0)
   - RxCocoa (3.1.0):
@@ -26,7 +26,7 @@ PODS:
 DEPENDENCIES:
   - CGFloatLiteral (~> 0.2)
   - ManualLayout (~> 1.3)
-  - Reactor (from `https://github.com/devxoul/TheReactiveArchitecture.git`, branch `reactor`)
+  - ReactorKit
   - ReusableKit (~> 1.1)
   - RxCocoa (~> 3.1)
   - RxDataSources (~> 1.0)
@@ -38,20 +38,10 @@ DEPENDENCIES:
   - Then (~> 2.1)
   - URLNavigator
 
-EXTERNAL SOURCES:
-  Reactor:
-    :branch: reactor
-    :git: https://github.com/devxoul/TheReactiveArchitecture.git
-
-CHECKOUT OPTIONS:
-  Reactor:
-    :commit: f6e96cf49e3e75a2232e2790c054f2d49b4d6955
-    :git: https://github.com/devxoul/TheReactiveArchitecture.git
-
 SPEC CHECKSUMS:
   CGFloatLiteral: 5bdcd81cb54b56cd71c4e5e66a33cb86cd51ecbf
   ManualLayout: 68ac8cfa6b5f656f7a9fadec3730208b95986880
-  Reactor: 74889aa99a043332cb5859208380a95622406729
+  ReactorKit: b461941775ff25f28b6326b786445b68f9e48dfd
   ReusableKit: 89e743a120bab0d95848bff27e481833c2768905
   RxCocoa: 50d7564866da9299161e86a263ce12a0873904d8
   RxDataSources: 824693e84d00781d0a5e5cedc1ff95ce9250aacd
@@ -63,6 +53,6 @@ SPEC CHECKSUMS:
   Then: 8496793c8fcac95482b943909b440724c7d8d82c
   URLNavigator: 269e73ee727a7cabfa8e510a312bac3884325cc3
 
-PODFILE CHECKSUM: f0a43fbf260f47fc306635eba73776448d2aa252
+PODFILE CHECKSUM: 60519df89c88988afbfefffcc9293654d3a20bfc
 
 COCOAPODS: 1.1.1
