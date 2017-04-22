@@ -21,7 +21,6 @@ final class TaskListViewReactor: Reactor {
     case toggleTaskDone(IndexPath)
     case deleteTask(IndexPath)
     case moveTask(IndexPath, IndexPath)
-    case taskEvent(TaskEvent)
   }
 
   enum Mutation {
@@ -47,11 +46,6 @@ final class TaskListViewReactor: Reactor {
       isEditing: false,
       sections: [TaskListSection(model: Void(), items: [])]
     )
-  }
-
-  func transform(action: Observable<Action>) -> Observable<Action> {
-    let actionFromTaskEvent = self.provider.taskService.event.map(Action.taskEvent)
-    return Observable.of(action, actionFromTaskEvent).merge()
   }
 
   func mutate(action: Action) -> Observable<Mutation> {
@@ -83,10 +77,15 @@ final class TaskListViewReactor: Reactor {
       let task = self.currentState.sections[sourceIndexPath].currentState
       return self.provider.taskService.move(taskID: task.id, to: destinationIndexPath.item)
         .flatMap { _ in Observable.empty() }
-
-    case let .taskEvent(taskEvent):
-      return self.mutate(taskEvent: taskEvent)
     }
+  }
+
+  func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
+    let taskEventMutation = self.provider.taskService.event
+      .flatMap { [weak self] taskEvent -> Observable<Mutation> in
+        self?.mutate(taskEvent: taskEvent) ?? .empty()
+      }
+    return Observable.of(mutation, taskEventMutation).merge()
   }
 
   private func mutate(taskEvent: TaskEvent) -> Observable<Mutation> {
