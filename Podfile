@@ -11,6 +11,7 @@ target 'RxTodo' do
   pod 'RxCocoa', '~> 3.1'
   pod 'RxDataSources', '~> 1.0'
   pod 'RxOptional', '~> 3.1'
+  pod 'RxViewController'
 
   # UI
   pod 'SnapKit', '~> 3.0'

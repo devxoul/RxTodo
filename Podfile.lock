@@ -19,6 +19,9 @@ PODS:
   - RxSwift (3.1.0)
   - RxTest (3.2.0):
     - RxSwift (~> 3.0)
+  - RxViewController (0.1.0):
+    - RxCocoa (>= 3.0.0)
+    - RxSwift (>= 3.0.0)
   - SnapKit (3.0.0)
   - Then (2.1.0)
   - URLNavigator (1.1.2)
@@ -34,6 +37,7 @@ DEPENDENCIES:
   - RxOptional (~> 3.1)
   - RxSwift (~> 3.1)
   - RxTest (~> 3.1)
+  - RxViewController
   - SnapKit (~> 3.0)
   - Then (~> 2.1)
   - URLNavigator
@@ -49,10 +53,11 @@ SPEC CHECKSUMS:
   RxOptional: b97b59183af80d1e729ac9e51d09a10be668d6a8
   RxSwift: 83ff553e7593fdfdcb2562933a64c0284dffdadc
   RxTest: 85fdd6f753e8e62635a58d37bbdd3ce7d5abbef3
+  RxViewController: 45aada3de70642e419b13b100ba395287859361b
   SnapKit: 98af0a4e9369d3c58f758967518081dbdc7eb1d9
   Then: 8496793c8fcac95482b943909b440724c7d8d82c
   URLNavigator: 269e73ee727a7cabfa8e510a312bac3884325cc3
 
-PODFILE CHECKSUM: 60519df89c88988afbfefffcc9293654d3a20bfc
+PODFILE CHECKSUM: c2a8a277b233bbd6ba9b97ee14ecf3d22da9ba0e
 
 COCOAPODS: 1.1.1
