@@ -20,7 +20,7 @@ class TaskEditViewReactorTests: XCTestCase {
   func testTitle() {
     RxExpect("it should use 'New' title when the editor mode is .new") { test in
       let provider = MockServiceProvider()
-      let reactor = TaskEditViewReactor(provider: provider, mode: .new)
+      let reactor = test.retain(TaskEditViewReactor(provider: provider, mode: .new))
       test.assert(reactor.state.map { $0.title })
         .filterNext()
         .equal(["New"])
@@ -39,7 +39,7 @@ class TaskEditViewReactorTests: XCTestCase {
   func testTaskTitle() {
     RxExpect("it should update taskTitle") { test in
       let provider = MockServiceProvider()
-      let reactor = TaskEditViewReactor(provider: provider, mode: .new)
+      let reactor = test.retain(TaskEditViewReactor(provider: provider, mode: .new))
 
       // input
       test.input(reactor.action, [
@@ -63,7 +63,7 @@ class TaskEditViewReactorTests: XCTestCase {
   func testCanSubmit() {
     RxExpect("it should adjust canSubmit when the editor mode is .new") { test in
       let provider = MockServiceProvider()
-      let reactor = TaskEditViewReactor(provider: provider, mode: .new)
+      let reactor = test.retain(TaskEditViewReactor(provider: provider, mode: .new))
 
       // input
       test.input(reactor.action, [
@@ -84,7 +84,7 @@ class TaskEditViewReactorTests: XCTestCase {
     RxExpect("it should adjust canSubmit when the editor mode is .edit") { test in
       let provider = MockServiceProvider()
       let task = Task(title: "Test")
-      let reactor = TaskEditViewReactor(provider: provider, mode: .edit(task))
+      let reactor = test.retain(TaskEditViewReactor(provider: provider, mode: .edit(task)))
 
       // input
       test.input(reactor.action, [
@@ -106,7 +106,7 @@ class TaskEditViewReactorTests: XCTestCase {
   func testShouldComfirmCancel() {
     RxExpect("it should confirm cancel when the editor mode is .new") { test in
       let provider = MockServiceProvider()
-      let reactor = TaskEditViewReactor(provider: provider, mode: .new)
+      let reactor = test.retain(TaskEditViewReactor(provider: provider, mode: .new))
 
       // input
       test.input(reactor.action, [
@@ -127,7 +127,7 @@ class TaskEditViewReactorTests: XCTestCase {
     RxExpect("it should confirm cancel when the editor mode is .edit") { test in
       let provider = MockServiceProvider()
       let task = Task(title: "TEST")
-      let reactor = TaskEditViewReactor(provider: provider, mode: .edit(task))
+      let reactor = test.retain(TaskEditViewReactor(provider: provider, mode: .edit(task)))
 
       // input
       test.input(reactor.action, [
@@ -151,7 +151,7 @@ class TaskEditViewReactorTests: XCTestCase {
   func testIsDismissed() {
     RxExpect("it should dismiss on cancel") { test in
       let provider = MockServiceProvider()
-      let reactor = TaskEditViewReactor(provider: provider, mode: .new)
+      let reactor = test.retain(TaskEditViewReactor(provider: provider, mode: .new))
 
       // input
       test.input(reactor.action, [
@@ -172,7 +172,7 @@ class TaskEditViewReactorTests: XCTestCase {
       provider.alertService = MockAlertService(provider: provider).then {
         $0.selectAction = TaskEditViewCancelAlertAction.leave
       }
-      let reactor = TaskEditViewReactor(provider: provider, mode: .new)
+      let reactor = test.retain(TaskEditViewReactor(provider: provider, mode: .new))
 
       // input
       test.input(reactor.action, [
@@ -191,7 +191,7 @@ class TaskEditViewReactorTests: XCTestCase {
 
     RxExpect("it should dismiss on submit") { test in
       let provider = MockServiceProvider()
-      let reactor = TaskEditViewReactor(provider: provider, mode: .new)
+      let reactor = test.retain(TaskEditViewReactor(provider: provider, mode: .new))
 
       // input
       test.input(reactor.action, [

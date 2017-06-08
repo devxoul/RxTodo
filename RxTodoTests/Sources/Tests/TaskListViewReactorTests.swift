@@ -19,7 +19,7 @@ class TaskListViewReactorTests: XCTestCase {
   func testFetchTasks() {
     RxExpect("it should fetch saved tasks") { test in
       let provider = MockServiceProvider()
-      let reactor = TaskListViewReactor(provider: provider)
+      let reactor = test.retain(TaskListViewReactor(provider: provider))
 
       // input
       test.input(reactor.action, [next(100, .refresh)])
@@ -36,7 +36,7 @@ class TaskListViewReactorTests: XCTestCase {
   func testToggleEditing() {
     RxExpect("it should toggle isEditing") { test in
       let provider = MockServiceProvider()
-      let reactor = TaskListViewReactor(provider: provider)
+      let reactor = test.retain(TaskListViewReactor(provider: provider))
 
       // input
       test.input(reactor.action, [
@@ -58,7 +58,7 @@ class TaskListViewReactorTests: XCTestCase {
   func testToggleTaskDone() {
     RxExpect("it should toggle isDone of task") { test in
       let provider = MockServiceProvider()
-      let reactor = TaskListViewReactor(provider: provider)
+      let reactor = test.retain(TaskListViewReactor(provider: provider))
 
       // input
       test.input(reactor.action, [
@@ -89,7 +89,7 @@ class TaskListViewReactorTests: XCTestCase {
   func testDeleteTask() {
     RxExpect("it should delete task") { test in
       let provider = MockServiceProvider()
-      let reactor = TaskListViewReactor(provider: provider)
+      let reactor = test.retain(TaskListViewReactor(provider: provider))
 
       // input
       test.input(reactor.action, [
