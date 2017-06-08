@@ -7,27 +7,27 @@ target 'RxTodo' do
   pod 'ReactorKit'
 
   # Rx
-  pod 'RxSwift', '~> 3.1'
-  pod 'RxCocoa', '~> 3.1'
-  pod 'RxDataSources', '~> 1.0'
-  pod 'RxOptional', '~> 3.1'
+  pod 'RxSwift'
+  pod 'RxCocoa'
+  pod 'RxDataSources'
+  pod 'RxOptional'
   pod 'RxViewController'
 
   # UI
-  pod 'SnapKit', '~> 3.0'
-  pod 'ManualLayout', '~> 1.3'
+  pod 'SnapKit'
+  pod 'ManualLayout'
 
   # Misc.
-  pod 'Then', '~> 2.1'
-  pod 'ReusableKit', '~> 1.1'
-  pod 'CGFloatLiteral', '~> 0.2'
+  pod 'Then'
+  pod 'ReusableKit'
+  pod 'CGFloatLiteral'
   pod 'URLNavigator'
 
   # Testing
   target 'RxTodoTests' do
-    pod 'RxTest', '~> 3.1'
-    pod 'RxExpect', '~> 0.3'
-    pod 'RxOptional', '~> 3.1'
+    pod 'RxTest'
+    pod 'RxExpect'
+    pod 'RxOptional'
   end
 
 end

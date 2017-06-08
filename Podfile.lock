@@ -1,63 +1,63 @@
 PODS:
-  - CGFloatLiteral (0.2.0)
+  - CGFloatLiteral (0.3.0)
   - ManualLayout (1.3.0)
-  - ReactorKit (0.2.0):
+  - ReactorKit (0.4.5):
     - RxSwift (>= 3.0.0)
   - ReusableKit (1.1.0)
-  - RxCocoa (3.1.0):
-    - RxSwift (~> 3.1)
-  - RxDataSources (1.0.0):
+  - RxCocoa (3.5.0):
+    - RxSwift (~> 3.4)
+  - RxDataSources (1.0.3):
     - RxCocoa (~> 3.0)
     - RxSwift (~> 3.0)
-  - RxExpect (0.5.1):
-    - RxCocoa (>= 3.0)
-    - RxSwift (>= 3.0)
-    - RxTest (>= 3.0)
+  - RxExpect (0.7.0):
+    - RxCocoa (>= 3.4)
+    - RxSwift (>= 3.4)
+    - RxTest (>= 3.4)
   - RxOptional (3.1.3):
     - RxCocoa
     - RxSwift
-  - RxSwift (3.1.0)
-  - RxTest (3.2.0):
-    - RxSwift (~> 3.0)
+  - RxSwift (3.5.0)
+  - RxTest (3.5.0):
+    - RxSwift (~> 3.4)
   - RxViewController (0.1.0):
     - RxCocoa (>= 3.0.0)
     - RxSwift (>= 3.0.0)
-  - SnapKit (3.0.0)
+  - SnapKit (3.2.0)
   - Then (2.1.0)
-  - URLNavigator (1.1.2)
+  - URLNavigator (1.2.1)
 
 DEPENDENCIES:
-  - CGFloatLiteral (~> 0.2)
-  - ManualLayout (~> 1.3)
+  - CGFloatLiteral
+  - ManualLayout
   - ReactorKit
-  - ReusableKit (~> 1.1)
-  - RxCocoa (~> 3.1)
-  - RxDataSources (~> 1.0)
-  - RxExpect (~> 0.3)
-  - RxOptional (~> 3.1)
-  - RxSwift (~> 3.1)
-  - RxTest (~> 3.1)
+  - ReusableKit
+  - RxCocoa
+  - RxDataSources
+  - RxExpect
+  - RxOptional
+  - RxSwift
+  - RxTest
   - RxViewController
-  - SnapKit (~> 3.0)
-  - Then (~> 2.1)
+  - SnapKit
+  - Then
   - URLNavigator
 
 SPEC CHECKSUMS:
-  CGFloatLiteral: 5bdcd81cb54b56cd71c4e5e66a33cb86cd51ecbf
+  CGFloatLiteral: faba125ab2bb8fa90142c414f876b83099c26f25
   ManualLayout: 68ac8cfa6b5f656f7a9fadec3730208b95986880
-  ReactorKit: e9a57be0441a28878c418f5fea0f8f2587570563
+  ReactorKit: 545c457c350da37ba922350692390c78e7062216
   ReusableKit: 89e743a120bab0d95848bff27e481833c2768905
-  RxCocoa: 50d7564866da9299161e86a263ce12a0873904d8
-  RxDataSources: 824693e84d00781d0a5e5cedc1ff95ce9250aacd
-  RxExpect: b5b995662f56e8efa3c15a600b187b07f0578b44
+  RxCocoa: a0a09f45d0e5b48ecb6a4a7b4b4c89c88d3f633f
+  RxDataSources: a021a0e944ba5f7991259829d973afdbfa719c0b
+  RxExpect: 6211e63608788e904cde817aa6ccc0ac4fd4beb5
   RxOptional: b97b59183af80d1e729ac9e51d09a10be668d6a8
-  RxSwift: 83ff553e7593fdfdcb2562933a64c0284dffdadc
-  RxTest: 85fdd6f753e8e62635a58d37bbdd3ce7d5abbef3
+  RxSwift: 18ee9d78b45edb3b0b7e79916b47a116e6dbc842
+  RxTest: 1763765fd0e2282b0eb44c9050effdd7fe7156d4
   RxViewController: 45aada3de70642e419b13b100ba395287859361b
-  SnapKit: 98af0a4e9369d3c58f758967518081dbdc7eb1d9
+  SnapKit: 1ca44df72cfa543218d177cb8aab029d10d86ea7
   Then: 8496793c8fcac95482b943909b440724c7d8d82c
-  URLNavigator: 269e73ee727a7cabfa8e510a312bac3884325cc3
+  URLNavigator: eb2a968b58dc7c7ddd9b5f8167f04cbb039475b3
 
-PODFILE CHECKSUM: c2a8a277b233bbd6ba9b97ee14ecf3d22da9ba0e
+PODFILE CHECKSUM: c7c5c2b30a900bf8da498dc26f935462f30cde33
 
 COCOAPODS: 1.1.1
