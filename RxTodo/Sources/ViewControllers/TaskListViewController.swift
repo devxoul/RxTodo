@@ -68,7 +68,7 @@ final class TaskListViewController: BaseViewController, View {
 
   func bind(reactor: TaskListViewReactor) {
     // DataSource
-    self.tableView.rx.setDelegate(self).addDisposableTo(self.disposeBag)
+    self.tableView.rx.setDelegate(self).disposed(by: self.disposeBag)
     self.dataSource.configureCell = { _, tableView, indexPath, reactor in
       let cell = tableView.dequeue(Reusable.taskCell, for: indexPath)
       cell.reactor = reactor
@@ -80,29 +80,29 @@ final class TaskListViewController: BaseViewController, View {
     // Action
     self.rx.viewDidLoad
       .map { Reactor.Action.refresh }
-      .bindTo(reactor.action)
-      .addDisposableTo(self.disposeBag)
+      .bind(to: reactor.action)
+      .disposed(by: self.disposeBag)
 
     self.editButtonItem.rx.tap
       .map { Reactor.Action.toggleEditing }
-      .bindTo(reactor.action)
-      .addDisposableTo(self.disposeBag)
+      .bind(to: reactor.action)
+      .disposed(by: self.disposeBag)
 
     self.tableView.rx.itemSelected
       .filterNot(reactor.state.map { $0.isEditing })
       .map { indexPath in .toggleTaskDone(indexPath) }
-      .bindTo(reactor.action)
-      .addDisposableTo(self.disposeBag)
+      .bind(to: reactor.action)
+      .disposed(by: self.disposeBag)
 
     self.tableView.rx.itemDeleted
       .map(Reactor.Action.deleteTask)
-      .bindTo(reactor.action)
-      .addDisposableTo(self.disposeBag)
+      .bind(to: reactor.action)
+      .disposed(by: self.disposeBag)
 
     self.tableView.rx.itemMoved
       .map(Reactor.Action.moveTask)
-      .bindTo(reactor.action)
-      .addDisposableTo(self.disposeBag)
+      .bind(to: reactor.action)
+      .disposed(by: self.disposeBag)
 
     self.addButtonItem.rx.tap
       .map(reactor.reactorForCreatingTask)
@@ -112,7 +112,7 @@ final class TaskListViewController: BaseViewController, View {
         let navigationController = UINavigationController(rootViewController: viewController)
         self.present(navigationController, animated: true, completion: nil)
       })
-      .addDisposableTo(self.disposeBag)
+      .disposed(by: self.disposeBag)
 
     self.tableView.rx.modelSelected(type(of: self.dataSource).Section.Item.self)
       .filter(reactor.state.map { $0.isEditing })
@@ -123,12 +123,12 @@ final class TaskListViewController: BaseViewController, View {
         let navigationController = UINavigationController(rootViewController: viewController)
         self.present(navigationController, animated: true, completion: nil)
       })
-      .addDisposableTo(self.disposeBag)
+      .disposed(by: self.disposeBag)
 
     // State
     reactor.state.asObservable().map { $0.sections }
-      .bindTo(self.tableView.rx.items(dataSource: self.dataSource))
-      .addDisposableTo(self.disposeBag)
+      .bind(to: self.tableView.rx.items(dataSource: self.dataSource))
+      .disposed(by: self.disposeBag)
 
     reactor.state.asObservable().map { $0.isEditing }
       .distinctUntilChanged()
@@ -138,7 +138,7 @@ final class TaskListViewController: BaseViewController, View {
         self.navigationItem.leftBarButtonItem?.style = isEditing ? .done : .plain
         self.tableView.setEditing(isEditing, animated: true)
       })
-      .addDisposableTo(self.disposeBag)
+      .disposed(by: self.disposeBag)
   }
 
 }

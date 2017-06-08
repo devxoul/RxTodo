@@ -84,35 +84,35 @@ final class TaskEditViewController: BaseViewController, View {
     // Action
     self.cancelButtonItem.rx.tap
       .map { Reactor.Action.cancel }
-      .bindTo(reactor.action)
-      .addDisposableTo(self.disposeBag)
+      .bind(to: reactor.action)
+      .disposed(by: self.disposeBag)
 
     self.doneButtonItem.rx.tap
       .map { Reactor.Action.submit }
-      .bindTo(reactor.action)
-      .addDisposableTo(self.disposeBag)
+      .bind(to: reactor.action)
+      .disposed(by: self.disposeBag)
 
     self.titleInput.rx.text
       .filterNil()
       .map(Reactor.Action.updateTaskTitle)
-      .bindTo(reactor.action)
-      .addDisposableTo(self.disposeBag)
+      .bind(to: reactor.action)
+      .disposed(by: self.disposeBag)
 
     // State
     reactor.state.asObservable().map { $0.title }
       .distinctUntilChanged()
-      .bindTo(self.navigationItem.rx.title)
-      .addDisposableTo(self.disposeBag)
+      .bind(to: self.navigationItem.rx.title)
+      .disposed(by: self.disposeBag)
 
     reactor.state.asObservable().map { $0.taskTitle }
       .distinctUntilChanged()
-      .bindTo(self.titleInput.rx.text)
-      .addDisposableTo(self.disposeBag)
+      .bind(to: self.titleInput.rx.text)
+      .disposed(by: self.disposeBag)
 
     reactor.state.asObservable().map { $0.canSubmit }
       .distinctUntilChanged()
-      .bindTo(self.doneButtonItem.rx.isEnabled)
-      .addDisposableTo(self.disposeBag)
+      .bind(to: self.doneButtonItem.rx.isEnabled)
+      .disposed(by: self.disposeBag)
 
     reactor.state.asObservable().map { $0.isDismissed }
       .distinctUntilChanged()
@@ -120,7 +120,7 @@ final class TaskEditViewController: BaseViewController, View {
       .subscribe(onNext: { [weak self] _ in
         self?.dismiss(animated: true, completion: nil)
       })
-      .addDisposableTo(self.disposeBag)
+      .disposed(by: self.disposeBag)
   }
 
 }
