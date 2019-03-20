@@ -25,7 +25,12 @@ final class TaskListViewController: BaseViewController, View {
 
   // MARK: Properties
 
-  let dataSource = RxTableViewSectionedReloadDataSource<TaskListSection>()
+  let dataSource = RxTableViewSectionedReloadDataSource<TaskListSection>(
+    configureCell: { _, tableView, indexPath, reactor in
+      let cell = tableView.dequeue(Reusable.taskCell, for: indexPath)
+      cell.reactor = reactor
+      return cell
+  })
 
   let addButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
   let tableView = UITableView().then {
@@ -69,11 +74,6 @@ final class TaskListViewController: BaseViewController, View {
   func bind(reactor: TaskListViewReactor) {
     // DataSource
     self.tableView.rx.setDelegate(self).disposed(by: self.disposeBag)
-    self.dataSource.configureCell = { _, tableView, indexPath, reactor in
-      let cell = tableView.dequeue(Reusable.taskCell, for: indexPath)
-      cell.reactor = reactor
-      return cell
-    }
     self.dataSource.canEditRowAtIndexPath = { _ in true }
     self.dataSource.canMoveRowAtIndexPath = { _ in true }
 
