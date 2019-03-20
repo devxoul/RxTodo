@@ -38,7 +38,7 @@ final class TaskService: BaseService, TaskServiceType {
 
   func fetchTasks() -> Observable<[Task]> {
     if let savedTaskDictionaries = self.provider.userDefaultsService.value(forKey: .tasks) {
-      let tasks = savedTaskDictionaries.flatMap(Task.init)
+      let tasks = savedTaskDictionaries.compactMap(Task.init)
       return .just(tasks)
     }
     let defaultTasks: [Task] = [
