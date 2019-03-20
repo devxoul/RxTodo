@@ -42,6 +42,23 @@ DEPENDENCIES:
   - Then
   - URLNavigator
 
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - CGFloatLiteral
+    - ManualLayout
+    - ReactorKit
+    - ReusableKit
+    - RxCocoa
+    - RxDataSources
+    - RxExpect
+    - RxOptional
+    - RxSwift
+    - RxTest
+    - RxViewController
+    - SnapKit
+    - Then
+    - URLNavigator
+
 SPEC CHECKSUMS:
   CGFloatLiteral: faba125ab2bb8fa90142c414f876b83099c26f25
   ManualLayout: 68ac8cfa6b5f656f7a9fadec3730208b95986880
@@ -60,4 +77,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: c7c5c2b30a900bf8da498dc26f935462f30cde33
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.6.1
