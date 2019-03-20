@@ -17,95 +17,93 @@ import RxTest
 class TaskListViewReactorTests: XCTestCase {
 
   func testFetchTasks() {
-    RxExpect("it should fetch saved tasks") { test in
-      let provider = MockServiceProvider()
-      let reactor = test.retain(TaskListViewReactor(provider: provider))
-
-      // input
-      test.input(reactor.action, [next(100, .refresh)])
-
-      // assertion
-      let taskCount = reactor.state.map { $0.sections.first!.items.count }
-      test.assert(taskCount)
-        .since(100)
-        .filterNext()
-        .equal([3])
+    let test = RxExpect()
+    let provider = MockServiceProvider()
+    let reactor = test.retain(TaskListViewReactor(provider: provider))
+    
+    // input
+    test.input(reactor.action, [next(100, .refresh)])
+    
+    // assertion
+    let taskCount = reactor.state.map { $0.sections.first!.items.count }
+    test.assert(taskCount) { events in
+      XCTAssertEqual(events, [
+        next(0, 0),
+        next(100, 3)
+      ])
     }
   }
 
   func testToggleEditing() {
-    RxExpect("it should toggle isEditing") { test in
-      let provider = MockServiceProvider()
-      let reactor = test.retain(TaskListViewReactor(provider: provider))
-
-      // input
-      test.input(reactor.action, [
+    let test = RxExpect()
+    let provider = MockServiceProvider()
+    let reactor = test.retain(TaskListViewReactor(provider: provider))
+    
+    // input
+    test.input(reactor.action, [
         next(100, .toggleEditing),
         next(200, .toggleEditing),
-      ])
-
-      // assertion
-      test.assert(reactor.state.map { $0.isEditing })
-        .filterNext()
-        .equal([
-          false, // initial value
-          true,  // toggle value
-          false, // toggle value
         ])
+    
+    // assertion
+    test.assert(reactor.state.map { $0.isEditing }) { events in
+      XCTAssertEqual(events, [
+        next(0, false),
+        next(100, true),
+        next(200, false)
+      ])
     }
   }
 
   func testToggleTaskDone() {
-    RxExpect("it should toggle isDone of task") { test in
-      let provider = MockServiceProvider()
-      let reactor = test.retain(TaskListViewReactor(provider: provider))
-
-      // input
-      test.input(reactor.action, [
+    let test = RxExpect()
+    let provider = MockServiceProvider()
+    let reactor = test.retain(TaskListViewReactor(provider: provider))
+    
+    // input
+    test.input(reactor.action, [
         next(100, .refresh), // prepare seed data
         next(200, .toggleTaskDone(IndexPath(item: 0, section: 0))),
         next(300, .toggleTaskDone(IndexPath(item: 0, section: 0))),
         next(400, .toggleTaskDone(IndexPath(item: 2, section: 0))),
-      ])
-
-      // assert
-      let isDones = reactor.state.map { state in
-        return state.sections[0].items.map { cellReactor in
-          return cellReactor.currentState.isDone
-        }
-      }
-      test.assert(isDones)
-        .since(100)
-        .filterNext()
-        .equal([
-          [false, false, false], // initial
-          [true,  false, false], // toggle [0]
-          [false, false, false], // toggle [0]
-          [false, false, true ], // toggle [2]
         ])
+    
+    // assert
+    let isDones = reactor.state.map { state in
+        return state.sections[0].items.map { cellReactor in
+            return cellReactor.currentState.isDone
+        }
+    }
+    test.assert(isDones) { events in
+      XCTAssertEqual(events, [
+        next(0, []),
+        next(100, [false, false, false]),
+        next(200, [true, false, false]),
+        next(300, [false, false, false]),
+        next(400, [false, false, true])
+      ])
     }
   }
 
   func testDeleteTask() {
-    RxExpect("it should delete task") { test in
-      let provider = MockServiceProvider()
-      let reactor = test.retain(TaskListViewReactor(provider: provider))
-
-      // input
-      test.input(reactor.action, [
+    let test = RxExpect()
+    let provider = MockServiceProvider()
+    let reactor = test.retain(TaskListViewReactor(provider: provider))
+    
+    // input
+    test.input(reactor.action, [
         next(100, .refresh), // prepare seed data
         next(200, .deleteTask(IndexPath(item: 0, section: 0))),
-      ])
-
-      // assert
-      let itemCount = reactor.state.map { $0.sections[0].items.count }
-      test.assert(itemCount)
-        .since(100)
-        .filterNext()
-        .equal([
-          3, // initial
-          2, // after delete
         ])
+    
+    // assert
+    let itemCount = reactor.state.map { $0.sections[0].items.count }
+    test.assert(itemCount) { events in
+      XCTAssertEqual(events, [
+        next(0, 0),
+        next(100, 3),
+        next(200, 2)
+      ])
     }
   }
 }
