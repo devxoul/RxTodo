@@ -74,8 +74,8 @@ final class TaskListViewController: BaseViewController, View {
   func bind(reactor: TaskListViewReactor) {
     // DataSource
     self.tableView.rx.setDelegate(self).disposed(by: self.disposeBag)
-    self.dataSource.canEditRowAtIndexPath = { _ in true }
-    self.dataSource.canMoveRowAtIndexPath = { _ in true }
+    self.dataSource.canEditRowAtIndexPath = { _, _  in true }
+    self.dataSource.canMoveRowAtIndexPath = { _, _  in true }
 
     // Action
     self.rx.viewDidLoad

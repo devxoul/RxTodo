@@ -13,11 +13,11 @@ import URLNavigator
 
 protocol AlertActionType {
   var title: String? { get }
-  var style: UIAlertActionStyle { get }
+    var style: UIAlertAction.Style { get }
 }
 
 extension AlertActionType {
-  var style: UIAlertActionStyle {
+    var style: UIAlertAction.Style {
     return .default
   }
 }
@@ -26,7 +26,7 @@ protocol AlertServiceType: class {
   func show<Action: AlertActionType>(
     title: String?,
     message: String?,
-    preferredStyle: UIAlertControllerStyle,
+    preferredStyle: UIAlertController.Style,
     actions: [Action]
   ) -> Observable<Action>
 }
@@ -36,7 +36,7 @@ final class AlertService: BaseService, AlertServiceType {
   func show<Action: AlertActionType>(
     title: String?,
     message: String?,
-    preferredStyle: UIAlertControllerStyle,
+    preferredStyle: UIAlertController.Style,
     actions: [Action]
   ) -> Observable<Action> {
     return Observable.create { observer in
