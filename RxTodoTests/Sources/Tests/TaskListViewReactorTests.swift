@@ -41,9 +41,9 @@ class TaskListViewReactorTests: XCTestCase {
     
     // input
     test.input(reactor.action, [
-        next(100, .toggleEditing),
-        next(200, .toggleEditing),
-        ])
+      next(100, .toggleEditing),
+      next(200, .toggleEditing),
+    ])
     
     // assertion
     test.assert(reactor.state.map { $0.isEditing }) { events in
@@ -62,11 +62,11 @@ class TaskListViewReactorTests: XCTestCase {
     
     // input
     test.input(reactor.action, [
-        next(100, .refresh), // prepare seed data
-        next(200, .toggleTaskDone(IndexPath(item: 0, section: 0))),
-        next(300, .toggleTaskDone(IndexPath(item: 0, section: 0))),
-        next(400, .toggleTaskDone(IndexPath(item: 2, section: 0))),
-        ])
+      next(100, .refresh), // prepare seed data
+      next(200, .toggleTaskDone(IndexPath(item: 0, section: 0))),
+      next(300, .toggleTaskDone(IndexPath(item: 0, section: 0))),
+      next(400, .toggleTaskDone(IndexPath(item: 2, section: 0))),
+    ])
     
     // assert
     let isDones = reactor.state.map { state in
@@ -92,9 +92,9 @@ class TaskListViewReactorTests: XCTestCase {
     
     // input
     test.input(reactor.action, [
-        next(100, .refresh), // prepare seed data
-        next(200, .deleteTask(IndexPath(item: 0, section: 0))),
-        ])
+      next(100, .refresh), // prepare seed data
+      next(200, .deleteTask(IndexPath(item: 0, section: 0))),
+    ])
     
     // assert
     let itemCount = reactor.state.map { $0.sections[0].items.count }
