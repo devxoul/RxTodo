@@ -26,7 +26,7 @@ enum TaskEditViewCancelAlertAction: AlertActionType {
     }
   }
 
-  var style: UIAlertActionStyle {
+    var style: UIAlertAction.Style {
     switch self {
     case .leave: return .destructive
     case .stay: return .default

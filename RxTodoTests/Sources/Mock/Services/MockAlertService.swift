@@ -19,7 +19,7 @@ final class MockAlertService: BaseService, AlertServiceType, Then {
   func show<Action: AlertActionType>(
     title: String?,
     message: String?,
-    preferredStyle: UIAlertControllerStyle,
+    preferredStyle: UIAlertController.Style,
     actions: [Action]
   ) -> Observable<Action> {
     guard let selectAction = self.selectAction as? Action else { return .empty() }
