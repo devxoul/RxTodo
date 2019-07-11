@@ -13,11 +13,11 @@ import URLNavigator
 
 protocol AlertActionType {
   var title: String? { get }
-    var style: UIAlertAction.Style { get }
+  var style: UIAlertAction.Style { get }
 }
 
 extension AlertActionType {
-    var style: UIAlertAction.Style {
+  var style: UIAlertAction.Style {
     return .default
   }
 }
