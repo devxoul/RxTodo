@@ -94,6 +94,7 @@ final class TaskEditViewController: BaseViewController, View {
 
     self.titleInput.rx.text
       .filterNil()
+      .skip(1)
       .map(Reactor.Action.updateTaskTitle)
       .bind(to: reactor.action)
       .disposed(by: self.disposeBag)
