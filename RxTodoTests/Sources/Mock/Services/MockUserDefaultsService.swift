@@ -9,17 +9,17 @@
 @testable import RxTodo
 
 final class MockUserDefaultsService: UserDefaultsServiceType {
-  var store = [String: Any]()
-
-  func value<T>(forKey key: UserDefaultsKey<T>) -> T? {
-    return self.store[key.key] as? T
-  }
-
-  func set<T>(value: T?, forKey key: UserDefaultsKey<T>) {
-    if let value = value {
-      self.store[key.key] = value
-    } else {
-      self.store.removeValue(forKey: key.key)
+    var store = [String: Any]()
+    
+    func value<T>(forKey key: UserDefaultsKey<T>) -> T? {
+        return self.store[key.key] as? T
     }
-  }
+    
+    func set<T>(value: T?, forKey key: UserDefaultsKey<T>) {
+        if let value = value {
+            self.store[key.key] = value
+        } else {
+            self.store.removeValue(forKey: key.key)
+        }
+    }
 }

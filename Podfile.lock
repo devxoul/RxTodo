@@ -50,7 +50,7 @@ DEPENDENCIES:
   - URLNavigator
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - CGFloatLiteral
     - Differentiator
     - ManualLayout
@@ -88,4 +88,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 91c89e13b937da99e6d96c05d844c26ad5e31fdc
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.8.4
